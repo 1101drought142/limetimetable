@@ -1,0 +1,49 @@
+.table_head_row {
+    flex-direction: column;
+}
+
+.timetable table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.timetable th, td {
+    width: 100px;
+    height: 80px;
+    padding: 10px;
+}
+
+.timetable tr > td:first-child {
+    font-weight: 700;
+}
+
+.raspisanie_block {
+    cursor: pointer;
+    text-align: center;
+}
+
+.raspisanie_block_ordered {
+    background: #ffe087;
+}
+
+.raspisanie_block_payed {
+    background: rgb(118, 255, 94);
+}
+
+.raspisanie_block_passed_time {
+    background: rgb(205, 205, 205);
+    cursor: default;
+}
+
+
+.raspisanie_block_empty:hover {
+    border: 2px solid greenyellow;
+}
+
+.raspisanie_block_payed:hover {
+    border: 2px solid rgb(38, 251, 0);
+}
+
+.raspisanie_block_ordered:hover {
+    border: 2px solid #ffcd43;
+}
