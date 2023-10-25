@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-
+from database import SessionLocal, init_db
 templates = Jinja2Templates(directory="templates")
 
 time_range = [
