@@ -1,5 +1,8 @@
 import datetime
 import enum
+from sqlalchemy.orm import joinedload, aliased
+
+from database import session, Order, TimeIntervalObjects
 
 class CellStatuses(enum.Enum):
     empty = "empty"
@@ -79,6 +82,42 @@ class DateLogic():
                     temp_date += self.step
                 else:
                     temp_date -= self.step
+
+    def insert_data_to_table_from_db(self, result):
+        starttime_table = aliased(TimeIntervalObjects)
+        endtime_table = aliased(TimeIntervalObjects)
+        
+        objects = session.query(Order, starttime_table, endtime_table).join(starttime_table, Order.starttime == starttime_table.id).join(endtime_table, Order.endtime == endtime_table.id).all()
+        object_filter_data = {}
+        for object, starttime, endtime in objects:
+            temp_object= {}
+            temp_object["text"] = "test"
+            temp_object["starttime"] = starttime.time_object
+            temp_object["endtime"] = endtime.time_object
+            temp_object["timeinterval"] = int(endtime.time_object.hour - starttime.time_object.hour)
+            temp_object["payed"] = object.payed
+
+            if (object.payed):
+                temp_object["class"] = "raspisanie_block_payed"
+            else:
+                temp_object["class"] = "raspisanie_block_ordered"
+            object_filter_data[f'{str(object.date)}_{str(starttime.time_object.hour)}'] = temp_object
+
+        time_flag = 0
+
+        for day in result:
+            for time in day["time"]:
+                if object_filter_data.get(f'{str(day["date"])}_{str(time["time"].hour)}'):
+                    temp_object = object_filter_data.get(f'{str(day["date"])}_{str(time["time"].hour)}')
+                    time["text"] = "Занято расписание"
+                    time["class"] = temp_object["class"]
+                    if (temp_object["timeinterval"] > 1):
+                        time_flag = temp_object["timeinterval"] - 1
+                        time["rowspan"] = temp_object["timeinterval"]
+                elif (time_flag):
+                    time["hide"] = True
+                    time_flag -= 1
+                    
     def create_date_data(self):
         self.get_this_week_days()
         time_intervals = self.get_date_interval() 
@@ -90,9 +129,10 @@ class DateLogic():
                     {
                         "status" : CellStatuses.empty.value,
                         "text" : CellStatuses.empty.get_rus_name(),
+                        "time": datetime.time(hour=int(time)),
+                        "class": "raspisanie_block_empty"
                     }
                 )
             result.append(temp_column)
+        self.insert_data_to_table_from_db(result)
         return result
-test = DateLogic()
-print(test.create_date_data())
