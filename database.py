@@ -81,21 +81,53 @@ class Order(Base):
             # self.client_phone = client_phone
             # self.client_mail = client_mail
 
+    def get_interval(self) -> int:
+        return self.starttime.time
+    
+
+
 # Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 
 
 # with Session(autoflush=False, bind=engine) as db:
 #     #db.add(TypicalRaspisanieObject(weekdays=Weekday.saturday, description="test", starttime=TimeIntervalObjects(time_object="10:00"), endtime=TimeIntervalObjects(time_object="11:00")))
-#     time_1 = starttime=TimeIntervalObjects(time_object=datetime.time(12, 0))
-#     time_2 = starttime=TimeIntervalObjects(time_object=datetime.time(13, 0))
-#     time_3 = starttime=TimeIntervalObjects(time_object=datetime.time(14, 0))
-#     time_4 = starttime=TimeIntervalObjects(time_object=datetime.time(16, 0))
+#     time_1 = TimeIntervalObjects(time_object=datetime.time(8, 0))
+#     time_2 = TimeIntervalObjects(time_object=datetime.time(8, 30))
+#     time_3 = TimeIntervalObjects(time_object=datetime.time(9, 0))
+#     time_4 = TimeIntervalObjects(time_object=datetime.time(9, 30))
+#     time_5 = TimeIntervalObjects(time_object=datetime.time(10, 0))
+#     time_6 = TimeIntervalObjects(time_object=datetime.time(10, 30))
+#     time_7 = TimeIntervalObjects(time_object=datetime.time(11, 0))
+#     time_8 = TimeIntervalObjects(time_object=datetime.time(11, 30))
+#     time_9 = TimeIntervalObjects(time_object=datetime.time(12, 0))
+#     time_10 = TimeIntervalObjects(time_object=datetime.time(12, 30))
+#     time_11 = TimeIntervalObjects(time_object=datetime.time(13, 0))
+#     time_12 = TimeIntervalObjects(time_object=datetime.time(13, 30))
+#     time_13 = TimeIntervalObjects(time_object=datetime.time(14, 0))
+#     time_14 = TimeIntervalObjects(time_object=datetime.time(14, 30))
+#     time_15 = TimeIntervalObjects(time_object=datetime.time(15, 0))
+#     time_16 = TimeIntervalObjects(time_object=datetime.time(15, 30))
+#     time_17 = TimeIntervalObjects(time_object=datetime.time(16, 0))
+#     time_18 = TimeIntervalObjects(time_object=datetime.time(16, 30))
+#     time_19 = TimeIntervalObjects(time_object=datetime.time(17, 0))
+#     time_20 = TimeIntervalObjects(time_object=datetime.time(17, 30))
+#     time_21 = TimeIntervalObjects(time_object=datetime.time(18, 0))
+#     time_22 = TimeIntervalObjects(time_object=datetime.time(18, 30))
+#     time_23 = TimeIntervalObjects(time_object=datetime.time(19, 0))
+#     time_24 = TimeIntervalObjects(time_object=datetime.time(19, 30))
+#     time_25 = TimeIntervalObjects(time_object=datetime.time(20, 0))
+#     time_26 = TimeIntervalObjects(time_object=datetime.time(20, 30))
+#     time_27 = TimeIntervalObjects(time_object=datetime.time(21, 0))
+#     time_28 = TimeIntervalObjects(time_object=datetime.time(21, 30))
+#     time_29 = TimeIntervalObjects(time_object=datetime.time(22, 0))
+#     time_30 = TimeIntervalObjects(time_object=datetime.time(22, 30))
+#     time_31 = TimeIntervalObjects(time_object=datetime.time(23, 0))
 
-#     db.add_all([time_1, time_2, time_3, time_4])
+#     db.add_all([time_1, time_2, time_3, time_4, time_5, time_6, time_7, time_8, time_9, time_10, time_11, time_12, time_13, time_14, time_15, time_16, time_17, time_18, time_19, time_20, time_21, time_22, time_23, time_24, time_25, time_26, time_27, time_28, time_29, time_30, time_31])
 #     db.commit()
 #     db.flush()
 
-#     db.add(Order( date=datetime.date(2021, 11, 26), starttime=time_1.id, endtime=time_2.id, payed=False, client_bitrix_id=None, client_name="test", client_phone="test", client_mail="test"))
-#     db.add(Order( date=datetime.date(2021, 11, 26), starttime=time_3.id, endtime=time_4.id, payed=True, client_bitrix_id=None, client_name="test", client_phone="test", client_mail="test"))
-#     db.commit()
+    # db.add(Order( date=datetime.date(2021, 11, 26), starttime=time_1.id, endtime=time_2.id, payed=False, client_bitrix_id=None, client_name="test", client_phone="test", client_mail="test"))
+    # db.add(Order( date=datetime.date(2021, 11, 26), starttime=time_3.id, endtime=time_4.id, payed=True, client_bitrix_id=None, client_name="test", client_phone="test", client_mail="test"))
+    # db.commit()

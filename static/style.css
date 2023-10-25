@@ -2,6 +2,13 @@
     flex-direction: column;
 }
 
+.timetable {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
 .timetable table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
@@ -9,7 +16,7 @@
 
 .timetable th, td {
     width: 100px;
-    height: 80px;
+    height: 40px;
     padding: 10px;
 }
 
@@ -37,13 +44,16 @@
 
 
 .raspisanie_block_empty:hover {
-    border: 2px solid greenyellow;
+    background: rgb(106, 175, 3);
+    color: white;
 }
 
 .raspisanie_block_payed:hover {
-    border: 2px solid rgb(38, 251, 0);
+    background: rgb(24, 153, 2);
+    color: white;
 }
 
 .raspisanie_block_ordered:hover {
-    border: 2px solid #ffcd43;
+    background: #d2a937;
+    color: white;
 }

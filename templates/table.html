@@ -12,8 +12,9 @@
             </tr>
             {% for time in time_range %}
                 {% set outer_loop = loop %}
+                {% if loop.nextitem is defined %}
                 <tr>
-                    <td>{{time}}</td>
+                    <td>{{time.time_object.hour}}.{{time.time_object.strftime('%M')}} - {{loop.nextitem.time_object.hour}}.{{loop.nextitem.time_object.strftime('%M')}} </td>
                     
                     {% for cell in data %}
                         {% if not(cell["time"][outer_loop.index0]["hide"]) %}
@@ -21,6 +22,7 @@
                         {% endif %}
                     {% endfor %}
                 </tr>
+                {% endif %}
             {% endfor %}
         </table>
     </section>

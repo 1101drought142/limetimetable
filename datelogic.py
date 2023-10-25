@@ -48,19 +48,7 @@ class DateLogic():
     right = Weekday.sunday.value
     weekdays = []
     def get_date_interval(self):
-        result = [
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20",
-        ]
+        result = session.query(TimeIntervalObjects).all()
         return result
     
     def get_this_week_days(self):
@@ -94,21 +82,22 @@ class DateLogic():
             temp_object["text"] = "test"
             temp_object["starttime"] = starttime.time_object
             temp_object["endtime"] = endtime.time_object
-            temp_object["timeinterval"] = int(endtime.time_object.hour - starttime.time_object.hour)
+            temp_object["timeinterval"] = int(endtime.id - starttime.id)
             temp_object["payed"] = object.payed
 
             if (object.payed):
                 temp_object["class"] = "raspisanie_block_payed"
             else:
                 temp_object["class"] = "raspisanie_block_ordered"
-            object_filter_data[f'{str(object.date)}_{str(starttime.time_object.hour)}'] = temp_object
-
+            object_filter_data[f'{str(object.date)}_{str(starttime.time_object.hour)}_{str(starttime.time_object.minute)}'] = temp_object
+        print(object_filter_data)
         time_flag = 0
-
         for day in result:
             for time in day["time"]:
-                if object_filter_data.get(f'{str(day["date"])}_{str(time["time"].hour)}'):
-                    temp_object = object_filter_data.get(f'{str(day["date"])}_{str(time["time"].hour)}')
+                if object_filter_data.get(f'{str(day["date"])}_{str(time["time"].hour)}_{str(time["time"].minute)}'):
+                    temp_object = object_filter_data.get(f'{str(day["date"])}_{str(time["time"].hour)}_{str(time["time"].minute)}')
+                    print(f'{str(day["date"])}_{str(time["time"].hour)}_{str(starttime.time_object.minute)}')
+                    print(temp_object)
                     time["text"] = "Занято расписание"
                     time["class"] = temp_object["class"]
                     if (temp_object["timeinterval"] > 1):
@@ -129,7 +118,7 @@ class DateLogic():
                     {
                         "status" : CellStatuses.empty.value,
                         "text" : CellStatuses.empty.get_rus_name(),
-                        "time": datetime.time(hour=int(time)),
+                        "time": datetime.time(hour=time.time_object.hour, minute=time.time_object.minute),
                         "class": "raspisanie_block_empty"
                     }
                 )
