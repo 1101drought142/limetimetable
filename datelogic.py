@@ -81,22 +81,18 @@ class DateLogic():
                     temp_date -= self.step
     def create_date_data(self):
         self.get_this_week_days()
-        time_for_table = self.get_date_interval() 
+        time_intervals = self.get_date_interval() 
         result = []
         for date in self.weekdays:
-            temp_column = {"day": Weekday(date.weekday()).get_rus_name(), "date": str(date), "time": []}
-
-            for time in time_for_table:
+            temp_column = {"day": Weekday(date.weekday()).get_rus_name(), "date": str(date), "time": [] }
+            for time in time_intervals:
                 temp_column["time"].append(
                     {
                         "status" : CellStatuses.empty.value,
                         "text" : CellStatuses.empty.get_rus_name(),
                     }
                 )
-
-            result.append({"day": Weekday(date.weekday()).get_rus_name(), "date": str(date)})
-        
+            result.append(temp_column)
         return result
-
 test = DateLogic()
 print(test.create_date_data())

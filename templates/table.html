@@ -17,7 +17,7 @@
                     
                     {% for cell in data %}
                         {% if not(cell["time"][outer_loop.index0]["hide"]) %}
-                        <td class="raspisanie_block raspisanie_block_ordered" {% if cell["time"][outer_loop.index0]["rowspan"] %} rowspan='{{cell["time"][outer_loop.index0]["rowspan"]}}' {% endif %} title="Посмотреть заказ">Заказ № {{cell["time"][outer_loop.index0]["test"]}}<br>Ожидает оплаты</td>
+                        <td class="raspisanie_block raspisanie_block_empty" {% if cell["time"][outer_loop.index0]["rowspan"] %} rowspan='{{cell["time"][outer_loop.index0]["rowspan"]}}' {% endif %} title="Посмотреть заказ">{{cell["time"][outer_loop.index0]["text"]}}</td>
                         {% endif %}
                     {% endfor %}
                 </tr>
