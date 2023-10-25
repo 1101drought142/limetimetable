@@ -18,7 +18,7 @@
                     
                     {% for cell in data %}
                         {% if not(cell["time"][outer_loop.index0]["hide"]) %}
-                        <td class="raspisanie_block {{cell['time'][outer_loop.index0]['class']}} " {% if cell["time"][outer_loop.index0]["rowspan"] %} rowspan='{{cell["time"][outer_loop.index0]["rowspan"]}}' {% endif %} title="Посмотреть заказ">{{cell["time"][outer_loop.index0]["text"]}}</td>
+                        <td class="raspisanie_block {{cell['time'][outer_loop.index0].get_class()}} " {% if cell["time"][outer_loop.index0].get_interval() %} rowspan='{{cell["time"][outer_loop.index0].get_interval()}}' {% endif %} title="Посмотреть заказ">{{cell["time"][outer_loop.index0].get_text()}}</td>
                         {% endif %}
                     {% endfor %}
                 </tr>

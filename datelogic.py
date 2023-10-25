@@ -5,14 +5,18 @@ from sqlalchemy.orm import joinedload, aliased
 from database import session, Order, TimeIntervalObjects
 
 class CellStatuses(enum.Enum):
-    empty = "empty"
-    payed = "payed"
-    passed = "passed"
+    empty = 0
+    payed = 1
+    ordered = 2
+    passed = 3
+    weekly = 4
     def get_rus_name(self):
         if (self == CellStatuses.empty):
             return "Свободно"
         elif (self == CellStatuses.payed):
             return "Оплачено"
+        elif (self == CellStatuses.ordered):
+            return "Неоплачено"
         elif (self == CellStatuses.passed):
             return "Время прошло"
         
@@ -40,6 +44,65 @@ class Weekday(enum.Enum):
         elif (self == Weekday.sunday):
             return "Воскресенье"
 
+class LogicOrder():
+    order = None
+    start_time = None
+    end_time = None
+    hide = False
+    date = None
+    def __init__(self, order : Order|None, starttime: TimeIntervalObjects|None, endtime : TimeIntervalObjects|None, date = None) -> None:
+        self.order = order
+        self.start_time = starttime
+        self.end_time = endtime
+        if (date):
+            self.date = date
+    def get_logic_status(self) -> CellStatuses:
+        date_to_check = self.date
+        if (self.order and not(self.date)):
+            date_to_check = self.order.date
+        if (date_to_check < datetime.date.today() and self.start_time.time_object < datetime.datetime.now().time()):
+            return CellStatuses.passed
+        elif not(self.order):
+            return CellStatuses.empty
+        elif (self.order.payed):
+            return CellStatuses.payed
+        elif not(self.order.payed):
+            return CellStatuses.ordered
+        
+    
+    def get_interval(self) -> int|bool:
+        if (not(self.order)):
+            return False
+        if (self.order.endtime - self.order.starttime > 0):
+            return self.order.endtime - self.order.starttime
+        else:
+            return False
+        
+    def get_text(self) -> str:
+        if (self.get_logic_status() == CellStatuses.payed):
+            return CellStatuses.payed.get_rus_name()
+        elif (self.get_logic_status() == CellStatuses.ordered):
+            return CellStatuses.ordered.get_rus_name()
+        elif (self.get_logic_status() == CellStatuses.passed):
+            return CellStatuses.passed.get_rus_name()
+        elif (self.get_logic_status() == CellStatuses.empty):
+            return CellStatuses.empty.get_rus_name()
+
+    def get_class(self):
+        if (self.get_logic_status() == CellStatuses.payed):
+            return "raspisanie_block_payed"
+        elif (self.get_logic_status() == CellStatuses.ordered):
+            return "raspisanie_block_ordered"
+        elif (self.get_logic_status() == CellStatuses.passed):
+            return "raspisanie_block_passed"
+        elif (self.get_logic_status() == CellStatuses.empty):
+            return "raspisanie_block_empty"
+    
+    def get_unique_key(self):  
+        if (self.date):
+            return f'{str(self.date)}_{str(self.start_time.time_object.hour)}_{str(self.start_time.time_object.minute)}'
+        else:
+            return f'{str(self.order.date)}_{str(self.start_time.time_object.hour)}_{str(self.start_time.time_object.minute)}'
 
 class DateLogic():
     today = datetime.date.today()
@@ -74,37 +137,21 @@ class DateLogic():
     def insert_data_to_table_from_db(self, result):
         starttime_table = aliased(TimeIntervalObjects)
         endtime_table = aliased(TimeIntervalObjects)
-        
         objects = session.query(Order, starttime_table, endtime_table).join(starttime_table, Order.starttime == starttime_table.id).join(endtime_table, Order.endtime == endtime_table.id).all()
         object_filter_data = {}
         for object, starttime, endtime in objects:
-            temp_object= {}
-            temp_object["text"] = "test"
-            temp_object["starttime"] = starttime.time_object
-            temp_object["endtime"] = endtime.time_object
-            temp_object["timeinterval"] = int(endtime.id - starttime.id)
-            temp_object["payed"] = object.payed
-
-            if (object.payed):
-                temp_object["class"] = "raspisanie_block_payed"
-            else:
-                temp_object["class"] = "raspisanie_block_ordered"
-            object_filter_data[f'{str(object.date)}_{str(starttime.time_object.hour)}_{str(starttime.time_object.minute)}'] = temp_object
-        print(object_filter_data)
+            temp_object = LogicOrder(object, starttime, endtime)
+            object_filter_data[temp_object.get_unique_key()] = temp_object
         time_flag = 0
         for day in result:
-            for time in day["time"]:
-                if object_filter_data.get(f'{str(day["date"])}_{str(time["time"].hour)}_{str(time["time"].minute)}'):
-                    temp_object = object_filter_data.get(f'{str(day["date"])}_{str(time["time"].hour)}_{str(time["time"].minute)}')
-                    print(f'{str(day["date"])}_{str(time["time"].hour)}_{str(starttime.time_object.minute)}')
-                    print(temp_object)
-                    time["text"] = "Занято расписание"
-                    time["class"] = temp_object["class"]
-                    if (temp_object["timeinterval"] > 1):
-                        time_flag = temp_object["timeinterval"] - 1
-                        time["rowspan"] = temp_object["timeinterval"]
+            for count, time in enumerate(day["time"]):
+                if object_filter_data.get(f'{time.get_unique_key()}'):
+                    temp_object = object_filter_data.get(f'{time.get_unique_key()}')
+                    day["time"][count] = temp_object
+                    if (temp_object.get_interval() > 1):
+                        time_flag = temp_object.get_interval() - 1
                 elif (time_flag):
-                    time["hide"] = True
+                    time.hide = True
                     time_flag -= 1
                     
     def create_date_data(self):
@@ -115,12 +162,7 @@ class DateLogic():
             temp_column = {"day": Weekday(date.weekday()).get_rus_name(), "date": str(date), "time": [] }
             for time in time_intervals:
                 temp_column["time"].append(
-                    {
-                        "status" : CellStatuses.empty.value,
-                        "text" : CellStatuses.empty.get_rus_name(),
-                        "time": datetime.time(hour=time.time_object.hour, minute=time.time_object.minute),
-                        "class": "raspisanie_block_empty"
-                    }
+                    LogicOrder(None, time, None, date)
                 )
             result.append(temp_column)
         self.insert_data_to_table_from_db(result)
