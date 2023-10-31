@@ -78,7 +78,7 @@
 }
 
 .dialog {
-    z-index: 999999;
+    z-index: 10;
     position: fixed;
     padding: 50px;
 }
@@ -108,4 +108,17 @@
     list-style-type: none;
     margin-left: 0px;
     padding-left: 0px;
+}
+
+.order_info > li {
+    margin-top: 10px;
+}
+
+button {
+    cursor: pointer;
+}
+
+.dialog_close_button {
+    cursor: pointer;
+    font-size: 18px;
 }

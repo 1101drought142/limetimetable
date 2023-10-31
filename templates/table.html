@@ -2,20 +2,24 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/jquery-datetimepicker/jquery.datetimepicker.css"/ >
+    <script src="/static/jquery-datetimepicker/jquery.js"></script>
+    <script src="/static/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
 </head>
 <body>
-    <dialog class="dialog">
+    <dialog open class="dialog">
         <div class="dialog_containter">
             <div class="dialog_top_row">
                 <h3 class="dialog_title">Информация о брони</h3>
-                <div class="close_button">x</div>
+                <div class="dialog_close_button" onclick="close_modal(this)">x</div>
             </div>
             <ul class="order_info">
-                <li> <span>Дата и время начала брони:</span> <span><input type="date" value="2023-10-30 9.00"></span> </li>
-                <li> <span>Дата и время окончания брони:</span> <span>2023-10-30 11.30</span> </li>
-                <li> <span>Статус:</span> <span>Оплачен</span> </li>
-                <li> <span>Клиент:</span> <span>Иван Сергеевич Иванов</span> </li>
-                <li> <span>Есть аккаунт в битрикс:</span> <span>Да</span></li>
+                <li> <span>Дата и время начала брони:</span> <input id="modal_start_time" readonly value="31.10.2023 11:00"> </li>
+                <li> <span>Дата и время окончания брони:</span> <input id="modal_end_time" readonly> </li>
+                <li> <span>Статус:</span> <select> <option value="Оплачен" selected>Оплачен</option> <option value="Ожидает оплаты">Ожидает оплаты</option> </select> </li>
+                <li> <span>Клиент:</span> <input type="text" value="Иван Сергеевич Иванов"> </li>
+                <li> <span>Телефон:</span> <input type="text" value="8 983 313-70-82"> </li>
+                <li> <span>Есть аккаунт в битрикс:</span>  <input type="checkbox"> </li>
                 <li> <span>Ссылка на трансялцию:</span> <span> Нажмите сюда </span></li>
             </ul>
             <div class="button_row">
@@ -51,12 +55,8 @@
         <div class="right_part">
             <div class="calendar_nav">
                 <div class="calendar_block">
-                    <p>Дата от:</p>
-                    <div id="from_calendar"></div>
-                </div>
-                <div class="calendar_block">
-                    <p>Дата до:</p>
-                    <div id="to_calendar"></div>
+                    <p>Диапазон дат:</p>
+                    <input id="from_calendar">
                 </div>
                 <div class="cort_choose_block">
                     <p>Корт:</p>
