@@ -60,7 +60,7 @@ class LogicOrder():
         date_to_check = self.date
         if (self.order and not(self.date)):
             date_to_check = self.order.date
-        if (date_to_check < datetime.date.today() and self.start_time.time_object < datetime.datetime.now().time()):
+        if (date_to_check < datetime.date.today() or ( date_to_check == datetime.date.today() and self.start_time.time_object < datetime.datetime.now().time())):
             return CellStatuses.passed
         elif not(self.order):
             return CellStatuses.empty
@@ -94,7 +94,7 @@ class LogicOrder():
         elif (self.get_logic_status() == CellStatuses.ordered):
             return "raspisanie_block_ordered"
         elif (self.get_logic_status() == CellStatuses.passed):
-            return "raspisanie_block_passed"
+            return "raspisanie_block_passed_time"
         elif (self.get_logic_status() == CellStatuses.empty):
             return "raspisanie_block_empty"
     
@@ -110,6 +110,7 @@ class DateLogic():
     left = Weekday.monday.value
     right = Weekday.sunday.value
     weekdays = []
+    
     def get_date_interval(self):
         result = session.query(TimeIntervalObjects).all()
         return result

@@ -1,3 +1,11 @@
+:root {
+    --success : rgb(118, 255, 94);
+    --success-dark : rgb(24, 153, 2);
+    --success-light : rgb(106, 175, 3);
+    --passed: rgb(205, 205, 205);
+    --problem: #d2a937;
+}
+
 .table_head_row {
     flex-direction: column;
 }
@@ -6,9 +14,15 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: left;
 }
-
+.right_part {
+    margin-left: 30px;
+}
+.calendar_nav {
+    display: flex;
+    gap: 20px;
+}
 .timetable table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
@@ -34,26 +48,64 @@
 }
 
 .raspisanie_block_payed {
-    background: rgb(118, 255, 94);
+    background: var(--success);
 }
 
 .raspisanie_block_passed_time {
-    background: rgb(205, 205, 205);
+    background: var(--passed);
     cursor: default;
 }
 
 
 .raspisanie_block_empty:hover {
-    background: rgb(106, 175, 3);
+    background: var(--success-light);
     color: white;
 }
 
 .raspisanie_block_payed:hover {
-    background: rgb(24, 153, 2);
+    background: var(--success-dark);
     color: white;
 }
 
 .raspisanie_block_ordered:hover {
-    background: #d2a937;
+    background: var(--problem);
     color: white;
+}
+
+.timetable > table {
+    max-width: 1000px;
+    overflow-x: scroll;
+}
+
+.dialog {
+    z-index: 999999;
+    position: fixed;
+    padding: 50px;
+}
+
+.dialog_top_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.change_button {
+    background: var(--success-dark);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 15px;
+    font-size: 18px;
+}
+
+.button_row {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.order_info {
+    list-style-type: none;
+    margin-left: 0px;
+    padding-left: 0px;
 }

@@ -1,7 +1,30 @@
 <head>
     <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.min.css" rel="stylesheet">
 </head>
 <body>
+    <dialog class="dialog">
+        <div class="dialog_containter">
+            <div class="dialog_top_row">
+                <h3 class="dialog_title">Информация о брони</h3>
+                <div class="close_button">x</div>
+            </div>
+            <ul class="order_info">
+                <li> <span>Дата и время начала брони:</span> <span><input type="date" value="2023-10-30 9.00"></span> </li>
+                <li> <span>Дата и время окончания брони:</span> <span>2023-10-30 11.30</span> </li>
+                <li> <span>Статус:</span> <span>Оплачен</span> </li>
+                <li> <span>Клиент:</span> <span>Иван Сергеевич Иванов</span> </li>
+                <li> <span>Есть аккаунт в битрикс:</span> <span>Да</span></li>
+                <li> <span>Ссылка на трансялцию:</span> <span> Нажмите сюда </span></li>
+            </ul>
+            <div class="button_row">
+                <button class="change_button" type="button"> 
+                    Изменить
+                </button>
+            </div>
+        </div>
+    </dialog>
     <section class="timetable">
         <table>
             <tr>
@@ -25,7 +48,29 @@
                 {% endif %}
             {% endfor %}
         </table>
+        <div class="right_part">
+            <div class="calendar_nav">
+                <div class="calendar_block">
+                    <p>Дата от:</p>
+                    <div id="from_calendar"></div>
+                </div>
+                <div class="calendar_block">
+                    <p>Дата до:</p>
+                    <div id="to_calendar"></div>
+                </div>
+                <div class="cort_choose_block">
+                    <p>Корт:</p>
+                    <select>
+                        <option value="1">Корт №1</option>
+                        <option value="2">Корт №2</option>
+                        <option value="3">Корт №3</option>
+                        <option value="4">Корт №4</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
     </section>
 
-    <script src="/script.js"></script>
+    <script src="{{ url_for('static', path='/script.js') }}"></script>
 </body>
