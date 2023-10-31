@@ -1,0 +1,23 @@
+<dialog open class="dialog">
+    <div class="dialog_containter">
+        <div class="dialog_top_row">
+            <h3 class="dialog_title">Добавить новый элемент расписания</h3>
+            <div class="dialog_close_button" onclick="close_modal(this)">x</div>
+        </div>
+        <ul class="order_info">
+            <li> <span>Дата и время начала брони:</span> <input id="modal_start_time" readonly value="{{start_time}}"> </li>
+            <li> <span>Дата и время окончания брони:</span> <input id="modal_end_time" readonly value="{{end_time}}"> </li>
+            <li> <span>Статус:</span> <select> <option value="1"> Оплачен</option> <option value="2">Ожидает оплаты</option> </select> </li>
+            <li> <span>Клиент:</span> <input type="text" value=""> </li>
+            <li> <span>Телефон:</span> <input type="text" value=""> </li>
+            <li> <span>Есть аккаунт в битрикс:</span>  <input type="checkbox"> </li>
+            <li> <span>Есть аккаунт в битрикс:</span>  <input type="text"> </li>
+            <li> <span>Ссылка на трансялцию:</span> <span> Нажмите сюда </span></li>
+        </ul>
+        <div class="button_row">
+            <button class="change_button" type="button"> 
+                Изменить
+            </button>
+        </div>
+    </div>
+</dialog>
