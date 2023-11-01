@@ -6,6 +6,7 @@ from sqlalchemy import  Column, Integer, String, Date, Boolean, Time, ForeignKey
 from sqlalchemy.ext.declarative import declared_attr
 import datetime
 
+
 SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
 
 

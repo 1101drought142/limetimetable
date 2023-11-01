@@ -3,7 +3,9 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from datelogic import DateLogic
-from request_handlers import GetAddNewBlockModalTemplate
+from database import Order
+from request_handlers import GetAddNewBlockModalTemplate, CreateNewTimeBlockTemplate
+
 templates = Jinja2Templates(directory="templates")
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -19,4 +21,9 @@ def get_time_table (request: Request):
 
 @app.post("/api/server/v1/get_create_modal_template/", response_class=HTMLResponse)
 def create_modal(request: Request, request_data: GetAddNewBlockModalTemplate):
+    return request_data.return_html_template(request, templates)
+
+@app.post("/api/server/v1/create_raspisanie_object/", response_class=HTMLResponse)
+def create_modal(request: Request, request_data: CreateNewTimeBlockTemplate):
+    request_data.validate_data_and_create_model()
     return request_data.return_html_template(request, templates)

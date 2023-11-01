@@ -39,14 +39,42 @@ function renew_datetime_pickers_in_modals(){
                 console.log(temp_time)
                 temp_time = `${(+temp_time.split(":")[0] + 1)}:${temp_time.split(":")[1]}` 
             }
-            console.log(temp_time)
-            console.log(jQuery('#modal_start_time').val().split(" "))
             this.setOptions({
                 minDate:jQuery('#modal_start_time').val()?jQuery('#modal_start_time').val():false,
                 minTime:temp_time?temp_time:"9:00",
             })
         },
     });
+}
+function create_new_event(){
+    let request = {
+        "date_start": document.getElementById("modal_start_time").value,
+        "date_end" : document.getElementById("modal_end_time").value,
+        "status" : document.getElementById("modal_status").value,
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/server/v1/create_raspisanie_object/');
+    xhr.setRequestHeader("Content-Type", "application/json;");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                let response = xhr.responseText;
+                if (response.success === false) {
+                    console.log("error")
+                } else {
+                    console.log("success")
+                    console.log(response)
+
+                    // let container = document.querySelector(".modals");
+                    // container.innerHTML = response;
+                    // renew_datetime_pickers_in_modals();
+                }
+            } else {
+                console.error('Ошибка запроса:', xhr.status);
+            }
+        }
+    };
+    xhr.send(JSON.stringify(request));
 }
 function show_modal(date, time){
     let request = {
