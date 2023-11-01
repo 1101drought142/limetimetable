@@ -21,17 +21,16 @@ class OrderValidator():
 
     def validate_and_create(self) -> bool:
         if (self.starttime >= self.endtime):
-            raise ValueError("Invalid time given")
+            raise ValueError("Время окончания раньше времени начала")
         if (self.starttime < datetime.time(8, 0, 0) or self.endtime > datetime.time(22, 0, 0)):
-            raise ValueError("Invalid time given")
+            raise ValueError("Время не попадает в интервал работы корта")
        
         objects = get_order_objects()
         for object, starttime, endtime in objects:
 
             if (object.date == self.date):
-
                 if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
-                    raise ValueError("Invalid time given")
+                    raise ValueError("Время совпадает с занятым временем")
                 
         if (create_new_object(self.date, self.starttime, self.endtime, False)):
             return True

@@ -8,24 +8,6 @@ new AirDatepicker('#from_calendar', {
 
 $.datetimepicker.setLocale('ru');
 function renew_datetime_pickers_in_modals(){
-    // $('#modal_start_time').datetimepicker({
-    //     lang: "ru",
-    //     format: base_format,
-    //     step: 30,
-    //     minTime:'8:00',
-    //     maxTime: '22:30',
-    //     onShow:function( ct ){
-    //         let temp_time = '';
-    //         if (jQuery('#modal_end_time').val()){
-    //             temp_time = jQuery('#modal_end_time').val().split(" ")[1];
-    //             temp_time = `${(+temp_time.split(":")[0] - 1)}:${temp_time.split(":")[1]}` 
-    //         }
-    //         this.setOptions({
-    //             maxDate:jQuery('#modal_end_time').val()?jQuery('#modal_end_time').val():false,
-    //             maxTime:temp_time?temp_time:"22:30",
-    //         })
-    //     },
-    // });
     $('#modal_end_time').datetimepicker({
         lang: "ru",
         format: base_format,
@@ -41,6 +23,7 @@ function renew_datetime_pickers_in_modals(){
             }
             this.setOptions({
                 minDate:jQuery('#modal_start_time').val()?jQuery('#modal_start_time').val():false,
+                maxDate:jQuery('#modal_start_time').val()?jQuery('#modal_start_time').val():false,
                 minTime:temp_time?temp_time:"9:00",
             })
         },
@@ -55,22 +38,16 @@ function create_new_event(){
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/server/v1/create_raspisanie_object/');
     xhr.setRequestHeader("Content-Type", "application/json;");
+    xhr.responseType = 'json';
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
-                let response = xhr.responseText;
-                if (response.success === false) {
-                    console.log("error")
-                } else {
-                    console.log("success")
-                    console.log(response)
-
-                    // let container = document.querySelector(".modals");
-                    // container.innerHTML = response;
-                    // renew_datetime_pickers_in_modals();
-                }
+                document.querySelector(".dialog").close()
             } else {
                 console.error('Ошибка запроса:', xhr.status);
+                let response = xhr.response;
+
+                document.querySelector(".error_text").textContent = response.error;
             }
         }
     };
@@ -88,16 +65,9 @@ function show_modal(date, time){
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
                 let response = xhr.responseText;
-                if (response.success === false) {
-                    console.log("error")
-                } else {
-                    console.log("success")
-                    console.log(response)
-
-                    let container = document.querySelector(".modals");
-                    container.innerHTML = response;
-                    renew_datetime_pickers_in_modals();
-                }
+                let container = document.querySelector(".modals");
+                container.innerHTML = response;
+                renew_datetime_pickers_in_modals();
             } else {
                 console.error('Ошибка запроса:', xhr.status);
             }
@@ -118,3 +88,9 @@ document.querySelectorAll(".raspisanie_block_empty").forEach(function (block) {
         show_modal(temp_date, temp_time);
     })
 })
+
+
+var ws = new WebSocket("ws://localhost:8000/ws");
+ws.onmessage = function(event) {
+    document.getElementById("timetable_table").innerHTML = event.data;
+};

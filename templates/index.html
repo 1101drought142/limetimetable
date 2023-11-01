@@ -1,0 +1,36 @@
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/jquery-datetimepicker/jquery.datetimepicker.css"/ >
+    <script src="/static/jquery-datetimepicker/jquery.js"></script>
+    <script src="/static/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+</head>
+<body>
+    <section class="modals">
+        
+    </section>
+    <section class="timetable">
+        {% include 'table.html' %}
+        <div class="right_part">
+            <div class="calendar_nav">
+                <div class="calendar_block">
+                    <p>Диапазон дат:</p>
+                    <input id="from_calendar">
+                </div>
+                <div class="cort_choose_block">
+                    <p>Корт:</p>
+                    <select>
+                        <option value="1">Корт №1</option>
+                        <option value="2">Корт №2</option>
+                        <option value="3">Корт №3</option>
+                        <option value="4">Корт №4</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script src="{{ url_for('static', path='/script.js') }}"></script>
+</body>

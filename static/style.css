@@ -4,6 +4,7 @@
     --success-light : rgb(106, 175, 3);
     --passed: rgb(205, 205, 205);
     --problem: #d2a937;
+    --error: red;
 }
 
 .table_head_row {
@@ -121,4 +122,8 @@ button {
 .dialog_close_button {
     cursor: pointer;
     font-size: 18px;
+}
+
+.error_text {
+    color: var(--error);
 }
