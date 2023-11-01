@@ -1,6 +1,8 @@
 import datetime
-from database import session, Order, TimeIntervalObjects
 from sqlalchemy.orm import aliased
+
+from database import session, Order, TimeIntervalObjects
+from utils import get_order_objects, create_new_object
 
 class OrderValidator():
     def __init__(self, 
@@ -17,20 +19,22 @@ class OrderValidator():
         self.endtime = endtime
         self.date = date
 
-    def validate(self) -> bool:
+    def validate_and_create(self) -> bool:
         if (self.starttime >= self.endtime):
             raise ValueError("Invalid time given")
         if (self.starttime < datetime.time(8, 0, 0) or self.endtime > datetime.time(22, 0, 0)):
             raise ValueError("Invalid time given")
-        starttime_table = aliased(TimeIntervalObjects)
-        endtime_table = aliased(TimeIntervalObjects)
-        objects = session.query(Order, starttime_table, endtime_table).join(starttime_table, Order.starttime == starttime_table.id).join(endtime_table, Order.endtime == endtime_table.id).all()
-
+       
+        objects = get_order_objects()
         for object, starttime, endtime in objects:
 
             if (object.date == self.date):
-                if (self.starttime < starttime.time_object and self.starttime <= endtime.time_object):
-                    pass
-                elif (self.endtime >= starttime.time_object and self.endtime > endtime.time_object):
-                    pass
-        return True
+
+                if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
+                    raise ValueError("Invalid time given")
+                
+        if (create_new_object(self.date, self.starttime, self.endtime, False)):
+            return True
+        else:
+            return False
+    

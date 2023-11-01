@@ -32,10 +32,12 @@ class CreateNewTimeBlockTemplate(BaseModel):
 
     def validate_data_and_create_model(self):
         start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
-        # end_time = datetime.datetime.fromisoformat(self.date_start) 
-        # date = datetime.datetime.fromisoformat(self.date_start)  
-        print(start_time)
- 
+        end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M')
+        #try:
+        OrderValidator("Иван", "8 983 313-70-82", start_time.time(), end_time.time(), start_time.date()).validate_and_create()
+        # except:
+        #     pass
+
     def return_html_template(self, request, templates):
         # start_time = datetime.datetime.fromisoformat(f"{self.date} {self.start_time}") 
         # end_time = start_time + datetime.timedelta(hours=1)

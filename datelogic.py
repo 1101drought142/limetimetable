@@ -3,6 +3,7 @@ import enum
 from sqlalchemy.orm import joinedload, aliased
 
 from database import session, Order, TimeIntervalObjects
+from utils import get_order_objects, Weekday
 
 class CellStatuses(enum.Enum):
     empty = 0
@@ -20,29 +21,7 @@ class CellStatuses(enum.Enum):
         elif (self == CellStatuses.passed):
             return "Время прошло"
         
-class Weekday(enum.Enum):
-    monday = 0
-    tuesday = 1
-    wednesday = 2
-    thursday = 3
-    friday = 4
-    saturday = 5
-    sunday = 6
-    def get_rus_name(self):
-        if (self == Weekday.monday):
-            return "Понедельник"
-        elif (self == Weekday.tuesday):
-            return "Вторник"
-        elif (self == Weekday.wednesday):
-            return "Среда"
-        elif (self == Weekday.thursday):
-            return "Четверг"
-        elif (self == Weekday.friday):
-            return "Пятница"
-        elif (self == Weekday.saturday):
-            return "Суббота"
-        elif (self == Weekday.sunday):
-            return "Воскресенье"
+
 
 class LogicOrder():
     order = None
@@ -136,9 +115,8 @@ class DateLogic():
                     temp_date -= self.step
 
     def insert_data_to_table_from_db(self, result):
-        starttime_table = aliased(TimeIntervalObjects)
-        endtime_table = aliased(TimeIntervalObjects)
-        objects = session.query(Order, starttime_table, endtime_table).join(starttime_table, Order.starttime == starttime_table.id).join(endtime_table, Order.endtime == endtime_table.id).all()
+
+        objects = get_order_objects()
         object_filter_data = {}
         for object, starttime, endtime in objects:
             temp_object = LogicOrder(object, starttime, endtime)
