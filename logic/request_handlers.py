@@ -2,7 +2,8 @@ from abc import abstractmethod
 import datetime
 from pydantic import BaseModel
 from fastapi.templating import Jinja2Templates
-from validators import OrderValidator
+from logic.validators import OrderValidator
+from logic.utils import get_order_object
 
 def datetime_picker_format(date : datetime.datetime):
     return date.strftime("%d-%m-%Y %H:%M")
@@ -25,14 +26,13 @@ class GetAddNewBlockModalTemplate(BaseModel):
         })
     
 class GetChangeModalTemplate(BaseModel):
-    block_id : int
+    block_id : str
     def return_html_template(self, request, templates):
-        start_time = datetime.datetime.fromisoformat(f"{self.date} {self.start_time}") 
-        end_time = start_time + datetime.timedelta(hours=1)
+        object = get_order_object(self.id)
         return templates.TemplateResponse("add_new_block_modal.html", {
             "request": request, 
-            "start_time" :  datetime_picker_format(start_time),
-            "end_time" : datetime_picker_format(end_time),
+            "start_time" :  datetime_picker_format(object.starttime_table.time_object),
+            "end_time" : datetime_picker_format(object.endtime_table.time_object),
         })
     
 class CreateNewTimeBlockTemplate(BaseModel):

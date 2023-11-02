@@ -2,7 +2,7 @@ import datetime
 from sqlalchemy.orm import aliased
 
 from database import session, Order, TimeIntervalObjects
-from utils import get_order_objects, create_new_object
+from logic.utils import get_order_objects, create_new_object
 
 class OrderValidator():
     def __init__(self, 

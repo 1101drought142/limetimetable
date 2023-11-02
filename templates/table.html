@@ -18,6 +18,9 @@
                 {% if cell["time"][outer_loop.index0].get_interval() %} rowspan='{{cell["time"][outer_loop.index0].get_interval()}}' {% endif %} 
                 data-starttime="{{time.time_object.strftime('%H')}}:{{cell['time'][outer_loop.index0].start_time.time_object.strftime('%M')}}" 
                 data-date="{{cell['date']}}" 
+                {% if (cell['time'][outer_loop.index0].order) %}
+                data-orderid="{{cell['time'][outer_loop.index0].order.id}}"
+                {% endif %}
                 title="Посмотреть заказ">{{cell["time"][outer_loop.index0].get_text()}}</td>
                 {% endif %}
             {% endfor %}

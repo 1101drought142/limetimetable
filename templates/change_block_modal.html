@@ -1,0 +1,29 @@
+<dialog open class="dialog">
+    <form class="dialog_containter">
+        <div class="dialog_top_row">
+            <h3 class="dialog_title">Изменить элемент расписания</h3>
+            <div class="dialog_close_button" onclick="close_modal(this)">x</div>
+        </div>
+        <ul class="order_info">
+            <input type="hidden" value="{{order_id}}" id="order_id">
+            <li> <span>Дата и время начала брони:</span> <input id="modal_start_time" readonly value="{{start_time}}"> </li>
+            <li> <span>Дата и время окончания брони:</span> <input id="modal_end_time" readonly value="{{end_time}}"> </li>
+            <li> <span>Статус:</span> <select id="modal_status"> <option value="1"> Оплачен</option> <option value="2">Ожидает оплаты</option> </select> </li>
+            <li> <span>Клиент:</span> <input type="text" value=""> </li>
+            <li> <span>Телефон:</span> <input type="text" value=""> </li>
+            <li> <span>ID клиента в битрикс:</span>  <input type="number"> </li>
+            <li> <span>ID клиента на сайте:</span>  <input type="number"> </li>
+        </ul>
+        <p class="error_text">
+
+        </p>
+        <div class="button_row">
+            <button class="change_button" type="button" onclick="create_new_event()"> 
+                Изменить
+            </button>
+            <button class="delete_button" type="button" onclick="create_new_event()"> 
+                Изменить
+            </button>
+        </div>
+    </form>
+</dialog>

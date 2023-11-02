@@ -28,28 +28,6 @@ function renew_datetime_pickers_in_modals(){
             })
         },
     });
-    function show_modal(date, time){
-        let request = {
-            "start_time": time,
-            "date" : date,
-        }
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', '/api/server/v1/get_create_modal_template/');
-        xhr.setRequestHeader("Content-Type", "application/json;");
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    let response = xhr.responseText;
-                    let container = document.querySelector(".modals");
-                    container.innerHTML = response;
-                    renew_datetime_pickers_in_modals();
-                } else {
-                    console.error('Ошибка запроса:', xhr.status);
-                }
-            }
-        };
-        xhr.send(JSON.stringify(request));
-    }
     
     document.querySelectorAll(".raspisanie_block_empty").forEach(function (block) {
         block.addEventListener("click", function (event) {
@@ -58,8 +36,57 @@ function renew_datetime_pickers_in_modals(){
             show_modal(temp_date, temp_time);
         })
     })
-    
+    document.querySelectorAll(".raspisanie_block_ordered, .raspisanie_block_payed").forEach(function (block) {
+        block.addEventListener("click", function (event) {
+            let id = event.target.dataset.orderid;
+            show_selection_modal(id);
+        })
+    })
 }
+function show_selection_modal(id){
+    let request = {
+        "id" : id
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/server/v1/get_change_modal_template/');
+    xhr.setRequestHeader("Content-Type", "application/json;");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                let response = xhr.responseText;
+                let container = document.querySelector(".modals");
+                container.innerHTML = response;
+                renew_datetime_pickers_in_modals();
+            } else {
+                console.error('Ошибка запроса:', xhr.status);
+            }
+        }
+    };
+    xhr.send(JSON.stringify(request));
+}
+function show_modal(date, time){
+    let request = {
+        "start_time": time,
+        "date" : date,
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/server/v1/get_create_modal_template/');
+    xhr.setRequestHeader("Content-Type", "application/json;");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                let response = xhr.responseText;
+                let container = document.querySelector(".modals");
+                container.innerHTML = response;
+                renew_datetime_pickers_in_modals();
+            } else {
+                console.error('Ошибка запроса:', xhr.status);
+            }
+        }
+    };
+    xhr.send(JSON.stringify(request));
+}
+
 function create_new_event(){
     let request = {
         "date_start": document.getElementById("modal_start_time").value,

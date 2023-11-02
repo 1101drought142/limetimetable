@@ -99,6 +99,15 @@
     font-size: 18px;
 }
 
+.delete_button {
+    background: var(--error);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 15px;
+    font-size: 18px;
+}
+
 .button_row {
     display: flex;
     justify-content: center;

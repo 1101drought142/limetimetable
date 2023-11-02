@@ -3,7 +3,7 @@ import enum
 from sqlalchemy.orm import joinedload, aliased
 
 from database import session, Order, TimeIntervalObjects
-from utils import get_order_objects, Weekday
+from logic.utils import get_order_objects, Weekday
 
 class CellStatuses(enum.Enum):
     empty = 0

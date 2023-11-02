@@ -4,10 +4,18 @@ from sqlalchemy.orm import aliased, Session
 from database import session, engine, Order, TimeIntervalObjects
 
 
+
+
 def get_order_objects():
     starttime_table = aliased(TimeIntervalObjects)
     endtime_table = aliased(TimeIntervalObjects)
     return session.query(Order, starttime_table, endtime_table).join(starttime_table, Order.starttime == starttime_table.id).join(endtime_table, Order.endtime == endtime_table.id).all()
+
+def get_order_object(id: int):
+    starttime_table = aliased(TimeIntervalObjects)
+    endtime_table = aliased(TimeIntervalObjects)
+    return session.query(Order, starttime_table, endtime_table).join(starttime_table, Order.starttime == starttime_table.id).join(endtime_table, Order.endtime == endtime_table.id).filter(Order.id == id).first()
+
 
 def create_new_object(date: datetime.date, starttime: datetime.time, endtime: datetime.time, payed: bool):
     with Session(autoflush=False, bind=engine) as db:
