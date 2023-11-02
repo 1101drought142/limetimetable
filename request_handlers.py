@@ -24,7 +24,17 @@ class GetAddNewBlockModalTemplate(BaseModel):
             "end_time" : datetime_picker_format(end_time),
         })
     
-
+class GetChangeModalTemplate(BaseModel):
+    block_id : int
+    def return_html_template(self, request, templates):
+        start_time = datetime.datetime.fromisoformat(f"{self.date} {self.start_time}") 
+        end_time = start_time + datetime.timedelta(hours=1)
+        return templates.TemplateResponse("add_new_block_modal.html", {
+            "request": request, 
+            "start_time" :  datetime_picker_format(start_time),
+            "end_time" : datetime_picker_format(end_time),
+        })
+    
 class CreateNewTimeBlockTemplate(BaseModel):
     date_start: str
     date_end: str

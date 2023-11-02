@@ -39,14 +39,15 @@ class LogicOrder():
         date_to_check = self.date
         if (self.order and not(self.date)):
             date_to_check = self.order.date
-        if (date_to_check < datetime.date.today() or ( date_to_check == datetime.date.today() and self.start_time.time_object < datetime.datetime.now().time())):
+        if (self.order and self.order.payed):
+            return CellStatuses.payed
+        elif self.order and not(self.order.payed):
+            return CellStatuses.ordered
+        elif (date_to_check < datetime.date.today() or ( date_to_check == datetime.date.today() and self.start_time.time_object < datetime.datetime.now().time())):
             return CellStatuses.passed
         elif not(self.order):
             return CellStatuses.empty
-        elif (self.order.payed):
-            return CellStatuses.payed
-        elif not(self.order.payed):
-            return CellStatuses.ordered
+        
         
     
     def get_interval(self) -> int|bool:

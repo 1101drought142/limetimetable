@@ -28,6 +28,37 @@ function renew_datetime_pickers_in_modals(){
             })
         },
     });
+    function show_modal(date, time){
+        let request = {
+            "start_time": time,
+            "date" : date,
+        }
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/server/v1/get_create_modal_template/');
+        xhr.setRequestHeader("Content-Type", "application/json;");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    let response = xhr.responseText;
+                    let container = document.querySelector(".modals");
+                    container.innerHTML = response;
+                    renew_datetime_pickers_in_modals();
+                } else {
+                    console.error('Ошибка запроса:', xhr.status);
+                }
+            }
+        };
+        xhr.send(JSON.stringify(request));
+    }
+    
+    document.querySelectorAll(".raspisanie_block_empty").forEach(function (block) {
+        block.addEventListener("click", function (event) {
+            let temp_date = event.target.dataset.date;
+            let temp_time = event.target.dataset.starttime;
+            show_modal(temp_date, temp_time);
+        })
+    })
+    
 }
 function create_new_event(){
     let request = {
@@ -41,7 +72,7 @@ function create_new_event(){
     xhr.responseType = 'json';
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
+            if (xhr.status === 201) {
                 document.querySelector(".dialog").close()
             } else {
                 console.error('Ошибка запроса:', xhr.status);
@@ -53,44 +84,16 @@ function create_new_event(){
     };
     xhr.send(JSON.stringify(request));
 }
-function show_modal(date, time){
-    let request = {
-        "start_time": time,
-        "date" : date,
-    }
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/server/v1/get_create_modal_template/');
-    xhr.setRequestHeader("Content-Type", "application/json;");
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                let response = xhr.responseText;
-                let container = document.querySelector(".modals");
-                container.innerHTML = response;
-                renew_datetime_pickers_in_modals();
-            } else {
-                console.error('Ошибка запроса:', xhr.status);
-            }
-        }
-    };
-    xhr.send(JSON.stringify(request));
-}
 
 function close_modal(element){
     let modal = element.closest(".dialog");
     modal.close()
 }
 
-document.querySelectorAll(".raspisanie_block_empty").forEach(function (block) {
-    block.addEventListener("click", function (event) {
-        let temp_date = event.target.dataset.date;
-        let temp_time = event.target.dataset.starttime;
-        show_modal(temp_date, temp_time);
-    })
-})
-
-
-var ws = new WebSocket("ws://localhost:8000/ws");
+var client_id = Date.now()
+var ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
 ws.onmessage = function(event) {
     document.getElementById("timetable_table").innerHTML = event.data;
+    renew_datetime_pickers_in_modals();
 };
+renew_datetime_pickers_in_modals();
