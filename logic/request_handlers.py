@@ -28,11 +28,18 @@ class GetAddNewBlockModalTemplate(BaseModel):
 class GetChangeModalTemplate(BaseModel):
     block_id : str
     def return_html_template(self, request, templates):
-        object = get_order_object(self.id)
-        return templates.TemplateResponse("add_new_block_modal.html", {
+        order_object = get_order_object(int(self.block_id))
+        date = order_object[0].date
+        start_timeinterval = order_object[1].time_object
+        end_timeinterval = order_object[2].time_object
+        start_time = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=start_timeinterval.hour, minute=start_timeinterval.minute)
+        end_time = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=end_timeinterval.hour, minute=end_timeinterval.minute)
+
+
+        return templates.TemplateResponse("change_block_modal.html", {
             "request": request, 
-            "start_time" :  datetime_picker_format(object.starttime_table.time_object),
-            "end_time" : datetime_picker_format(object.endtime_table.time_object),
+            "start_time" :  datetime_picker_format(start_time),
+            "end_time" : datetime_picker_format(end_time),
         })
     
 class CreateNewTimeBlockTemplate(BaseModel):

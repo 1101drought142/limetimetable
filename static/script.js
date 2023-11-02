@@ -28,7 +28,8 @@ function renew_datetime_pickers_in_modals(){
             })
         },
     });
-    
+}
+function renew_cell_click_events() {
     document.querySelectorAll(".raspisanie_block_empty").forEach(function (block) {
         block.addEventListener("click", function (event) {
             let temp_date = event.target.dataset.date;
@@ -45,7 +46,7 @@ function renew_datetime_pickers_in_modals(){
 }
 function show_selection_modal(id){
     let request = {
-        "id" : id
+        "block_id" : id
     }
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/server/v1/get_change_modal_template/');
@@ -121,6 +122,7 @@ var client_id = Date.now()
 var ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
 ws.onmessage = function(event) {
     document.getElementById("timetable_table").innerHTML = event.data;
-    renew_datetime_pickers_in_modals();
+    renew_cell_click_events();
 };
 renew_datetime_pickers_in_modals();
+renew_cell_click_events();
