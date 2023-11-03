@@ -6,7 +6,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from logic.datelogic import DateLogic
 from database import Order
-from logic.request_handlers import GetAddNewBlockModalTemplate, CreateNewTimeBlockTemplate, GetChangeModalTemplate
+from logic.request_handlers import GetAddNewBlockModalTemplate, CreateNewTimeBlockTemplate, GetChangeModalTemplate, DeleteTimeBlockTemplate
 from logic.websockets_connection import ConnectionManager
 
 templates = Jinja2Templates(directory="templates")
@@ -41,12 +41,23 @@ def create_modal(request: Request, request_data: GetAddNewBlockModalTemplate):
 def change_modal(request: Request, request_data: GetChangeModalTemplate):
     return request_data.return_html_template(request, templates)
 
-@app.post("/api/server/v1/create_raspisanie_object/", response_class=HTMLResponse)
+@app.post("/api/server/v1/create_raspisanie_object/", response_class=JSONResponse)
 async def create_modal(request: Request, request_data: CreateNewTimeBlockTemplate):
-    creation_result = request_data.validate_data_and_create_model()
+    creation_result = request_data.validate_data_and_do_sql()
     if (creation_result == True):
         data = DateLogic().create_date_data()
         await manager.broadcast_html( templates.TemplateResponse("table.html", {"request": request, "data": data, "time_range" : DateLogic().get_date_interval()}).body.decode())
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
+    
+
+@app.post("/api/server/v1/delete_raspisanie_object/", response_class=JSONResponse)
+async def create_modal(request: Request, request_data: DeleteTimeBlockTemplate):
+    creation_result = request_data.validate_data_and_do_sql()
+    if (creation_result == True):
+        data = DateLogic().create_date_data()
+        await manager.broadcast_html( templates.TemplateResponse("table.html", {"request": request, "data": data, "time_range" : DateLogic().get_date_interval()}).body.decode() )
+        return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
+    else:    
+        return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)    

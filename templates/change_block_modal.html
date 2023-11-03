@@ -5,7 +5,7 @@
             <div class="dialog_close_button" onclick="close_modal(this)">x</div>
         </div>
         <ul class="order_info">
-            <input type="hidden" value="{{order_id}}" id="order_id">
+            <input type="hidden" value="{{order.id}}" id="order_id">
             <li> <span>Дата и время начала брони:</span> <input id="modal_start_time" readonly value="{{start_time}}"> </li>
             <li> <span>Дата и время окончания брони:</span> <input id="modal_end_time" readonly value="{{end_time}}"> </li>
             <li> <span>Статус:</span> <select id="modal_status"> <option value="1"> Оплачен</option> <option value="2">Ожидает оплаты</option> </select> </li>
@@ -21,7 +21,7 @@
             <button class="change_button" type="button" onclick="create_new_event()"> 
                 Изменить
             </button>
-            <button class="delete_button" type="button" onclick="create_new_event()"> 
+            <button class="delete_button" type="button" onclick="delete_event('{{order.id}}')"> 
                 Удалить запись
             </button>
         </div>
