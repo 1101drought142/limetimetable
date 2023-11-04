@@ -62,8 +62,29 @@ class CreateNewTimeBlockTemplate(BaseModel):
         start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
         end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M')
         try:
-            validator = OrderValidator(self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id)
+            validator = OrderValidator(self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, None)
             if (validator.validate()): validator.create_object()
+        except Exception as ex:
+            return ex
+        return True
+
+class ChangeTimeBlockTemplate(BaseModel):
+    block_id: str
+    date_start: str
+    date_end: str
+    status: bool
+    client_name: str
+    client_phone: str
+    client_mail: str
+    client_bitrix_id: str
+    client_site_id: str
+
+    def validate_data_and_do_sql(self):
+        start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
+        end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M')
+        try:
+            validator = OrderValidator(self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, int(self.block_id))
+            if (validator.validate()): validator.update_object()
         except Exception as ex:
             return ex
         return True

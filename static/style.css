@@ -30,7 +30,7 @@
 }
 
 .timetable th, td {
-    width: 100px;
+    width: 150px;
     height: 40px;
     padding: 10px;
 }
@@ -74,7 +74,7 @@
 }
 
 .timetable > table {
-    max-width: 1000px;
+    max-width: 1500px;
     overflow-x: scroll;
 }
 

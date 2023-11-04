@@ -8,15 +8,15 @@
             <input type="hidden" value="{{order.id}}" id="order_id">
             <li> <span>Дата и время начала брони:</span> <input id="modal_start_time" readonly value="{{start_time}}"> </li>
             <li> <span>Дата и время окончания брони:</span> <input id="modal_end_time" readonly value="{{end_time}}"> </li>
-            <li> <span>Статус:</span> <select id="modal_status"> <option value="1" {% if order.payed == True %} selected {% endif %}> Оплачен</option> <option value="2" {% if order.payed == False %} selected {% endif %}>Ожидает оплаты</option> </select> </li>
-            <li> <span>Клиент:</span> <input type="text" value="{{client.client_name}}"> </li>
-            <li> <span>Телефон:</span> <input type="text" value="{{client.client_phone}}"> </li>
-            <li> <span>Почта:</span> <input type="text" value="{{client.client_mail}}"> </li>
-            <li> <span>ID клиента в битрикс:</span>  <input type="number" value="{{client.client_bitrix_id}}"> </li>
+            <li> <span>Статус:</span> <select id="modal_status"> <option value="True" {% if order.payed == True %} selected {% endif %}> Оплачен</option> <option value="False" {% if order.payed == False %} selected {% endif %}>Ожидает оплаты</option> </select> </li>
+            <li> <span>Клиент:</span> <input type="text" value="{{client.client_name}}" id="client_name"> </li>
+            <li> <span>Телефон:</span> <input type="text" value="{{client.client_phone}}" id="client_phone"> </li>
+            <li> <span>Эл.Почта:</span> <input type="text" value="{{client.client_mail}}" id="client_mail"> </li>
+            <li> <span>ID клиента в битрикс:</span>  <input type="number" value="{{client.client_bitrix_id}}" id="client_bitrix_id"> </li>
             <li> 
                 <span>ID клиента на сайте:</span>  
                 <select id="client_site_id">
-                    <option value="">Выбирете клиента</option>
+                    <option value="">Добавить клиента</option>
                     {% for client_ in clients %}
                         <option value="{{client_.id}}" {% if client.id == client_.id %} selected {% endif %}>{{client_.client_name}} {{client_.client_phone}}</option>
                     {% endfor %}
@@ -27,7 +27,7 @@
 
         </p>
         <div class="button_row">
-            <button class="change_button" type="button" onclick="create_new_event()"> 
+            <button class="change_button" type="button" onclick="edit_event('{{order.id}}')"> 
                 Изменить
             </button>
             <button class="delete_button" type="button" onclick="delete_event('{{order.id}}')"> 

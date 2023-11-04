@@ -1,6 +1,8 @@
 import enum
 import datetime
 from sqlalchemy.orm import aliased, Session
+from sqlalchemy import update
+
 from database import session, engine, Order, TimeIntervalObjects, Client
 
 
@@ -39,7 +41,25 @@ def create_new_object(date: datetime.date, starttime: datetime.time, endtime: da
             client_id = site_id
         db.add(Order( date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id)))
         db.commit()
+        return True
+
+def update_object_db(date: datetime.date, starttime: datetime.time, endtime: datetime.time, payed: bool, client_name:str|None, client_phone: str|None, client_mail: str|None, bitrix_id: str|None, site_id: str|None, block_id:int):
+    with Session(autoflush=False, bind=engine) as db:
+        order = db.query(Order).filter(Order.id == block_id).first()
         
+        time_start = db.query(TimeIntervalObjects).filter(TimeIntervalObjects.time_object == starttime).first()
+        time_end = db.query(TimeIntervalObjects).filter(TimeIntervalObjects.time_object == endtime).first()
+        if not(site_id):
+            client = Client(client_bitrix_id=bitrix_id, client_name=client_name, client_phone=client_phone, client_mail=client_mail)
+            db.add(client)
+            db.commit()
+            client_id = client.id
+        else:
+            client_id = site_id
+            
+        db.execute(update(Order).where(Order.id==order.id).values(date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id)))
+        db.commit()
+
 def get_client_or_raise(id: int) -> bool:
     with Session(autoflush=False, bind=engine) as db:
         timetable_object = db.query(Client).filter(Client.id == id).first()

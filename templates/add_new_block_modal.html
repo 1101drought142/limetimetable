@@ -16,7 +16,7 @@
             <li> 
                 <span>ID клиента на сайте:</span>  
                 <select id="client_site_id">
-                    <option value="">Выбирете клиента</option>
+                    <option value="">Добавить клиента</option>
                     {% for client in clients %}
                         <option value="{{client.id}}">{{client.client_name}} {{client.client_phone}}</option>
                     {% endfor %}

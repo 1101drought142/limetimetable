@@ -143,10 +143,40 @@ function delete_event(orderid){
     };
     xhr.send(JSON.stringify(request));
 }
+function edit_event(orderid){
+    let request = {
+        "block_id": orderid,
+        "date_start": document.getElementById("modal_start_time").value,
+        "date_end" : document.getElementById("modal_end_time").value,
+        "status" : document.getElementById("modal_status").value,
+        "client_name" : document.getElementById("client_name").value,
+        "client_phone" : document.getElementById("client_phone").value,
+        "client_mail" : document.getElementById("client_mail").value,
+        "client_bitrix_id" : document.getElementById("client_bitrix_id").value,
+        "client_site_id" : document.getElementById("client_site_id").value,
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/server/v1/change_raspisanie_object/');
+    xhr.setRequestHeader("Content-Type", "application/json;");
+    xhr.responseType = 'json';
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 201) {
+                document.querySelector(".dialog").close()
+            } else {
+                console.error('Ошибка запроса:', xhr.status);
+                let response = xhr.response;
+                document.querySelector(".error_text").textContent = response.error;
+            }
+        }
+    };
+    xhr.send(JSON.stringify(request));
+}
 
 var client_id = Date.now()
 var ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
 ws.onmessage = function(event) {
+    console.log("test")
     document.getElementById("timetable_table").innerHTML = event.data;
     renew_cell_click_events();
 };
