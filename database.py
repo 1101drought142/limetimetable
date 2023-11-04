@@ -1,9 +1,11 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session
 from sqlalchemy.orm import sessionmaker, relationship, Mapped
-import enum
-from sqlalchemy import  Column, Integer, String, Date, Boolean, Time, ForeignKey
+from sqlalchemy import  Column, Integer, String, Date, Boolean, Time, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.sql import func
+
+import enum
 import datetime
 
 
@@ -57,36 +59,14 @@ class Order(Base):
     __tablename__ = "orders"
     id = Column(Integer, primary_key=True, index=True)
     date = Column(Date)
-    #client = relationship('Client', foreign_keys='Client.user_id')
+    client = Column(Integer, ForeignKey('clients.id'))
     payed = Column(Boolean)
     starttime = Column(Integer, ForeignKey('time_interval_objects.id'))
     endtime = Column(Integer, ForeignKey('time_interval_objects.id'))
-    def __init__(self, date: Date, starttime: int, endtime:int, payed: bool, client_bitrix_id: int|None, client_name: str|None, client_phone: str|None, client_mail: str|None):
-        
-        if (not(client_bitrix_id) and not(client_name and client_mail and client_phone) ):
-            raise ValueError("No client info given")
-        
-        #if (starttime.time_object >= endtime.time_object):
-            #raise ValueError("Invalid time given")
+    time_created = Column(DateTime(timezone=True), server_default=func.now())
 
-        self.date = date
-        self.payed = payed
-        self.starttime = starttime
-        self.endtime = endtime
-
-        if (client_bitrix_id):    
-            self.client_bitrix_id = client_bitrix_id
-        elif (client_name and client_mail and client_phone) :
-            pass
-            # self.client_name = client_name
-            # self.client_phone = client_phone
-            # self.client_mail = client_mail
-
-    def get_interval(self) -> int:
-        return self.starttime.time
     
-
-
+#Order.__table__.drop(engine)
 # Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 

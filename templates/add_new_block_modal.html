@@ -7,11 +7,21 @@
         <ul class="order_info">
             <li> <span>Дата и время начала брони:</span> <input id="modal_start_time" readonly value="{{start_time}}"> </li>
             <li> <span>Дата и время окончания брони:</span> <input id="modal_end_time" readonly value="{{end_time}}"> </li>
-            <li> <span>Статус:</span> <select id="modal_status"> <option value="1"> Оплачен</option> <option value="2">Ожидает оплаты</option> </select> </li>
-            <li> <span>Клиент:</span> <input type="text" value=""> </li>
-            <li> <span>Телефон:</span> <input type="text" value=""> </li>
-            <li> <span>ID клиента в битрикс:</span>  <input type="number"> </li>
-            <li> <span>ID клиента на сайте:</span>  <input type="number"> </li>
+            <li> <span>Статус:</span> <select id="modal_status"> <option value="True"> Оплачен</option> <option value="False">Ожидает оплаты</option> </select> </li>
+            <li> <span>Заполняйте, только если нужно добавить нового клиента! </span></li>
+            <li> <span>Клиент:</span> <input type="text"  id="client_name"> </li>
+            <li> <span>Телефон:</span> <input type="text" id="client_phone"> </li>
+            <li> <span>Почта:</span> <input type="text" id="client_mail"> </li>
+            <li> <span>ID клиента в битрикс:</span>  <input type="number" id="client_bitrix_id"> </li>
+            <li> 
+                <span>ID клиента на сайте:</span>  
+                <select id="client_site_id">
+                    <option value="">Выбирете клиента</option>
+                    {% for client in clients %}
+                        <option value="{{client.id}}">{{client.client_name}} {{client.client_phone}}</option>
+                    {% endfor %}
+                </select>
+            </li>
         </ul>
         <p class="error_text">
 

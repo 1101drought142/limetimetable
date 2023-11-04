@@ -19,7 +19,7 @@ class CellStatuses(enum.Enum):
         elif (self == CellStatuses.ordered):
             return "Неоплачено"
         elif (self == CellStatuses.passed):
-            return "Время прошло"
+            return "Неактивно"
         
 
 
