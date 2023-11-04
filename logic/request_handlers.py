@@ -45,6 +45,7 @@ class GetChangeModalTemplate(BaseModel):
             "end_time" : datetime_picker_format(end_time),
             "order": order,
             "clients": get_clients(),
+            "client" : client,
         })
     
 class CreateNewTimeBlockTemplate(BaseModel):
