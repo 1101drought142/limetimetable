@@ -137,3 +137,10 @@ button {
 .error_text {
     color: var(--error);
 }
+
+.order_info > li > input {
+    width: 100%;
+}
+.order_info > li > select {
+    width: 100%;
+}

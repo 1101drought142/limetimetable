@@ -6,7 +6,7 @@ new AirDatepicker('#from_calendar', {
     autoClose: true,
 })
 
-//$.datetimepicker.setLocale('ru');
+$.datetimepicker.setLocale('ru');
 function renew_datetime_pickers_in_modals(){
     $('#modal_end_time').datetimepicker({
         lang: "ru",
@@ -173,12 +173,32 @@ function edit_event(orderid){
     xhr.send(JSON.stringify(request));
 }
 
+function renew_table() {
+    let request = {
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/server/v1/renew_table/');
+    xhr.setRequestHeader("Content-Type", "application/json;");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                let response = xhr.response;
+                document.getElementById("timetable_table").innerHTML = response;
+                renew_cell_click_events();
+            } else {
+                console.error('Ошибка запроса:', xhr.status);
+            }
+        }
+    };
+    xhr.send(JSON.stringify(request));
+}
+
 var client_id = Date.now()
 var ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
 ws.onmessage = function(event) {
-    console.log("test")
-    document.getElementById("timetable_table").innerHTML = event.data;
-    renew_cell_click_events();
+    //document.getElementById("timetable_table").innerHTML = event.data;
+    renew_table();
+    
 };
 renew_datetime_pickers_in_modals();
 renew_cell_click_events();
