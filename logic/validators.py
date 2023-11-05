@@ -1,8 +1,8 @@
 import datetime
 from sqlalchemy.orm import aliased
 
-from database import session, Order, TimeIntervalObjects
-from logic.utils import get_order_objects, create_new_object, get_client_or_raise, update_object_db, get_corts
+from database import DataBaseFormatedWeekday
+from logic.utils import get_order_objects, create_new_object, get_client_or_raise, update_object_db, get_corts, create_new_repeatative_object
 
 class OrderValidator():
     def __init__(self, 
@@ -102,6 +102,55 @@ class OrderValidator():
             self.block_id,
             self.cort_id
             )):
+            return True
+        else:
+            return False
+        
+
+
+class RepeatativeTaskValidator():
+    def __init__(self,
+        start_time,
+        end_time,
+        description,
+        days,
+        cort_id
+    ) -> None:
+        self.start_time = start_time
+        self.end_time = end_time
+        self.description = description
+        self.days = days
+        self.cort_id = int(cort_id)
+
+    def validate(self) -> bool:
+        self.start_time_format = datetime.datetime.strptime(self.start_time, '%H:%M').time()
+        self.end_time_format = datetime.datetime.strptime(self.end_time, '%H:%M').time()
+        if ( self.start_time_format >  self.end_time_format):
+            raise ValueError("Время начала позже время начала")
+        
+        DataBaseFormatedWeekday.check_if_valid_or_raise(self.days)
+        
+        cort_flag = False
+        corts = get_corts()
+        for cort in corts:
+            if (cort.id == self.cort_id):
+                cort_flag = True
+
+        if not(cort_flag):
+            raise ValueError("Корта с таким id не существует")
+        
+        objects = get_order_objects(self.cort_id)
+        #for object, starttime, endtime in objects:
+            #Переписать проверку
+            # if (object.date == self.date):
+            #     if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
+            #         raise ValueError("Время совпадает с занятым временем")
+
+        #print(DataBaseFormatedWeekday.from_list_to_string(self.days))
+        return True
+
+    def create_object(self):
+        if (create_new_repeatative_object(self.start_time_format, self.end_time_format, self.description, DataBaseFormatedWeekday.from_list_to_string(self.days), self.cort_id)):
             return True
         else:
             return False

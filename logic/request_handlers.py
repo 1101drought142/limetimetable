@@ -2,7 +2,7 @@ from abc import abstractmethod
 import datetime
 from pydantic import BaseModel
 from fastapi.templating import Jinja2Templates
-from logic.validators import OrderValidator
+from logic.validators import OrderValidator, RepeatativeTaskValidator
 from logic.utils import get_order_object, delete_order_object, get_clients, get_corts
 from logic.datelogic import DateLogic
 from database import Weekday
@@ -90,15 +90,29 @@ class ChangeTimeBlockTemplate(BaseModel):
     client_site_id: str
     cort_id: str
     def validate_data_and_do_sql(self):
-        start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
-        end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M')
+        start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M').time()
+        end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M').time()
         try:
             validator = OrderValidator(self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, int(self.block_id), self.cort_id)
             if (validator.validate()): validator.update_object()
         except Exception as ex:
             return ex
         return True
-    
+
+class CreateNewRepeatativeTimeBlockTemplate(BaseModel):
+    time_start: str
+    time_end: str
+    description: str
+    days: list
+    cort_id: str
+    def validate_data_and_do_sql(self):
+        try:
+            validator = RepeatativeTaskValidator(self.time_start, self.time_end, self.description, self.days, self.cort_id)
+            if (validator.validate()): validator.create_object()
+        except Exception as ex:
+            return ex
+        return True
+
 class DeleteTimeBlockTemplate(BaseModel):
     block_id: str
     def validate_data_and_do_sql(self):

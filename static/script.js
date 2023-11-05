@@ -242,7 +242,31 @@ function create_new_event(){
     };
     xhr.send(JSON.stringify(request));
 }
+function create_new_repeatative_event(){
+    let request = {
+        "time_start": document.getElementById("modal_start_time_only").value,
+        "time_end" : document.getElementById("modal_end_time_only").value,
+        "description" : document.getElementById("description").value,
+        "days" :  $('#weekdays').val(),
+        "cort_id" : document.getElementById("cort_modal_id").value,
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/server/v1/create_repeatative_raspisanie_object/');
+    xhr.setRequestHeader("Content-Type", "application/json;");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 201) {
+                document.querySelector(".dialog").close()
+            } else {
+                console.error('Ошибка запроса:', xhr.status);
+                let response = xhr.response;
 
+                document.querySelector(".error_text").textContent = response.error;
+            }
+        }
+    };
+    xhr.send(JSON.stringify(request));
+}
 function renew_table() {
     let request = get_filter();
     let xhr = new XMLHttpRequest();

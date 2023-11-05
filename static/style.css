@@ -6,6 +6,7 @@
     --problem: #d2a937;
     --error: red;
     --repatative_color: skyblue;
+    --repatative_color_hoover: rgb(0, 144, 200);
 }
 
 .table_head_row {
@@ -59,6 +60,9 @@
     cursor: default;
 }
 
+.raspisanie_block_weekly {
+    background: var(--repatative_color);
+}
 
 .raspisanie_block_empty:hover {
     background: var(--success-light);
@@ -74,7 +78,10 @@
     background: var(--problem);
     color: white;
 }
-
+.raspisanie_block_weekly:hover {
+    background: var(--repatative_color_hoover);
+    color: white;
+}
 
 .table_wrapper {
     max-width: 1200px;

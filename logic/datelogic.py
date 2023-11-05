@@ -2,8 +2,8 @@ import datetime
 import enum
 from sqlalchemy.orm import joinedload, aliased
 
-from database import session, Order, TimeIntervalObjects, Weekday
-from logic.utils import get_order_objects
+from database import session, Order, TimeIntervalObjects, Weekday, DataBaseFormatedWeekday
+from logic.utils import get_order_objects, get_repeatative_order_objects
 
 class CellStatuses(enum.Enum):
     empty = 0
@@ -27,14 +27,18 @@ class LogicOrder():
     end_time = None
     hide = False
     date = None
-    def __init__(self, order : Order|None, starttime: TimeIntervalObjects|None, endtime : TimeIntervalObjects|None, date = None) -> None:
+    def __init__(self, order : Order|None, starttime: TimeIntervalObjects|None, endtime : TimeIntervalObjects|None, date = None, repeatative_order = None) -> None:
         self.order = order
         self.start_time = starttime
         self.end_time = endtime
         if (date):
             self.date = date
+        self.repeatative_order = repeatative_order
+
     def get_logic_status(self) -> CellStatuses:
         date_to_check = self.date
+        if (self.repeatative_order):
+            return CellStatuses.weekly
         if (self.order and not(self.date)):
             date_to_check = self.order.date
         if (self.order and self.order.payed):
@@ -49,8 +53,10 @@ class LogicOrder():
         
     
     def get_interval(self) -> int|bool:
-        if (not(self.order)):
+        if (not(self.order) and not(self.repeatative_order)):
             return False
+        if (self.repeatative_order):
+            return self.repeatative_order.endtime - self.repeatative_order.starttime
         if (self.order.endtime - self.order.starttime > 0):
             return self.order.endtime - self.order.starttime
         else:
@@ -65,6 +71,8 @@ class LogicOrder():
             return CellStatuses.passed.get_rus_name()
         elif (self.get_logic_status() == CellStatuses.empty):
             return CellStatuses.empty.get_rus_name()
+        elif (self.get_logic_status() == CellStatuses.weekly):
+            return self.repeatative_order.description
 
     def get_class(self):
         if (self.get_logic_status() == CellStatuses.payed):
@@ -75,6 +83,8 @@ class LogicOrder():
             return "raspisanie_block_passed_time"
         elif (self.get_logic_status() == CellStatuses.empty):
             return "raspisanie_block_empty"
+        elif (self.get_logic_status() == CellStatuses.weekly):
+            return "raspisanie_block_weekly"
     
     def get_unique_key(self):  
         if (self.date):
@@ -119,6 +129,15 @@ class DateLogic():
         for object, starttime, endtime in objects:
             temp_object = LogicOrder(object, starttime, endtime)
             object_filter_data[temp_object.get_unique_key()] = temp_object
+
+        repeatative_objects = get_repeatative_order_objects(cort_id)
+        for object, starttime, endtime in repeatative_objects:
+            for weekday in self.weekdays:
+                for weekday_num in DataBaseFormatedWeekday.format_from_string(object.weekdays):
+                    if (weekday_num.value == weekday.weekday()):
+                        temp_object = LogicOrder(None, starttime, endtime, weekday, object)
+                        object_filter_data[temp_object.get_unique_key()] = temp_object
+
         time_flag = 0
         for day in result:
             for count, time in enumerate(day["time"]):

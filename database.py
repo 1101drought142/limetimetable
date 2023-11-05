@@ -47,22 +47,34 @@ class Weekday(enum.Enum):
         
 
 class DataBaseFormatedWeekday():
-    def __init__(self, weekdays: list[Weekday]) -> None:
-        self.weekdays = weekdays
 
-    def format_to_string(self):
+    def format_to_string(weekdays):
         res_string = ""
-        for weekday in self.weekdays:
+        for weekday in weekdays:
             res_string += f'{weekday.value},'
         return res_string
     
-    def format_from_string(self, string):
+    def format_from_string(string):
         res = []
         raw_array = string.split(",")
         for el in raw_array:
             if (el):
                 res.append(Weekday(int(el)))
         return res
+
+    def from_list_to_string(weekdays):
+        res_string = ""
+        for weekday in weekdays:
+            res_string += f'{weekday},'
+        return res_string
+
+    def check_if_valid_or_raise(weekdays):
+        for weekday in weekdays:
+            try:
+                Weekday(int(weekday))
+            except:
+                raise ValueError("Неправильный день недели")
+
 
 class Cort(Base):
     __tablename__ = "cort"

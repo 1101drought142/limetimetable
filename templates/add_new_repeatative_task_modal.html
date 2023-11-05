@@ -11,7 +11,7 @@
             
             <li> 
                 <span>Дни недели:</span>  
-                <select id="client_site_id" multiple>
+                <select id="weekdays" multiple>
                     {% for weekday in weekdays %}
                         <option value="{{weekday.value}}">{{weekday.get_rus_name()}}</option>
                     {% endfor %}
