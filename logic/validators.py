@@ -2,7 +2,7 @@ import datetime
 from sqlalchemy.orm import aliased
 
 from database import session, Order, TimeIntervalObjects
-from logic.utils import get_order_objects, create_new_object, get_client_or_raise, update_object_db
+from logic.utils import get_order_objects, create_new_object, get_client_or_raise, update_object_db, get_corts
 
 class OrderValidator():
     def __init__(self, 
@@ -16,7 +16,7 @@ class OrderValidator():
         bitrix_id: int|None,
         site_id: int|None, 
         block_id: str|None,
-
+        cort_id: int,
     ):
         self.name = name
         self.phone = phone
@@ -28,6 +28,7 @@ class OrderValidator():
         self.bitrix_id = bitrix_id
         self.site_id = site_id
         self.block_id = block_id
+        self.cort_id = int(cort_id)
 
     def validate(self) -> bool:
 
@@ -41,7 +42,7 @@ class OrderValidator():
         else:
             flag_object_exist = True
 
-        objects = get_order_objects()
+        objects = get_order_objects(self.cort_id)
         for object, starttime, endtime in objects:
             if (object.id == self.block_id):
                 flag_object_exist = True
@@ -49,9 +50,18 @@ class OrderValidator():
             if (object.date == self.date):
                 if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
                     raise ValueError("Время совпадает с занятым временем")
-                
+        
         if (not(flag_object_exist)):
             raise ValueError("Заказа с таким ID нет")
+        
+        cort_flag = False
+        corts = get_corts()
+        for cort in corts:
+            if (cort.id == self.cort_id):
+                cort_flag = True
+
+        if not(cort_flag):
+            raise ValueError("Корта с таким id не существует")
         
         if (not(self.site_id) and not(self.name and self.phone and self.mail)):
             raise ValueError("Нет данных о клиенте")
@@ -71,7 +81,8 @@ class OrderValidator():
             self.phone,
             self.mail,
             self.bitrix_id,
-            self.site_id
+            self.site_id,
+            self.cort_id
             )):
             return True
         else:
@@ -88,7 +99,8 @@ class OrderValidator():
             self.mail,
             self.bitrix_id,
             self.site_id,
-            self.block_id
+            self.block_id,
+            self.cort_id
             )):
             return True
         else:

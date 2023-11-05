@@ -8,10 +8,13 @@ from database import session, engine, Order, TimeIntervalObjects, Client, Cort
 
 
 
-def get_order_objects():
+def get_order_objects(cort_id=None):
     starttime_table = aliased(TimeIntervalObjects)
     endtime_table = aliased(TimeIntervalObjects)
-    return session.query(Order, starttime_table, endtime_table).join(starttime_table, Order.starttime == starttime_table.id).join(endtime_table, Order.endtime == endtime_table.id).all()
+    result = session.query(Order, starttime_table, endtime_table).join(starttime_table, Order.starttime == starttime_table.id).join(endtime_table, Order.endtime == endtime_table.id)
+    if (cort_id):
+        result = result.filter(Order.cort == cort_id)
+    return result.all()
 
 def get_order_object(id: int):
     starttime_table = aliased(TimeIntervalObjects)
@@ -28,7 +31,7 @@ def delete_order_object(id: int) -> bool:
         else:
             raise ValueError("Нет объекта с таким id")
 
-def create_new_object(date: datetime.date, starttime: datetime.time, endtime: datetime.time, payed: bool, client_name:str|None, client_phone: str|None, client_mail: str|None, bitrix_id: str|None, site_id: str|None):
+def create_new_object(date: datetime.date, starttime: datetime.time, endtime: datetime.time, payed: bool, client_name:str|None, client_phone: str|None, client_mail: str|None, bitrix_id: str|None, site_id: str|None, cort_id:int):
     with Session(autoflush=False, bind=engine) as db:
         time_start = db.query(TimeIntervalObjects).filter(TimeIntervalObjects.time_object == starttime).first()
         time_end = db.query(TimeIntervalObjects).filter(TimeIntervalObjects.time_object == endtime).first()
@@ -39,11 +42,11 @@ def create_new_object(date: datetime.date, starttime: datetime.time, endtime: da
             client_id = client.id
         else:
             client_id = site_id
-        db.add(Order( date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id)))
+        db.add(Order( date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id), cort=cort_id))
         db.commit()
         return True
 
-def update_object_db(date: datetime.date, starttime: datetime.time, endtime: datetime.time, payed: bool, client_name:str|None, client_phone: str|None, client_mail: str|None, bitrix_id: str|None, site_id: str|None, block_id:int):
+def update_object_db(date: datetime.date, starttime: datetime.time, endtime: datetime.time, payed: bool, client_name:str|None, client_phone: str|None, client_mail: str|None, bitrix_id: str|None, site_id: str|None, block_id:int, cort_id:int):
     with Session(autoflush=False, bind=engine) as db:
         order = db.query(Order).filter(Order.id == block_id).first()
         
@@ -57,7 +60,7 @@ def update_object_db(date: datetime.date, starttime: datetime.time, endtime: dat
         else:
             client_id = site_id
             
-        db.execute(update(Order).where(Order.id==order.id).values(date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id)))
+        db.execute(update(Order).where(Order.id==order.id).values(date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id), cort=cort_id))
         db.commit()
 
 def get_client_or_raise(id: int) -> bool:

@@ -6,7 +6,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from logic.datelogic import DateLogic
 from database import Order
-from logic.request_handlers import GetAddNewBlockModalTemplate, CreateNewTimeBlockTemplate, GetChangeModalTemplate, DeleteTimeBlockTemplate, ChangeTimeBlockTemplate, GetFilteredTable
+from logic.request_handlers import GetAddNewBlockModalTemplate, CreateNewTimeBlockTemplate, GetChangeModalTemplate, DeleteTimeBlockTemplate, ChangeTimeBlockTemplate, GetFilteredTable, GetAddNewRepeatativeBlockModalTemplate
 from logic.websockets_connection import ConnectionManager
 from logic.utils import get_corts
 
@@ -18,7 +18,7 @@ manager = ConnectionManager()
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
-    data = DateLogic().create_date_data()
+    data = DateLogic().create_date_data(cort_id=1)
     corts = get_corts()
     return templates.TemplateResponse("index.html", {"request": request, "data": data, "time_range" : DateLogic().get_date_interval(), "corts": corts})
 
@@ -41,6 +41,11 @@ def create_modal(request: Request, request_data: GetAddNewBlockModalTemplate):
 
 @app.post("/api/server/v1/get_change_modal_template/", response_class=HTMLResponse)
 def change_modal(request: Request, request_data: GetChangeModalTemplate):
+    return request_data.return_html_template(request, templates)
+
+
+@app.post("/api/server/v1/get_create_repeatative_modal_template/", response_class=HTMLResponse)
+def create_repeatative_modal(request: Request, request_data: GetAddNewRepeatativeBlockModalTemplate):
     return request_data.return_html_template(request, templates)
 
 @app.post("/api/server/v1/create_raspisanie_object/", response_class=JSONResponse)

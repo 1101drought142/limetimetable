@@ -1,0 +1,38 @@
+<dialog open class="dialog">
+    <form class="dialog_containter">
+        <div class="dialog_top_row">
+            <h3 class="dialog_title">Добавить элемент расписания</h3>
+            <div class="dialog_close_button" onclick="close_modal(this)">x</div>
+        </div>
+        <ul class="order_info">
+            <li> <span>Время начала:</span> <input id="modal_start_time_only" value="{{start_time}}"> </li>
+            <li> <span>Время окончания:</span> <input id="modal_end_time_only" value="{{end_time}}"> </li>
+            <li> <span>Описание:</span> <textarea type="text"  id="description"> </textarea></li>
+            
+            <li> 
+                <span>Дни недели:</span>  
+                <select id="client_site_id" multiple>
+                    {% for weekday in weekdays %}
+                        <option value="{{weekday.value}}">{{weekday.get_rus_name()}}</option>
+                    {% endfor %}
+                </select>
+            </li>
+            <li> 
+                <span>Корт:</span>  
+                <select id="cort_modal_id">
+                    {% for cort in corts %}
+                        <option value="{{cort.id}}">{{cort.name}}</option>
+                    {% endfor %}
+                </select>
+            </li>
+        </ul>
+        <p class="error_text">
+
+        </p>
+        <div class="button_row">
+            <button class="change_button" type="button" onclick="create_new_repeatative_event()"> 
+                Добавить
+            </button>
+        </div>
+    </form>
+</dialog>

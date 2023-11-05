@@ -113,8 +113,8 @@ class DateLogic():
                 else:
                     temp_date -= self.step
 
-    def insert_data_to_table_from_db(self, result):
-        objects = get_order_objects()
+    def insert_data_to_table_from_db(self, result, cort_id=None):
+        objects = get_order_objects(cort_id)
         object_filter_data = {}
         for object, starttime, endtime in objects:
             temp_object = LogicOrder(object, starttime, endtime)
@@ -139,7 +139,7 @@ class DateLogic():
             temp_date += self.step
                
 
-    def create_date_data(self, start_date=None, end_date=None):
+    def create_date_data(self, start_date=None, end_date=None, cort_id=None):
         if (start_date and end_date):
             self.get_interval(start_date, end_date)
         else:
@@ -153,5 +153,5 @@ class DateLogic():
                     LogicOrder(None, time, None, date)
                 )
             result.append(temp_column)
-        self.insert_data_to_table_from_db(result)
+        self.insert_data_to_table_from_db(result, cort_id)
         return result

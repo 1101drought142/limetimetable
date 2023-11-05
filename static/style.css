@@ -5,6 +5,7 @@
     --passed: rgb(205, 205, 205);
     --problem: #d2a937;
     --error: red;
+    --repatative_color: skyblue;
 }
 
 .table_head_row {
@@ -145,4 +146,19 @@ button {
 }
 .order_info > li > select {
     width: 100%;
+}
+.order_info > li > textarea {
+    width: 100%;
+}
+.add_new_repeatative_task_wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+.add_new_repeatative_task_button {
+    color: white;
+    background: var(--repatative_color);
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
 }

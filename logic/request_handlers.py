@@ -3,8 +3,9 @@ import datetime
 from pydantic import BaseModel
 from fastapi.templating import Jinja2Templates
 from logic.validators import OrderValidator
-from logic.utils import get_order_object, delete_order_object, get_clients
+from logic.utils import get_order_object, delete_order_object, get_clients, get_corts
 from logic.datelogic import DateLogic
+from database import Weekday
 
 def datetime_picker_format(date : datetime.datetime):
     return date.strftime("%d-%m-%Y %H:%M")
@@ -22,6 +23,7 @@ class GetAddNewBlockModalTemplate(BaseModel):
             "start_time" :  datetime_picker_format(start_time),
             "end_time" : datetime_picker_format(end_time),
             "clients": get_clients(),
+            "corts" : get_corts(),
         })
     
 class GetChangeModalTemplate(BaseModel):
@@ -44,8 +46,18 @@ class GetChangeModalTemplate(BaseModel):
             "order": order,
             "clients": get_clients(),
             "client" : client,
+            "corts" : get_corts(),
         })
-    
+
+class GetAddNewRepeatativeBlockModalTemplate(BaseModel):
+
+    def return_html_template(self, request, templates):
+        return templates.TemplateResponse("add_new_repeatative_task_modal.html", {
+            "request": request, 
+            "corts" : get_corts(),
+            "weekdays": [e for e in Weekday],
+        })
+
 class CreateNewTimeBlockTemplate(BaseModel):
     date_start: str
     date_end: str
@@ -55,12 +67,12 @@ class CreateNewTimeBlockTemplate(BaseModel):
     client_mail: str
     client_bitrix_id: str
     client_site_id: str
-
+    cort_id: str
     def validate_data_and_do_sql(self):
         start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
         end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M')
         try:
-            validator = OrderValidator(self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, None)
+            validator = OrderValidator(self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, None, self.cort_id)
             if (validator.validate()): validator.create_object()
         except Exception as ex:
             return ex
@@ -76,12 +88,12 @@ class ChangeTimeBlockTemplate(BaseModel):
     client_mail: str
     client_bitrix_id: str
     client_site_id: str
-
+    cort_id: str
     def validate_data_and_do_sql(self):
         start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
         end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M')
         try:
-            validator = OrderValidator(self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, int(self.block_id))
+            validator = OrderValidator(self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, int(self.block_id), self.cort_id)
             if (validator.validate()): validator.update_object()
         except Exception as ex:
             return ex
@@ -106,5 +118,10 @@ class GetFilteredTable(BaseModel):
             end_date = datetime.datetime.strptime(end_date_str, '%d.%m.%Y').date()
         else:
             start_date = end_date = None
-        data = DateLogic().create_date_data(start_date, end_date)
+
+        cort_id = 1
+        if (self.cort_id):
+            cort_id = self.cort_id
+        data = DateLogic().create_date_data(start_date, end_date, cort_id)
         return templates.TemplateResponse("table.html", {"request": request, "data": data, "time_range" : DateLogic().get_date_interval()})
+    
