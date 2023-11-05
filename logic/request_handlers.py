@@ -100,8 +100,11 @@ class GetFilteredTable(BaseModel):
     date_range: str
     cort_id: str
     def return_html_template(self, request, templates):
-        start_date_str, end_date_str = self.date_range.replace(" ", "").split("-")
-        start_date = datetime.datetime.strptime(start_date_str,'%d.%m.%Y').date()
-        end_date = datetime.datetime.strptime(end_date_str, '%d.%m.%Y').date()
+        if (self.date_range):
+            start_date_str, end_date_str = self.date_range.replace(" ", "").split("-")
+            start_date = datetime.datetime.strptime(start_date_str,'%d.%m.%Y').date()
+            end_date = datetime.datetime.strptime(end_date_str, '%d.%m.%Y').date()
+        else:
+            start_date = end_date = None
         data = DateLogic().create_date_data(start_date, end_date)
         return templates.TemplateResponse("table.html", {"request": request, "data": data, "time_range" : DateLogic().get_date_interval()})

@@ -62,14 +62,12 @@
                 <div class="cort_choose_block">
                     <p>Корт:</p>
                     <select id="cort_type_id">
-                        <option value="1">Корт №1</option>
-                        <option value="2">Корт №2</option>
-                        <option value="3">Корт №3</option>
-                        <option value="4">Корт №4</option>
+                        {% for cort in corts %}
+                        <option value="{{cort.id}}">{{cort.name}}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>
-
         </div>
     </section>
 

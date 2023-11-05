@@ -1,12 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session
 from sqlalchemy.orm import sessionmaker, relationship, Mapped
-from sqlalchemy import  Column, Integer, String, Date, Boolean, Time, ForeignKey, DateTime, Enum
+from sqlalchemy import  Column, Integer, String, Date, Boolean, Time, ForeignKey, DateTime, Enum, ARRAY
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.sql import func
 
 import enum
 import datetime
+
 
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
@@ -28,6 +29,40 @@ class Weekday(enum.Enum):
     friday = 4
     saturday = 5
     sunday = 6
+    def get_rus_name(self):
+        if (self == Weekday.monday):
+            return "Понедельник"
+        elif (self == Weekday.tuesday):
+            return "Вторник"
+        elif (self == Weekday.wednesday):
+            return "Среда"
+        elif (self == Weekday.thursday):
+            return "Четверг"
+        elif (self == Weekday.friday):
+            return "Пятница"
+        elif (self == Weekday.saturday):
+            return "Суббота"
+        elif (self == Weekday.sunday):
+            return "Воскресенье"
+        
+
+class DataBaseFormatedWeekday():
+    def __init__(self, weekdays: list[Weekday]) -> None:
+        self.weekdays = weekdays
+
+    def format_to_string(self):
+        res_string = ""
+        for weekday in self.weekdays:
+            res_string += f'{weekday.value},'
+        return res_string
+    
+    def format_from_string(self, string):
+        res = []
+        raw_array = string.split(",")
+        for el in raw_array:
+            if (el):
+                res.append(Weekday(int(el)))
+        return res
 
 class Cort(Base):
     __tablename__ = "cort"
@@ -51,7 +86,7 @@ class Client(Base):
 class TypicalRaspisanieObject(Base):
     __tablename__ = "typical_raspisanie_objects"
     id = Column(Integer, primary_key=True, index=True)
-    weekdays = Column(Enum(Weekday))
+    weekdays = Column(String) # Formated list of Enum Weekdays
     starttime = Column(Integer, ForeignKey('time_interval_objects.id'))
     endtime = Column(Integer, ForeignKey('time_interval_objects.id'))
     description = Column(String)
@@ -70,7 +105,7 @@ class Order(Base):
     time_created = Column(DateTime(timezone=True), server_default=func.now())
 
     
-#Order.__table__.drop(engine)
+#Cort.__table__.drop(engine)
 # Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 

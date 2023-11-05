@@ -3,7 +3,7 @@ import datetime
 from sqlalchemy.orm import aliased, Session
 from sqlalchemy import update
 
-from database import session, engine, Order, TimeIntervalObjects, Client
+from database import session, engine, Order, TimeIntervalObjects, Client, Cort
 
 
 
@@ -71,26 +71,6 @@ def get_client_or_raise(id: int) -> bool:
 def get_clients() -> list:
     return session.query(Client).all()
 
-class Weekday(enum.Enum):
-    monday = 0
-    tuesday = 1
-    wednesday = 2
-    thursday = 3
-    friday = 4
-    saturday = 5
-    sunday = 6
-    def get_rus_name(self):
-        if (self == Weekday.monday):
-            return "Понедельник"
-        elif (self == Weekday.tuesday):
-            return "Вторник"
-        elif (self == Weekday.wednesday):
-            return "Среда"
-        elif (self == Weekday.thursday):
-            return "Четверг"
-        elif (self == Weekday.friday):
-            return "Пятница"
-        elif (self == Weekday.saturday):
-            return "Суббота"
-        elif (self == Weekday.sunday):
-            return "Воскресенье"
+
+def get_corts() -> list:
+    return session.query(Cort).all()

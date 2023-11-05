@@ -8,7 +8,7 @@ from logic.datelogic import DateLogic
 from database import Order
 from logic.request_handlers import GetAddNewBlockModalTemplate, CreateNewTimeBlockTemplate, GetChangeModalTemplate, DeleteTimeBlockTemplate, ChangeTimeBlockTemplate, GetFilteredTable
 from logic.websockets_connection import ConnectionManager
-
+from logic.utils import get_corts
 
 templates = Jinja2Templates(directory="templates")
 app = FastAPI()
@@ -19,7 +19,8 @@ manager = ConnectionManager()
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
     data = DateLogic().create_date_data()
-    return templates.TemplateResponse("index.html", {"request": request, "data": data, "time_range" : DateLogic().get_date_interval()})
+    corts = get_corts()
+    return templates.TemplateResponse("index.html", {"request": request, "data": data, "time_range" : DateLogic().get_date_interval(), "corts": corts})
 
 @app.websocket("/ws/{client_id}")
 async def websocket_endpoint( websocket: WebSocket, client_id: int):

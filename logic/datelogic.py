@@ -2,8 +2,8 @@ import datetime
 import enum
 from sqlalchemy.orm import joinedload, aliased
 
-from database import session, Order, TimeIntervalObjects
-from logic.utils import get_order_objects, Weekday
+from database import session, Order, TimeIntervalObjects, Weekday
+from logic.utils import get_order_objects
 
 class CellStatuses(enum.Enum):
     empty = 0
@@ -21,8 +21,6 @@ class CellStatuses(enum.Enum):
         elif (self == CellStatuses.passed):
             return "Неактивно"
         
-
-
 class LogicOrder():
     order = None
     start_time = None
@@ -116,7 +114,6 @@ class DateLogic():
                     temp_date -= self.step
 
     def insert_data_to_table_from_db(self, result):
-
         objects = get_order_objects()
         object_filter_data = {}
         for object, starttime, endtime in objects:
