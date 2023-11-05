@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session
 from sqlalchemy.orm import sessionmaker, relationship, Mapped
-from sqlalchemy import  Column, Integer, String, Date, Boolean, Time, ForeignKey, DateTime
+from sqlalchemy import  Column, Integer, String, Date, Boolean, Time, ForeignKey, DateTime, Enum
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.sql import func
 
@@ -29,7 +29,10 @@ class Weekday(enum.Enum):
     saturday = 5
     sunday = 6
 
-
+class Cort(Base):
+    __tablename__ = "cort"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
 
 class TimeIntervalObjects(Base):
     __tablename__ = "time_interval_objects"
@@ -44,16 +47,16 @@ class Client(Base):
     client_phone = Column(String)
     client_mail = Column(String)
 
-# class RaspisanieObject(Base):
-#     __abstract__ = True
-#     starttime = relationship('TimeIntervalObjects', foreign_keys='TimeIntervalObjects.id')
-#     endtime = relationship('TimeIntervalObjects', foreign_keys='TimeIntervalObjects.id')
-    
-# class TypicalRaspisanieObject(RaspisanieObject):
-#     __tablename__ = "typical_raspisanie_objects"
-#     id = Column(Integer, primary_key=True, index=True)
-#     weekdays = Column(Enum(Weekday))
-#     description = Column(String)
+
+class TypicalRaspisanieObject(Base):
+    __tablename__ = "typical_raspisanie_objects"
+    id = Column(Integer, primary_key=True, index=True)
+    weekdays = Column(Enum(Weekday))
+    starttime = Column(Integer, ForeignKey('time_interval_objects.id'))
+    endtime = Column(Integer, ForeignKey('time_interval_objects.id'))
+    description = Column(String)
+    cort = Column(Integer, ForeignKey('cort.id'))
+
 
 class Order(Base):
     __tablename__ = "orders"
@@ -63,6 +66,7 @@ class Order(Base):
     payed = Column(Boolean)
     starttime = Column(Integer, ForeignKey('time_interval_objects.id'))
     endtime = Column(Integer, ForeignKey('time_interval_objects.id'))
+    cort = Column(Integer, ForeignKey('cort.id'))
     time_created = Column(DateTime(timezone=True), server_default=func.now())
 
     

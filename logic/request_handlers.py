@@ -4,14 +4,12 @@ from pydantic import BaseModel
 from fastapi.templating import Jinja2Templates
 from logic.validators import OrderValidator
 from logic.utils import get_order_object, delete_order_object, get_clients
+from logic.datelogic import DateLogic
 
 def datetime_picker_format(date : datetime.datetime):
     return date.strftime("%d-%m-%Y %H:%M")
 
-class GenerateModalHTML(BaseModel):
-    @abstractmethod
-    def return_html_template():
-      raise NotImplemented()
+
 
 class GetAddNewBlockModalTemplate(BaseModel):
     start_time : str
@@ -91,10 +89,19 @@ class ChangeTimeBlockTemplate(BaseModel):
     
 class DeleteTimeBlockTemplate(BaseModel):
     block_id: str
-
     def validate_data_and_do_sql(self):
         try:
             delete_order_object(int(self.block_id))
         except Exception as ex:
             return ex
         return True
+    
+class GetFilteredTable(BaseModel):
+    date_range: str
+    cort_id: str
+    def return_html_template(self, request, templates):
+        start_date_str, end_date_str = self.date_range.replace(" ", "").split("-")
+        start_date = datetime.datetime.strptime(start_date_str,'%d.%m.%Y').date()
+        end_date = datetime.datetime.strptime(end_date_str, '%d.%m.%Y').date()
+        data = DateLogic().create_date_data(start_date, end_date)
+        return templates.TemplateResponse("table.html", {"request": request, "data": data, "time_range" : DateLogic().get_date_interval()})

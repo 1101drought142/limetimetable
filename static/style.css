@@ -24,13 +24,14 @@
     display: flex;
     gap: 20px;
 }
+
 .timetable table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
 }
 
 .timetable th, td {
-    width: 150px;
+    min-width: 150px;
     height: 40px;
     padding: 10px;
 }
@@ -73,11 +74,12 @@
     color: white;
 }
 
-.timetable > table {
-    max-width: 1500px;
-    overflow-x: scroll;
-}
 
+.table_wrapper {
+    max-width: 1200px;
+    overflow-x: scroll;
+    border: 1px solid black;
+}
 .dialog {
     z-index: 10;
     position: fixed;

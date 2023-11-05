@@ -133,9 +133,20 @@ class DateLogic():
                 elif (time_flag):
                     time.hide = True
                     time_flag -= 1
-                    
-    def create_date_data(self):
-        self.get_this_week_days()
+    
+    def get_interval(self, start_date, end_date):
+        temp_date = start_date
+        self.weekdays = []
+        while temp_date != end_date + self.step:
+            self.weekdays.append(temp_date)
+            temp_date += self.step
+               
+
+    def create_date_data(self, start_date=None, end_date=None):
+        if (start_date and end_date):
+            self.get_interval(start_date, end_date)
+        else:
+            self.get_this_week_days()
         time_intervals = self.get_date_interval() 
         result = []
         for date in self.weekdays:

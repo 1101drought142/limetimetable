@@ -48,16 +48,20 @@
         
     </section>
     <section class="timetable">
-        {% include 'table.html' %}
+
+        <div class="table_wrapper">
+          {% include 'table.html' %}
+        </div>
+        
         <div class="right_part">
             <div class="calendar_nav">
                 <div class="calendar_block">
                     <p>Диапазон дат:</p>
-                    <input id="from_calendar">
+                    <input id="filter_table_calendar">
                 </div>
                 <div class="cort_choose_block">
                     <p>Корт:</p>
-                    <select>
+                    <select id="cort_type_id">
                         <option value="1">Корт №1</option>
                         <option value="2">Корт №2</option>
                         <option value="3">Корт №3</option>

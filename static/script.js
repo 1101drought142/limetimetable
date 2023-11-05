@@ -1,9 +1,14 @@
 var base_format = 'd-m-Y H:i'
-new AirDatepicker('#from_calendar', {
+new AirDatepicker('#filter_table_calendar', {
     range: true,
     multipleDatesSeparator: ' - ',
     isMobile: true,
     autoClose: true,
+    onSelect({date, formattedDate, datepicker}) {
+        if (formattedDate.length == 2){
+            renew_table();
+        }
+    }
 })
 
 $.datetimepicker.setLocale('ru');
@@ -44,6 +49,11 @@ function renew_cell_click_events() {
         })
     })
 }
+document.querySelectorAll("#cort_type_id").forEach(function (block) {
+    block.addEventListener("change", function (event) {
+        renew_table();
+    })
+})
 function show_selection_modal(id){
     let request = {
         "block_id" : id
@@ -174,10 +184,9 @@ function edit_event(orderid){
 }
 
 function renew_table() {
-    let request = {
-    }
+    let request = get_filter();
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/server/v1/renew_table/');
+    xhr.open('POST', '/api/server/v1/renew_table/');
     xhr.setRequestHeader("Content-Type", "application/json;");
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -192,6 +201,15 @@ function renew_table() {
     };
     xhr.send(JSON.stringify(request));
 }
+
+function get_filter(){
+    let filter = {
+        "date_range" : document.getElementById("filter_table_calendar").value,
+        "cort_id" : document.getElementById("cort_type_id").value,
+    }
+    return filter;
+}
+
 
 var client_id = Date.now()
 var ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
