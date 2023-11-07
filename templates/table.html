@@ -21,6 +21,9 @@
                 {% if (cell['time'][outer_loop.index0].order) %}
                 data-orderid="{{cell['time'][outer_loop.index0].order.id}}"
                 {% endif %}
+                {% if (cell['time'][outer_loop.index0].repeatative_order) %}
+                data-orderid="{{cell['time'][outer_loop.index0].repeatative_order.id}}"
+                {% endif %}
                 title="Посмотреть заказ">{{cell["time"][outer_loop.index0].get_text()}}</td>
                 {% endif %}
             {% endfor %}

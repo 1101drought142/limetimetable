@@ -6,7 +6,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from logic.datelogic import DateLogic
 from database import Order
-from logic.request_handlers import GetAddNewBlockModalTemplate, CreateNewTimeBlockTemplate, GetChangeModalTemplate, DeleteTimeBlockTemplate, ChangeTimeBlockTemplate, GetFilteredTable, GetAddNewRepeatativeBlockModalTemplate, CreateNewRepeatativeTimeBlockTemplate
+from logic.request_handlers import GetAddNewBlockModalTemplate, CreateNewTimeBlockTemplate, GetChangeModalTemplate, DeleteTimeBlockTemplate, ChangeTimeBlockTemplate, GetFilteredTable, GetAddNewRepeatativeBlockModalTemplate, CreateNewRepeatativeTimeBlockTemplate, GetChangeModalTemplate, ChangeRepeatativeTimeBlockTemplate
 from logic.websockets_connection import ConnectionManager
 from logic.utils import get_corts
 
@@ -49,7 +49,7 @@ def create_repeatative_modal(request: Request, request_data: GetAddNewRepeatativ
     return request_data.return_html_template(request, templates)
 
 @app.post("/api/server/v1/get_change_repeatative_modal_template/", response_class=HTMLResponse)
-def create_repeatative_modal(request: Request, request_data: GetAddNewRepeatativeBlockModalTemplate):
+def create_repeatative_modal(request: Request, request_data: GetChangeModalTemplate):
     return request_data.return_html_template(request, templates)
 
 @app.post("/api/server/v1/create_raspisanie_object/", response_class=JSONResponse)
@@ -85,6 +85,15 @@ async def create_repeatative_modal(request: Request, request_data: CreateNewRepe
     creation_result = request_data.validate_data_and_do_sql()
     if (creation_result == True):
         await manager.broadcast_html( "renew" )
+        return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
+    else:    
+        return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
+    
+@app.post("/api/server/v1/change_repeatative_raspisanie_object/", response_class=JSONResponse)
+async def update_modal(request: Request, request_data: ChangeRepeatativeTimeBlockTemplate):
+    creation_result = request_data.validate_data_and_do_sql()
+    if (creation_result == True):
+        await manager.broadcast_html("renew")
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)

@@ -84,6 +84,12 @@ function renew_cell_click_events() {
             show_selection_modal(id);
         })
     })
+    document.querySelectorAll(".raspisanie_block_weekly").forEach(function (block) {
+        block.addEventListener("click", function (event) {
+            let id = event.target.dataset.orderid;
+            show_repeatative_selection_modal(id);
+        })
+    })
     
 }
 document.querySelectorAll("#cort_type_id").forEach(function (block) {
@@ -97,6 +103,27 @@ function show_selection_modal(id){
     }
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/server/v1/get_change_modal_template/');
+    xhr.setRequestHeader("Content-Type", "application/json;");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                let response = xhr.responseText;
+                let container = document.querySelector(".modals");
+                container.innerHTML = response;
+                renew_datetime_pickers_in_modals();
+            } else {
+                console.error('Ошибка запроса:', xhr.status);
+            }
+        }
+    };
+    xhr.send(JSON.stringify(request));
+}
+function show_repeatative_selection_modal(id){
+    let request = {
+        "block_id" : id
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/server/v1/get_change_repeatative_modal_template/');
     xhr.setRequestHeader("Content-Type", "application/json;");
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -261,6 +288,32 @@ function create_new_repeatative_event(){
                 console.error('Ошибка запроса:', xhr.status);
                 let response = xhr.response;
 
+                document.querySelector(".error_text").textContent = response.error;
+            }
+        }
+    };
+    xhr.send(JSON.stringify(request));
+}
+function change_repeatative_event(orderid) {
+    let request = {
+        "block_id": orderid,
+        "time_start": document.getElementById("modal_start_time_only").value,
+        "time_end" : document.getElementById("modal_end_time_only").value,
+        "description" : document.getElementById("description").value,
+        "days" :  $('#weekdays').val(),
+        "cort_id" : document.getElementById("cort_modal_id").value,
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/server/v1/change_repeatative_raspisanie_object/');
+    xhr.setRequestHeader("Content-Type", "application/json;");
+    xhr.responseType = 'json';
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 201) {
+                document.querySelector(".dialog").close()
+            } else {
+                console.error('Ошибка запроса:', xhr.status);
+                let response = xhr.response;
                 document.querySelector(".error_text").textContent = response.error;
             }
         }

@@ -1,0 +1,39 @@
+<dialog open class="dialog">
+    <form class="dialog_containter">
+        <input type="hidden" value="{{repeatative_order.id}}" id="order_id">
+        <div class="dialog_top_row">
+            <h3 class="dialog_title">Изменить элемент расписания</h3>
+            <div class="dialog_close_button" onclick="close_modal(this)">x</div>
+        </div>
+        <ul class="order_info">
+            <li> <span>Время начала:</span> <input id="modal_start_time_only" value="{{start_time}}"> </li>
+            <li> <span>Время окончания:</span> <input id="modal_end_time_only" value="{{end_time}}"> </li>
+            <li> <span>Описание:</span> <textarea type="text"  id="description">{{repeatative_order.description}}</textarea></li>
+            
+            <li> 
+                <span>Дни недели:</span>  
+                <select id="weekdays" multiple>
+                    {% for weekday in weekdays %}
+                        <option value="{{weekday.value}}" {% if weekday in curent_weekdays %} selected {% endif %}>{{weekday.get_rus_name()}}</option>
+                    {% endfor %}
+                </select>
+            </li>
+            <li> 
+                <span>Корт:</span>  
+                <select id="cort_modal_id">
+                    {% for cort in corts %}
+                        <option value="{{cort.id}}" {% if cort.id == repeatative_order.cort %} selected {% endif %}>{{cort.name}}</option>
+                    {% endfor %}
+                </select>
+            </li>
+        </ul>
+        <p class="error_text">
+
+        </p>
+        <div class="button_row">
+            <button class="change_button" type="button" onclick="change_repeatative_event('{{repeatative_order.id}}')"> 
+                Изменить
+            </button>
+        </div>
+    </form>
+</dialog>

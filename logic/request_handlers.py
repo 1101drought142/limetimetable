@@ -3,14 +3,15 @@ import datetime
 from pydantic import BaseModel
 from fastapi.templating import Jinja2Templates
 from logic.validators import OrderValidator, RepeatativeTaskValidator
-from logic.utils import get_order_object, delete_order_object, get_clients, get_corts
+from logic.utils import get_order_object, delete_order_object, get_clients, get_corts, get_repeatative_order_object
 from logic.datelogic import DateLogic
-from database import Weekday
+from database import Weekday, DataBaseFormatedWeekday
 
 def datetime_picker_format(date : datetime.datetime):
     return date.strftime("%d-%m-%Y %H:%M")
 
-
+def time_picker_format(date : datetime.time):
+    return date.strftime("%H:%M")
 
 class GetAddNewBlockModalTemplate(BaseModel):
     start_time : str
@@ -57,6 +58,29 @@ class GetAddNewRepeatativeBlockModalTemplate(BaseModel):
             "corts" : get_corts(),
             "weekdays": [e for e in Weekday],
         })
+    
+class GetChangeModalTemplate(BaseModel):
+    block_id : str
+    def return_html_template(self, request, templates):
+        repeatative_order_object = get_repeatative_order_object(int(self.block_id))
+        repeatative_order, start_time_db, end_time_db = repeatative_order_object
+
+        start_timeinterval = start_time_db.time_object
+        end_timeinterval = end_time_db.time_object
+        start_time = datetime.time(hour=start_timeinterval.hour, minute=start_timeinterval.minute)
+        end_time = datetime.time(hour=end_timeinterval.hour, minute=end_timeinterval.minute)
+
+
+        return templates.TemplateResponse("change_repeatative_task_modal.html", {
+            "request": request, 
+            "start_time" :  time_picker_format(start_time),
+            "end_time" : time_picker_format(end_time),
+            "repeatative_order": repeatative_order,
+            "corts" : get_corts(),
+            "weekdays": [e for e in Weekday],
+            "curent_weekdays": DataBaseFormatedWeekday.format_from_string(repeatative_order.weekdays)
+        })
+    
 
 class CreateNewTimeBlockTemplate(BaseModel):
     date_start: str
@@ -94,6 +118,21 @@ class ChangeTimeBlockTemplate(BaseModel):
         end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M').time()
         try:
             validator = OrderValidator(self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, int(self.block_id), self.cort_id)
+            if (validator.validate()): validator.update_object()
+        except Exception as ex:
+            return ex
+        return True
+
+class ChangeRepeatativeTimeBlockTemplate(BaseModel):
+    block_id: str
+    time_start: str
+    time_end: str
+    description: str
+    days: list
+    cort_id: str
+    def validate_data_and_do_sql(self):
+        try:
+            validator = RepeatativeTaskValidator(self.time_start, self.time_end, self.description, self.days, self.cort_id, self.block_id)
             if (validator.validate()): validator.update_object()
         except Exception as ex:
             return ex

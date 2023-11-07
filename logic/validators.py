@@ -2,7 +2,7 @@ import datetime
 from sqlalchemy.orm import aliased
 
 from database import DataBaseFormatedWeekday
-from logic.utils import get_order_objects, create_new_object, get_client_or_raise, update_object_db, get_corts, create_new_repeatative_object
+from logic.utils import get_order_objects, create_new_object, get_client_or_raise, update_object_db, get_corts, create_new_repeatative_object, update_repeatative_object_db
 
 class OrderValidator():
     def __init__(self, 
@@ -114,13 +114,15 @@ class RepeatativeTaskValidator():
         end_time,
         description,
         days,
-        cort_id
+        cort_id,
+        block_id = None
     ) -> None:
         self.start_time = start_time
         self.end_time = end_time
         self.description = description
         self.days = days
         self.cort_id = int(cort_id)
+        self.block_id = block_id
 
     def validate(self) -> bool:
         self.start_time_format = datetime.datetime.strptime(self.start_time, '%H:%M').time()
@@ -151,6 +153,12 @@ class RepeatativeTaskValidator():
 
     def create_object(self):
         if (create_new_repeatative_object(self.start_time_format, self.end_time_format, self.description, DataBaseFormatedWeekday.from_list_to_string(self.days), self.cort_id)):
+            return True
+        else:
+            return False
+        
+    def update_object(self):
+        if (update_repeatative_object_db(self.block_id, self.start_time_format, self.end_time_format, self.description, DataBaseFormatedWeekday.from_list_to_string(self.days), self.cort_id)):
             return True
         else:
             return False
