@@ -59,7 +59,7 @@ class GetAddNewRepeatativeBlockModalTemplate(BaseModel):
             "weekdays": [e for e in Weekday],
         })
     
-class GetChangeModalTemplate(BaseModel):
+class GetChangeModalRepeatativeTemplate(BaseModel):
     block_id : str
     def return_html_template(self, request, templates):
         repeatative_order_object = get_repeatative_order_object(int(self.block_id))
