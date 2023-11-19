@@ -133,9 +133,8 @@ class RepeatativeTaskValidator():
         self.block_id = block_id
 
     def validate(self) -> bool:
-        self.start_time_format = datetime.datetime.strptime(self.start_time, '%H:%M').time()
-        self.end_time_format = datetime.datetime.strptime(self.end_time, '%H:%M').time()
-        if ( self.start_time_format >  self.end_time_format):
+
+        if ( self.start_time >  self.end_time):
             raise ValueError("Время начала позже время начала")
         
         DataBaseFormatedWeekday.check_if_valid_or_raise(self.days)
@@ -154,28 +153,28 @@ class RepeatativeTaskValidator():
         
         objects = get_order_objects(self.cort_id)
         for object, starttime, endtime in objects:
-            for db_date in DataBaseFormatedWeekday.format_from_string(object.weekdays):
-                if self.date.weekday() == db_date.value:
-                    if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
+            for db_date in self.days:
+                if int(object.date.weekday()) == int(db_date):
+                    if not((self.start_time < starttime.time_object and self.end_time <= starttime.time_object) or (self.start_time >= endtime.time_object and self.end_time > endtime.time_object)):
                         raise ValueError("Время совпадает с занятым временем")
                 
         repeatative_objects = get_repeatative_order_objects(self.cort_id)
         for object, starttime, endtime in repeatative_objects:
             for db_date in DataBaseFormatedWeekday.format_from_string(object.weekdays):
-                if self.date.weekday() == db_date.value:
-                    if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
-                        raise ValueError("Время совпадает с занятым временем")
-        
+                for new_date in self.days:
+                    if int(new_date) == db_date.value:
+                        if not((self.start_time < starttime.time_object and self.end_time <= starttime.time_object) or (self.start_time >= endtime.time_object and self.end_time > endtime.time_object)):
+                            raise ValueError("Время совпадает с занятым временем")
         return True
 
     def create_object(self):
-        if (create_new_repeatative_object(self.start_time_format, self.end_time_format, self.description, DataBaseFormatedWeekday.from_list_to_string(self.days), self.cort_id)):
+        if (create_new_repeatative_object(self.start_time, self.end_time, self.description, DataBaseFormatedWeekday.from_list_to_string(self.days), self.cort_id)):
             return True
         else:
             return False
         
     def update_object(self):
-        if (update_repeatative_object_db(self.block_id, self.start_time_format, self.end_time_format, self.description, DataBaseFormatedWeekday.from_list_to_string(self.days), self.cort_id)):
+        if (update_repeatative_object_db(self.block_id, self.start_time, self.end_time, self.description, DataBaseFormatedWeekday.from_list_to_string(self.days), self.cort_id)):
             return True
         else:
             return False

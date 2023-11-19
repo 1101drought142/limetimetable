@@ -131,8 +131,10 @@ class ChangeRepeatativeTimeBlockTemplate(BaseModel):
     days: list
     cort_id: str
     def validate_data_and_do_sql(self):
+        start_time = datetime.datetime.strptime(self.time_start, '%H:%M')
+        end_time = datetime.datetime.strptime(self.time_end, '%H:%M')
         try:
-            validator = RepeatativeTaskValidator(self.time_start, self.time_end, self.description, self.days, self.cort_id, self.block_id)
+            validator = RepeatativeTaskValidator(start_time.time(), end_time.time(), self.description, self.days, self.cort_id, self.block_id)
             if (validator.validate()): validator.update_object()
         except Exception as ex:
             return ex
@@ -145,8 +147,10 @@ class CreateNewRepeatativeTimeBlockTemplate(BaseModel):
     days: list
     cort_id: str
     def validate_data_and_do_sql(self):
+        start_time = datetime.datetime.strptime(self.time_start, '%H:%M')
+        end_time = datetime.datetime.strptime(self.time_end, '%H:%M')
         try:
-            validator = RepeatativeTaskValidator(self.time_start, self.time_end, self.description, self.days, self.cort_id)
+            validator = RepeatativeTaskValidator(start_time.time(), end_time.time(), self.description, self.days, self.cort_id)
             if (validator.validate()): validator.create_object()
         except Exception as ex:
             return ex

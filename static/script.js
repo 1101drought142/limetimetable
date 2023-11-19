@@ -301,6 +301,7 @@ function create_new_repeatative_event(){
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/server/v1/create_repeatative_raspisanie_object/');
     xhr.setRequestHeader("Content-Type", "application/json;");
+    xhr.responseType = 'json';
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 201) {
@@ -308,12 +309,13 @@ function create_new_repeatative_event(){
             } else {
                 console.error('Ошибка запроса:', xhr.status);
                 let response = xhr.response;
+                var error_text = ""
                 if (response.error == undefined) {
-                    var error_text = "Ошибка запроса";
+                    error_text = "Ошибка запроса";
                 } else {
-                    var error_text = response.error;
+                    error_text = response.error;
                 }
-
+                console.log(error_text)
                 document.querySelector(".error_text").textContent = error_text;
             }
         }
