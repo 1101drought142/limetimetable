@@ -7,6 +7,7 @@ from sqlalchemy.sql import func
 
 import enum
 import datetime
+import bcrypt
 
 
 
@@ -45,6 +46,10 @@ class Weekday(enum.Enum):
         elif (self == Weekday.sunday):
             return "Воскресенье"
         
+class Users(enum.Enum):
+    api = 0
+    manager = 1 
+    superuser = 2
 
 class DataBaseFormatedWeekday():
 
@@ -75,6 +80,13 @@ class DataBaseFormatedWeekday():
             except:
                 raise ValueError("Неправильный день недели")
 
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, index=True)
+    type = Enum(Users)
+    fullname = Column(String)
+    login = Column(String)
+    password = Column(String)
 
 class Cort(Base):
     __tablename__ = "cort"
