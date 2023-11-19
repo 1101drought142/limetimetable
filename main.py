@@ -6,7 +6,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from logic.datelogic import DateLogic
 from database import Order
-from logic.request_handlers import GetAddNewBlockModalTemplate, CreateNewTimeBlockTemplate, GetChangeModalTemplate, DeleteTimeBlockTemplate, ChangeTimeBlockTemplate, GetFilteredTable, GetAddNewRepeatativeBlockModalTemplate, CreateNewRepeatativeTimeBlockTemplate, GetChangeModalTemplate, ChangeRepeatativeTimeBlockTemplate, GetChangeModalRepeatativeTemplate
+from logic.request_handlers import GetAddNewBlockModalTemplate, CreateNewTimeBlockTemplate, GetChangeModalTemplate, DeleteTimeBlockTemplate, ChangeTimeBlockTemplate, GetFilteredTable, GetAddNewRepeatativeBlockModalTemplate, CreateNewRepeatativeTimeBlockTemplate, GetChangeModalTemplate, ChangeRepeatativeTimeBlockTemplate, GetChangeModalRepeatativeTemplate, DeleteRepeatativeTimeBlockTemplate
 from logic.websockets_connection import ConnectionManager
 from logic.utils import get_corts
 
@@ -97,3 +97,12 @@ async def update_modal(request: Request, request_data: ChangeRepeatativeTimeBloc
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
+    
+@app.post("/api/server/v1/delete_repeatative_raspisanie_object/", response_class=JSONResponse)
+async def delete_modal(request: Request, request_data: DeleteRepeatativeTimeBlockTemplate):
+    creation_result = request_data.validate_data_and_do_sql()
+    if (creation_result == True):
+        await manager.broadcast_html("renew")
+        return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
+    else:    
+        return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)    

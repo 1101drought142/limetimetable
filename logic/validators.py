@@ -2,7 +2,7 @@ import datetime
 from sqlalchemy.orm import aliased
 
 from database import DataBaseFormatedWeekday
-from logic.utils import get_order_objects, create_new_object, get_client_or_raise, update_object_db, get_corts, create_new_repeatative_object, update_repeatative_object_db
+from logic.utils import get_order_objects, create_new_object, get_client_or_raise, update_object_db, get_corts, create_new_repeatative_object, update_repeatative_object_db, get_repeatative_order_objects
 
 class OrderValidator():
     def __init__(self, 
@@ -50,6 +50,14 @@ class OrderValidator():
             if (object.date == self.date):
                 if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
                     raise ValueError("Время совпадает с занятым временем")
+                
+        repeatative_objects = get_repeatative_order_objects(self.cort_id)
+        for object, starttime, endtime in repeatative_objects:
+            for db_date in DataBaseFormatedWeekday.format_from_string(object.weekdays):
+                if self.date.weekday() == db_date.value:
+
+                    if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
+                        raise ValueError("Время совпадает с занятым временем")
         
         if (not(flag_object_exist)):
             raise ValueError("Заказа с таким ID нет")
@@ -141,14 +149,23 @@ class RepeatativeTaskValidator():
         if not(cort_flag):
             raise ValueError("Корта с таким id не существует")
         
+        if not(self.days):
+            raise ValueError("Дни недели не выбраны")
+        
         objects = get_order_objects(self.cort_id)
-        #for object, starttime, endtime in objects:
-            #Переписать проверку
-            # if (object.date == self.date):
-            #     if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
-            #         raise ValueError("Время совпадает с занятым временем")
-
-        #print(DataBaseFormatedWeekday.from_list_to_string(self.days))
+        for object, starttime, endtime in objects:
+            for db_date in DataBaseFormatedWeekday.format_from_string(object.weekdays):
+                if self.date.weekday() == db_date.value:
+                    if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
+                        raise ValueError("Время совпадает с занятым временем")
+                
+        repeatative_objects = get_repeatative_order_objects(self.cort_id)
+        for object, starttime, endtime in repeatative_objects:
+            for db_date in DataBaseFormatedWeekday.format_from_string(object.weekdays):
+                if self.date.weekday() == db_date.value:
+                    if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
+                        raise ValueError("Время совпадает с занятым временем")
+        
         return True
 
     def create_object(self):

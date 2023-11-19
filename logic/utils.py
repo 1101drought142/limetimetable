@@ -44,6 +44,16 @@ def delete_order_object(id: int) -> bool:
             return True
         else:
             raise ValueError("Нет объекта с таким id")
+        
+def delete_repatative_order_object(id: int) -> bool:
+    with Session(autoflush=False, bind=engine) as db:
+        timetable_object = db.query(TypicalRaspisanieObject).filter(TypicalRaspisanieObject.id == id).first()
+        if (timetable_object):
+            db.delete(timetable_object)
+            db.commit()
+            return True
+        else:
+            raise ValueError("Нет объекта с таким id")
 
 def create_new_object(date: datetime.date, starttime: datetime.time, endtime: datetime.time, payed: bool, client_name:str|None, client_phone: str|None, client_mail: str|None, bitrix_id: str|None, site_id: str|None, cort_id:int):
     with Session(autoflush=False, bind=engine) as db:
@@ -83,7 +93,6 @@ def create_new_repeatative_object(starttime: datetime.time, endtime: datetime.ti
         time_end = db.query(TimeIntervalObjects).filter(TimeIntervalObjects.time_object == endtime).first()
         db.add(TypicalRaspisanieObject( weekdays=weekdays, starttime=time_start.id, endtime=time_end.id, description=description, cort=cort_id))
         db.commit()
-        print(142124124124)
         return True
 
 def update_repeatative_object_db(block_id: int, starttime: datetime.time, endtime: datetime.time, description: str, weekdays: str, cort_id:int):

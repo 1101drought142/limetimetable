@@ -208,6 +208,27 @@ function delete_event(orderid){
     };
     xhr.send(JSON.stringify(request));
 }
+function delete_repeatative_event(orderid){
+    let request = {
+        "block_id": orderid,
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/server/v1/delete_repeatative_raspisanie_object/');
+    xhr.setRequestHeader("Content-Type", "application/json;");
+    xhr.responseType = 'json';
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 201) {
+                document.querySelector(".dialog").close()
+            } else {
+                console.error('Ошибка запроса:', xhr.status);
+                let response = xhr.response;
+                document.querySelector(".error_text").textContent = response.error;
+            }
+        }
+    };
+    xhr.send(JSON.stringify(request));
+}
 function edit_event(orderid){
     let request = {
         "block_id": orderid,
@@ -287,8 +308,13 @@ function create_new_repeatative_event(){
             } else {
                 console.error('Ошибка запроса:', xhr.status);
                 let response = xhr.response;
+                if (response.error == undefined) {
+                    var error_text = "Ошибка запроса";
+                } else {
+                    var error_text = response.error;
+                }
 
-                document.querySelector(".error_text").textContent = response.error;
+                document.querySelector(".error_text").textContent = error_text;
             }
         }
     };
@@ -314,7 +340,12 @@ function change_repeatative_event(orderid) {
             } else {
                 console.error('Ошибка запроса:', xhr.status);
                 let response = xhr.response;
-                document.querySelector(".error_text").textContent = response.error;
+                if (response.error == undefined) {
+                    var error_text = "Ошибка запроса";
+                } else {
+                    var error_text = response.error;
+                }
+                document.querySelector(".error_text").textContent = error_text;
             }
         }
     };

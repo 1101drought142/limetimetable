@@ -3,7 +3,7 @@ import datetime
 from pydantic import BaseModel
 from fastapi.templating import Jinja2Templates
 from logic.validators import OrderValidator, RepeatativeTaskValidator
-from logic.utils import get_order_object, delete_order_object, get_clients, get_corts, get_repeatative_order_object
+from logic.utils import get_order_object, delete_order_object, get_clients, get_corts, get_repeatative_order_object, delete_repatative_order_object
 from logic.datelogic import DateLogic
 from database import Weekday, DataBaseFormatedWeekday
 
@@ -160,7 +160,16 @@ class DeleteTimeBlockTemplate(BaseModel):
         except Exception as ex:
             return ex
         return True
-    
+
+class DeleteRepeatativeTimeBlockTemplate(BaseModel):
+    block_id: str
+    def validate_data_and_do_sql(self):
+        try:
+            delete_repatative_order_object(int(self.block_id))
+        except Exception as ex:
+            return ex
+        return True
+
 class GetFilteredTable(BaseModel):
     date_range: str
     cort_id: str
