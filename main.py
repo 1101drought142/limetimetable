@@ -106,3 +106,16 @@ async def delete_modal(request: Request, request_data: DeleteRepeatativeTimeBloc
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)    
+    
+
+# @app.get("/api/v1/order_time/", response_class=JSONResponse)
+# async def get_available_time(request: Request, request_data: GetAvailableTime):
+#     pass
+
+# @app.post("/api/v1/order/", response_class=JSONResponse)
+# async def api_create_object(request: Request, request_data: CreateObjectApi):
+#     pass
+
+# @app.post("/api/v1/order_payed/", response_class=JSONResponse)
+# async def api_update_object_payed(request: Request, request_data: UpdateObjectPayedApi):
+#     pass

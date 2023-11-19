@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session
 from sqlalchemy.orm import sessionmaker, relationship, Mapped
-from sqlalchemy import  Column, Integer, String, Date, Boolean, Time, ForeignKey, DateTime, Enum, ARRAY
+from sqlalchemy import  Column, Integer, String, Date, Boolean, Time, ForeignKey, DateTime, Enum, Text
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.sql import func
 
@@ -88,11 +88,17 @@ class User(Base):
     login = Column(String)
     password = Column(String)
 
+class UserLog(Base):
+    __tablename__ = "userlog"
+    id = Column(Integer, primary_key=True, index=True)
+    user = Column(Integer, ForeignKey('users.id'))
+    text = Column(Text)
+
 class Cort(Base):
     __tablename__ = "cort"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
-
+    
 class TimeIntervalObjects(Base):
     __tablename__ = "time_interval_objects"
     id = Column(Integer, primary_key=True, index=True)
@@ -129,7 +135,8 @@ class Order(Base):
     time_created = Column(DateTime(timezone=True), server_default=func.now())
 
     
-#Cort.__table__.drop(engine)
+# User.__table__.drop(engine)
+# UserLog.__table__.drop(engine)
 # Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 
