@@ -12,6 +12,16 @@
     <section class="modals">
         
     </section>
+
+    {% if user %}
+    <section class="login_info">
+        <div class="login_info_wrapper">
+            <p>Вы зарегистрированны как: {{user.fullname}}</p>
+            <a href="/logout/" class="delete_button">Выйти</a>
+        </div>
+    </section>
+    {% endif %}
+    
     <section class="timetable">
 
         <div class="table_wrapper">

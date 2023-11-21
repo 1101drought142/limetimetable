@@ -169,3 +169,20 @@ button {
     border-radius: 10px;
     padding: 10px;
 }
+
+.login_info {
+    width: 100%;
+    text-align: end;
+}
+
+.login_info_wrapper {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin: 20px;
+    gap: 20px;
+}
+
+.login_info_wrapper > p {
+    margin: 0;
+}

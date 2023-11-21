@@ -1,17 +1,5 @@
-from abc import abstractmethod
 import datetime
 from pydantic import BaseModel
-from fastapi.templating import Jinja2Templates
-from logic.validators import OrderValidator, RepeatativeTaskValidator
-from logic.utils import get_order_object, delete_order_object, get_clients, get_corts, get_repeatative_order_object, delete_repatative_order_object
-from logic.datelogic import DateLogic
-from database import Weekday, DataBaseFormatedWeekday
-
-def datetime_picker_format(date : datetime.datetime):
-    return date.strftime("%d-%m-%Y %H:%M")
-
-def time_picker_format(date : datetime.time):
-    return date.strftime("%H:%M")
 
 class GetAddNewBlockModalTemplate(BaseModel):
     start_time : str

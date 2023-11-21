@@ -3,7 +3,7 @@ import datetime
 from sqlalchemy.orm import aliased, Session
 from sqlalchemy import update
 
-from database import session, engine, Order, TimeIntervalObjects, Client, Cort, TypicalRaspisanieObject
+from database import session, engine, Order, TimeIntervalObjects, Client, Cort, TypicalRaspisanieObject, Users, User
 
 
 
@@ -113,6 +113,12 @@ def get_client_or_raise(id: int) -> bool:
         else:
             raise ValueError("Нет клиента с таким id")
         
+def get_user_or_None(username, password) -> Users|None:
+    with Session(autoflush=False, bind=engine) as db:
+        user = db.query(User).filter(User.login == username, User.password == password).first()
+    return user
+
+
 def get_clients() -> list:
     return session.query(Client).all()
 
