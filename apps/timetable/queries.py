@@ -103,3 +103,6 @@ def get_clients(db: Session) -> list:
 
 def get_corts(db: Session) -> list:
     return db.query(user_models.Cort).all()
+
+def get_intervals(db: Session) -> list:
+    return db.query(user_models.TimeIntervalObjects).all()

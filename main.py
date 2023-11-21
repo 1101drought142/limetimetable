@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.encoders import jsonable_encoder
-from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from typing import Annotated, List
@@ -9,14 +8,11 @@ from typing import Annotated, List
 
 from logic.datelogic import DateLogic
 from logic.request_handlers import GetAddNewBlockModalTemplate, CreateNewTimeBlockTemplate, GetChangeModalTemplate, DeleteTimeBlockTemplate, ChangeTimeBlockTemplate, GetFilteredTable, GetAddNewRepeatativeBlockModalTemplate, CreateNewRepeatativeTimeBlockTemplate, GetChangeModalTemplate, ChangeRepeatativeTimeBlockTemplate, GetChangeModalRepeatativeTemplate, DeleteRepeatativeTimeBlockTemplate
-from logic.websockets_connection import ConnectionManager
 from logic.utils import get_corts, get_user_or_None
 from database import Users, User
 
-templates = Jinja2Templates(directory="templates")
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
-manager = ConnectionManager()
 security = HTTPBasic()
 
 def auth(

@@ -1,41 +1,50 @@
-from fastapi import  Request, Depends, APIRouter
+from fastapi import  Request, APIRouter, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.encoders import jsonable_encoder
-from typing import Annotated
+from fastapi.templating import Jinja2Templates
+from sqlalchemy.orm import Session
 
+import timetable.queries as db_query 
+import timetable.handlers as handlers
+from timetable.logic import DateLogic
+from timetable.websockets_connection import ConnectionManager
+from database import get_db
 
 router = APIRouter(prefix='/', tags=['User'])
+templates = Jinja2Templates(directory="templates")
+manager = ConnectionManager()
 
+#user: Annotated[User, Depends(manager_restriction)]
 
-@app.get("/", response_class=HTMLResponse)
-def index(request: Request, user: Annotated[User, Depends(manager_restriction)]):
-    data = DateLogic().create_date_data(cort_id=1)
-    corts = get_corts()
-    return templates.TemplateResponse("index.html", {"request": request, "data": data, "time_range" : DateLogic().get_date_interval(), "corts": corts, "user": user})
+@router.get("/", response_class=HTMLResponse)
+def index(request: Request, db: Session = Depends(get_db)):
+    data = DateLogic.create_date_data(db, cort_id=1)
+    corts = db_query.get_corts(db)
+    return templates.TemplateResponse("index.html", {"request": request, "data": data, "time_range" : db_query.get_intervals(db), "corts": corts})
 
-@app.post("/api/server/v1/renew_table/", response_class=HTMLResponse)
-def get_time_table (request: Request, request_data: GetFilteredTable):
+@router.post("/api/server/v1/renew_table/", response_class=HTMLResponse)
+def get_time_table (request: Request, request_data: handlers.GetFilteredTable):
     return  request_data.return_html_template(request, templates)
 
-@app.post("/api/server/v1/get_create_modal_template/", response_class=HTMLResponse)
-def create_modal(request: Request, request_data: GetAddNewBlockModalTemplate):
+@router.post("/api/server/v1/get_create_modal_template/", response_class=HTMLResponse)
+def create_modal(request: Request, request_data: handlers.GetAddNewBlockModalTemplate):
     return request_data.return_html_template(request, templates)
 
-@app.post("/api/server/v1/get_change_modal_template/", response_class=HTMLResponse)
-def change_modal(request: Request, request_data: GetChangeModalTemplate):
+@router.post("/api/server/v1/get_change_modal_template/", response_class=HTMLResponse)
+def change_modal(request: Request, request_data: handlers.GetChangeModalTemplate):
     return request_data.return_html_template(request, templates)
 
 
-@app.post("/api/server/v1/get_create_repeatative_modal_template/", response_class=HTMLResponse)
-def create_repeatative_modal(request: Request, request_data: GetAddNewRepeatativeBlockModalTemplate):
+@router.post("/api/server/v1/get_create_repeatative_modal_template/", response_class=HTMLResponse)
+def create_repeatative_modal(request: Request, request_data: handlers.GetAddNewRepeatativeBlockModalTemplate):
     return request_data.return_html_template(request, templates)
 
-@app.post("/api/server/v1/get_change_repeatative_modal_template/", response_class=HTMLResponse)
-def create_repeatative_modal(request: Request, request_data: GetChangeModalRepeatativeTemplate):
+@router.post("/api/server/v1/get_change_repeatative_modal_template/", response_class=HTMLResponse)
+def create_repeatative_modal(request: Request, request_data: handlers.GetChangeModalRepeatativeTemplate):
     return request_data.return_html_template(request, templates)
 
-@app.post("/api/server/v1/create_raspisanie_object/", response_class=JSONResponse)
-async def create_modal(request: Request, request_data: CreateNewTimeBlockTemplate):
+@router.post("/api/server/v1/create_raspisanie_object/", response_class=JSONResponse)
+async def create_modal(request: Request, request_data: handlers.CreateNewTimeBlockTemplate):
     creation_result = request_data.validate_data_and_do_sql()
     if (creation_result == True):
         await manager.broadcast_html( "renew" )
@@ -43,8 +52,8 @@ async def create_modal(request: Request, request_data: CreateNewTimeBlockTemplat
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
 
-@app.post("/api/server/v1/delete_raspisanie_object/", response_class=JSONResponse)
-async def delete_modal(request: Request, request_data: DeleteTimeBlockTemplate):
+@router.post("/api/server/v1/delete_raspisanie_object/", response_class=JSONResponse)
+async def delete_modal(request: Request, request_data: handlers.DeleteTimeBlockTemplate):
     creation_result = request_data.validate_data_and_do_sql()
     if (creation_result == True):
         await manager.broadcast_html("renew")
@@ -52,8 +61,8 @@ async def delete_modal(request: Request, request_data: DeleteTimeBlockTemplate):
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)    
 
-@app.post("/api/server/v1/change_raspisanie_object/", response_class=JSONResponse)
-async def update_modal(request: Request, request_data: ChangeTimeBlockTemplate):
+@router.post("/api/server/v1/change_raspisanie_object/", response_class=JSONResponse)
+async def update_modal(request: Request, request_data: handlers.ChangeTimeBlockTemplate):
     creation_result = request_data.validate_data_and_do_sql()
     if (creation_result == True):
         await manager.broadcast_html("renew")
@@ -62,8 +71,8 @@ async def update_modal(request: Request, request_data: ChangeTimeBlockTemplate):
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
     
 
-@app.post("/api/server/v1/create_repeatative_raspisanie_object/", response_class=JSONResponse)
-async def create_repeatative_modal(request: Request, request_data: CreateNewRepeatativeTimeBlockTemplate):
+@router.post("/api/server/v1/create_repeatative_raspisanie_object/", response_class=JSONResponse)
+async def create_repeatative_modal(request: Request, request_data: handlers.CreateNewRepeatativeTimeBlockTemplate):
     creation_result = request_data.validate_data_and_do_sql()
     if (creation_result == True):
         await manager.broadcast_html( "renew" )
@@ -71,8 +80,8 @@ async def create_repeatative_modal(request: Request, request_data: CreateNewRepe
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
     
-@app.post("/api/server/v1/change_repeatative_raspisanie_object/", response_class=JSONResponse)
-async def update_modal(request: Request, request_data: ChangeRepeatativeTimeBlockTemplate):
+@router.post("/api/server/v1/change_repeatative_raspisanie_object/", response_class=JSONResponse)
+async def update_modal(request: Request, request_data: handlers.ChangeRepeatativeTimeBlockTemplate):
     creation_result = request_data.validate_data_and_do_sql()
     if (creation_result == True):
         await manager.broadcast_html("renew")
@@ -80,8 +89,8 @@ async def update_modal(request: Request, request_data: ChangeRepeatativeTimeBloc
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
     
-@app.post("/api/server/v1/delete_repeatative_raspisanie_object/", response_class=JSONResponse)
-async def delete_modal(request: Request, request_data: DeleteRepeatativeTimeBlockTemplate):
+@router.post("/api/server/v1/delete_repeatative_raspisanie_object/", response_class=JSONResponse)
+async def delete_modal(request: Request, request_data: handlers.DeleteRepeatativeTimeBlockTemplate):
     creation_result = request_data.validate_data_and_do_sql()
     if (creation_result == True):
         await manager.broadcast_html("renew")
