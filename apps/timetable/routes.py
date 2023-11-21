@@ -72,7 +72,7 @@ def create_repeatative_modal(request: Request, request_data: handlers.GetAddRepe
     })
 
 @router.post("/api/server/v1/get_change_repeatative_modal_template/", response_class=HTMLResponse)
-def create_repeatative_modal(request: Request, request_data: handlers.GetChangeModalRepeatativeTemplateHandler, db: Session = Depends(get_db)):
+def change_repeatative_modal(request: Request, request_data: handlers.GetChangeModalRepeatativeTemplateHandler, db: Session = Depends(get_db)):
     request_data_result = request_data.get_validated_result(db=db)
     return templates.TemplateResponse("change_repeatative_task_modal.html", {
         "request": request, 
@@ -113,7 +113,7 @@ async def update_modal(request: Request, request_data: handlers.ChangeTimeBlock,
     
 
 @router.post("/api/server/v1/create_repeatative_raspisanie_object/", response_class=JSONResponse)
-async def create_repeatative_modal(request: Request, request_data: handlers.CreateRepeatativeTimeBlock, db: Session = Depends(get_db)):
+async def create_repeatative(request: Request, request_data: handlers.CreateRepeatativeTimeBlock, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
         await manager.broadcast_html( "renew" )
@@ -122,7 +122,7 @@ async def create_repeatative_modal(request: Request, request_data: handlers.Crea
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
     
 @router.post("/api/server/v1/change_repeatative_raspisanie_object/", response_class=JSONResponse)
-async def update_modal(request: Request, request_data: handlers.ChangeRepeatativeTimeBlock, db: Session = Depends(get_db)):
+async def update_repeatative(request: Request, request_data: handlers.ChangeRepeatativeTimeBlock, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
         await manager.broadcast_html("renew")

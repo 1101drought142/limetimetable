@@ -62,8 +62,7 @@ class OrderValidator(BaseTimeBlockValidator):
         else:
             flag_object_exist = True
                 
-        if (not(flag_object_exist)):
-            raise ValueError("Заказа с таким ID нет")
+        
         
         objects = db_query.get_order_objects(self.db, self.cort_id)
         for object, starttime, endtime in objects:
@@ -80,6 +79,9 @@ class OrderValidator(BaseTimeBlockValidator):
                 if self.date.weekday() == db_date.value:
                     if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
                         raise ValueError("Время совпадает с занятым временем")
+
+        if (not(flag_object_exist)):
+            raise ValueError("Заказа с таким ID нет")
 
         if (not(self.site_id) and not(self.name and self.phone and self.mail)):
             raise ValueError("Нет данных о клиенте")
@@ -123,7 +125,7 @@ class RepeatativeTaskValidator(BaseTimeBlockValidator):
 
     def validate_and_get_object_or_raise(self) -> bool:
 
-        self.timevalidation(self.starttime, self.endtime)
+        self.timevalidation(self.start_time, self.end_time)
         self.cortvalidation(self.cort_id)
 
         DataBaseFormatedWeekday.check_if_valid_or_raise(self.days)

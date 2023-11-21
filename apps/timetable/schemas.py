@@ -26,8 +26,8 @@ class AddRepeatativeBlockScheme(BaseScheme):
     weekdays: list
 
 class GetChangeModalRepeatativeScheme(BaseScheme):
-    start_time: datetime.datetime
-    end_time: datetime.datetime
+    start_time: str
+    end_time: str
     repeatative_order: db_models.TypicalRaspisanieObject
     corts: list
     weekdays: list

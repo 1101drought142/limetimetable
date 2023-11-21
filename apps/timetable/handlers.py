@@ -56,7 +56,7 @@ class GetChangeModalRepeatativeTemplateHandler(BaseModel):
 
     def get_validated_result(self, db):
         repeatative_order_object = db_query.get_repeatative_order_object(db, int(self.block_id))
-        repeatative_order, start_time_db, end_time_db, weekdays = repeatative_order_object
+        repeatative_order, start_time_db, end_time_db = repeatative_order_object
         start_timeinterval = start_time_db.time_object
         end_timeinterval = end_time_db.time_object
         start_time = datetime.datetime(year=2021, month=1, day=1, hour=start_timeinterval.hour, minute=start_timeinterval.minute)
@@ -155,10 +155,10 @@ class CreateRepeatativeTimeBlock(BaseModel):
             validator_result = validator.validate_and_get_object_or_raise()
             db_query.create_new_repeatative_object(
                 db, 
-                validator_result.start_time, 
-                validator_result.end_time, 
+                validator_result.starttime, 
+                validator_result.endtime, 
                 validator_result.description, 
-                DataBaseFormatedWeekday.from_list_to_string(validator_result.days), 
+                validator_result.weekdays, 
                 validator_result.cort_id
             )
         except Exception as ex:
@@ -182,10 +182,10 @@ class ChangeRepeatativeTimeBlock(BaseModel):
             db_query.update_repeatative_object_db(
                 db, 
                 validator_result.block_id, 
-                validator_result.start_time, 
-                validator_result.end_time, 
+                validator_result.starttime, 
+                validator_result.endtime, 
                 validator_result.description, 
-                DataBaseFormatedWeekday.from_list_to_string(validator_result.days), 
+                validator_result.weekdays, 
                 validator_result.cort_id
             )
         except Exception as ex:
