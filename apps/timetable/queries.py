@@ -4,6 +4,7 @@ from sqlalchemy import update
 
 import apps.timetable.models as user_models
 
+
 def get_order_objects(db: Session, cort_id=None):
     starttime_table = aliased(user_models.TimeIntervalObjects)
     endtime_table = aliased(user_models.TimeIntervalObjects)

@@ -3,24 +3,27 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
+from typing import Annotated
 
 import apps.timetable.queries as db_query 
 import apps.timetable.handlers as handlers
 from apps.timetable.logic import DateLogic
 from apps.timetable.websockets_connection import ConnectionManager
+from apps.users.logic import authenticate_user
+from apps.users.models import User
+from apps.users.queries import create_log
+
 from database import get_db
 
 router = APIRouter(prefix='', tags=['timetable'])
 templates = Jinja2Templates(directory="templates")
 manager = ConnectionManager()
 
-#user: Annotated[User, Depends(manager_restriction)]
-
 @router.get("/", response_class=HTMLResponse)
-def index(request: Request, db: Session = Depends(get_db)):
+def index(request: Request, user: Annotated[User, Depends(authenticate_user)] , db: Session = Depends(get_db)):
     data = DateLogic().create_date_data(db, cort_id=1)
     corts = db_query.get_corts(db)
-    return templates.TemplateResponse("index.html", {"request": request, "data": data, "time_range" : db_query.get_intervals(db), "corts": corts})
+    return templates.TemplateResponse("index.html", {"request": request, "data": data, "time_range" : db_query.get_intervals(db), "corts": corts, "user": user})
 
 @router.websocket("/ws/{client_id}")
 async def websocket_endpoint( websocket: WebSocket, client_id: int):
@@ -32,13 +35,13 @@ async def websocket_endpoint( websocket: WebSocket, client_id: int):
         manager.disconnect(websocket)
 
 @router.post("/api/server/v1/renew_table/", response_class=HTMLResponse)
-def get_time_table (request: Request, request_data: handlers.GetFilteredTable, db: Session = Depends(get_db)):
+def get_time_table (request: Request, user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.GetFilteredTable, db: Session = Depends(get_db)):
     request_data_result = request_data.get_validated_result(db=db)
     return templates.TemplateResponse("table.html", {"request": request, "data": request_data_result.data, "time_range" : request_data_result.timerange})
 
 
 @router.post("/api/server/v1/get_create_modal_template/", response_class=HTMLResponse)
-def create_modal(request: Request, request_data: handlers.GetAddOrderTemplateHandler, db: Session = Depends(get_db)):
+def create_modal(request: Request, user: Annotated[User, Depends(authenticate_user)], request_data: handlers.GetAddOrderTemplateHandler, db: Session = Depends(get_db)):
     request_data_result = request_data.get_validated_result(db=db)
     return templates.TemplateResponse("add_new_block_modal.html", {
         "request": request, 
@@ -49,7 +52,7 @@ def create_modal(request: Request, request_data: handlers.GetAddOrderTemplateHan
     })
 
 @router.post("/api/server/v1/get_change_modal_template/", response_class=HTMLResponse)
-def change_modal(request: Request, request_data: handlers.GetChangeModalTemplateHandler, db: Session = Depends(get_db)):
+def change_modal(request: Request , user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.GetChangeModalTemplateHandler, db: Session = Depends(get_db)):
     request_data_result = request_data.get_validated_result(db=db)
     return templates.TemplateResponse("change_block_modal.html", {
         "request": request, 
@@ -63,7 +66,7 @@ def change_modal(request: Request, request_data: handlers.GetChangeModalTemplate
 
 
 @router.post("/api/server/v1/get_create_repeatative_modal_template/", response_class=HTMLResponse)
-def create_repeatative_modal(request: Request, request_data: handlers.GetAddRepeatativeBlockModalTemplate, db: Session = Depends(get_db)):
+def create_repeatative_modal(request: Request , user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.GetAddRepeatativeBlockModalTemplate, db: Session = Depends(get_db)):
     request_data_result = request_data.get_validated_result(db=db)
     return templates.TemplateResponse("add_new_repeatative_task_modal.html", {
         "request": request, 
@@ -72,7 +75,7 @@ def create_repeatative_modal(request: Request, request_data: handlers.GetAddRepe
     })
 
 @router.post("/api/server/v1/get_change_repeatative_modal_template/", response_class=HTMLResponse)
-def change_repeatative_modal(request: Request, request_data: handlers.GetChangeModalRepeatativeTemplateHandler, db: Session = Depends(get_db)):
+def change_repeatative_modal(request: Request , user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.GetChangeModalRepeatativeTemplateHandler, db: Session = Depends(get_db)):
     request_data_result = request_data.get_validated_result(db=db)
     return templates.TemplateResponse("change_repeatative_task_modal.html", {
         "request": request, 
@@ -85,27 +88,30 @@ def change_repeatative_modal(request: Request, request_data: handlers.GetChangeM
     })
 
 @router.post("/api/server/v1/create_raspisanie_object/", response_class=JSONResponse)
-async def create_modal(request: Request, request_data: handlers.CreateNewTimeBlock, db: Session = Depends(get_db)):
+async def create_modal(request: Request , user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.CreateNewTimeBlock, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
+        create_log(db, user.id, "Создан новый блок расписания на " + " с " + str(request_data.date_start) + " по " + str(request_data.date_end) + " на корте " + str(request_data.cort_id) + " с оплатой " + str(request_data.status))
         await manager.broadcast_html( "renew" )
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
 
 @router.post("/api/server/v1/delete_raspisanie_object/", response_class=JSONResponse)
-async def delete_modal(request: Request, request_data: handlers.DeleteTimeBlock, db: Session = Depends(get_db)):
+async def delete_modal(request: Request , user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.DeleteTimeBlock, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
+        create_log(db, user.id, "Удален блок расписания с id" + str(request_data.block_id)) 
         await manager.broadcast_html("renew")
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)    
 
 @router.post("/api/server/v1/change_raspisanie_object/", response_class=JSONResponse)
-async def update_modal(request: Request, request_data: handlers.ChangeTimeBlock, db: Session = Depends(get_db)):
+async def update_modal(request: Request , user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.ChangeTimeBlock, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
+        create_log(db, user.id, "Обновлен блок расписания на " + " с " + str(request_data.date_start) + " по " + str(request_data.date_end) + " на корте " + str(request_data.cort_id) + " с оплатой " + str(request_data.status))
         await manager.broadcast_html("renew")
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
@@ -113,7 +119,7 @@ async def update_modal(request: Request, request_data: handlers.ChangeTimeBlock,
     
 
 @router.post("/api/server/v1/create_repeatative_raspisanie_object/", response_class=JSONResponse)
-async def create_repeatative(request: Request, request_data: handlers.CreateRepeatativeTimeBlock, db: Session = Depends(get_db)):
+async def create_repeatative(request: Request , user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.CreateRepeatativeTimeBlock, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
         await manager.broadcast_html( "renew" )
@@ -122,7 +128,7 @@ async def create_repeatative(request: Request, request_data: handlers.CreateRepe
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
     
 @router.post("/api/server/v1/change_repeatative_raspisanie_object/", response_class=JSONResponse)
-async def update_repeatative(request: Request, request_data: handlers.ChangeRepeatativeTimeBlock, db: Session = Depends(get_db)):
+async def update_repeatative(request: Request, user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.ChangeRepeatativeTimeBlock, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
         await manager.broadcast_html("renew")
@@ -131,7 +137,7 @@ async def update_repeatative(request: Request, request_data: handlers.ChangeRepe
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
     
 @router.post("/api/server/v1/delete_repeatative_raspisanie_object/", response_class=JSONResponse)
-async def delete_modal(request: Request, request_data: handlers.DeleteRepeatativeTimeBlock, db: Session = Depends(get_db)):
+async def delete_modal(request: Request, user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.DeleteRepeatativeTimeBlock, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
         await manager.broadcast_html("renew")

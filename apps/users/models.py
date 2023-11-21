@@ -22,3 +22,8 @@ class UserLog(Base):
     id = Column(Integer, primary_key=True, index=True)
     user = Column(Integer, ForeignKey('users.id'))
     text = Column(Text)
+
+class Logins(Base):
+    __tablename__ = "logins"
+    id = Column(Integer, primary_key=True, index=True)
+    user = Column(Integer, ForeignKey('users.id'))
