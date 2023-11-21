@@ -30,7 +30,6 @@ def get_repeatative_order_object(db: Session, id: int):
     endtime_table = aliased(user_models.TimeIntervalObjects)
     return db.query(user_models.TypicalRaspisanieObject, starttime_table, endtime_table).join(starttime_table, user_models.TypicalRaspisanieObject.starttime == starttime_table.id).join(endtime_table, user_models.TypicalRaspisanieObject.endtime == endtime_table.id).filter(user_models.TypicalRaspisanieObject.id == id).first()
 
-
 def delete_order_object(db: Session, id: int) -> bool:
     timetable_object = db.query(user_models.Order).filter(user_models.Order.id == id).first()
     if (timetable_object):

@@ -3,7 +3,6 @@ from sqlalchemy.sql import func
 
 from database import Base
 
-
 class Cort(Base):
     __tablename__ = "cort"
     id = Column(Integer, primary_key=True, index=True)
@@ -22,7 +21,6 @@ class Client(Base):
     client_phone = Column(String)
     client_mail = Column(String)
 
-
 class TypicalRaspisanieObject(Base):
     __tablename__ = "typical_raspisanie_objects"
     id = Column(Integer, primary_key=True, index=True)
@@ -31,7 +29,6 @@ class TypicalRaspisanieObject(Base):
     endtime = Column(Integer, ForeignKey('time_interval_objects.id'))
     description = Column(String)
     cort = Column(Integer, ForeignKey('cort.id'))
-
 
 class Order(Base):
     __tablename__ = "orders"

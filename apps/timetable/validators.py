@@ -5,7 +5,6 @@ import apps.timetable.schemas as schemas
 
 from common_logic import DataBaseFormatedWeekday
 
-
 class BaseTimeBlockValidator():
 
     def timevalidation(self, starttime: datetime.time, endtime: datetime.time):
@@ -62,8 +61,6 @@ class OrderValidator(BaseTimeBlockValidator):
         else:
             flag_object_exist = True
                 
-        
-        
         objects = db_query.get_order_objects(self.db, self.cort_id)
         for object, starttime, endtime in objects:
             if (object.id == self.block_id):
@@ -103,8 +100,6 @@ class OrderValidator(BaseTimeBlockValidator):
             block_id = self.block_id    
         )
         
-
-
 class RepeatativeTaskValidator(BaseTimeBlockValidator):
     def __init__(self,
         db,
@@ -129,7 +124,6 @@ class RepeatativeTaskValidator(BaseTimeBlockValidator):
         self.cortvalidation(self.cort_id)
 
         DataBaseFormatedWeekday.check_if_valid_or_raise(self.days)
-        
         
         if not(self.days):
             raise ValueError("Дни недели не выбраны")

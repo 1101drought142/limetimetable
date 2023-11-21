@@ -56,8 +56,6 @@ class LogicOrder():
         elif not(self.order):
             return CellStatuses.empty
         
-        
-    
     def get_interval(self) -> int|bool:
         if (not(self.order) and not(self.repeatative_order)):
             return False
@@ -159,7 +157,6 @@ class DateLogic():
             self.weekdays.append(temp_date)
             temp_date += self.step
                
-
     def create_date_data(self, db, start_date=None, end_date=None, cort_id=None):
         if (start_date and end_date):
             self.get_interval(start_date, end_date)
