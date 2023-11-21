@@ -8,15 +8,15 @@ from common_logic import DataBaseFormatedWeekday
 
 class BaseTimeBlockValidator():
 
-    def timevalidation(starttime: datetime.time, endtime: datetime.time):
+    def timevalidation(self, starttime: datetime.time, endtime: datetime.time):
         if (starttime >= endtime):
             raise ValueError("Время окончания раньше времени начала")
         if (starttime < datetime.time(8, 0, 0) or endtime > datetime.time(23, 0, 0)):
             raise ValueError("Время не попадает в интервал работы корта")
 
-    def cortvalidation(cort_id: int):
+    def cortvalidation(self, cort_id: int):
         cort_flag = False
-        corts = db_query.get_corts()
+        corts = db_query.get_corts(self.db)
         for cort in corts:
             if (cort.id == cort_id):
                 cort_flag = True
@@ -26,6 +26,7 @@ class BaseTimeBlockValidator():
     
 class OrderValidator(BaseTimeBlockValidator):
     def __init__(self, 
+        db,
         name : str|None,
         phone : str|None,
         mail: str|None,
@@ -38,6 +39,7 @@ class OrderValidator(BaseTimeBlockValidator):
         block_id: str|None,
         cort_id: int,
     ):
+        self.db = db
         self.name = name
         self.phone = phone
         self.mail = mail
@@ -63,7 +65,7 @@ class OrderValidator(BaseTimeBlockValidator):
         if (not(flag_object_exist)):
             raise ValueError("Заказа с таким ID нет")
         
-        objects = db_query.get_order_objects(self.cort_id)
+        objects = db_query.get_order_objects(self.db, self.cort_id)
         for object, starttime, endtime in objects:
             if (object.id == self.block_id):
                 flag_object_exist = True
@@ -72,7 +74,7 @@ class OrderValidator(BaseTimeBlockValidator):
                 if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
                     raise ValueError("Время совпадает с занятым временем")
                 
-        repeatative_objects = db_query.get_repeatative_order_objects(self.cort_id)
+        repeatative_objects = db_query.get_repeatative_order_objects(self.db, self.cort_id)
         for object, starttime, endtime in repeatative_objects:
             for db_date in DataBaseFormatedWeekday.format_from_string(object.weekdays):
                 if self.date.weekday() == db_date.value:
@@ -83,7 +85,7 @@ class OrderValidator(BaseTimeBlockValidator):
             raise ValueError("Нет данных о клиенте")
 
         if (self.site_id):
-            db_query.get_client_or_raise(self.site_id)
+            db_query.get_client_or_raise(self.db, self.site_id)
 
         return schemas.ValidatedOrderObject(
             date = self.date,
@@ -103,6 +105,7 @@ class OrderValidator(BaseTimeBlockValidator):
 
 class RepeatativeTaskValidator(BaseTimeBlockValidator):
     def __init__(self,
+        db,
         start_time : datetime.time,
         end_time: datetime.time,
         description : str,
@@ -110,6 +113,7 @@ class RepeatativeTaskValidator(BaseTimeBlockValidator):
         cort_id : int,
         block_id = None
     ) -> None:
+        self.db = db
         self.start_time = start_time
         self.end_time = end_time
         self.description = description
@@ -128,14 +132,14 @@ class RepeatativeTaskValidator(BaseTimeBlockValidator):
         if not(self.days):
             raise ValueError("Дни недели не выбраны")
         
-        objects = db_query.get_order_objects(self.cort_id)
+        objects = db_query.get_order_objects(self.db, self.cort_id)
         for object, starttime, endtime in objects:
             for db_date in self.days:
                 if int(object.date.weekday()) == int(db_date):
                     if not((self.start_time < starttime.time_object and self.end_time <= starttime.time_object) or (self.start_time >= endtime.time_object and self.end_time > endtime.time_object)):
                         raise ValueError("Время совпадает с занятым временем")
                 
-        repeatative_objects = db_query.get_repeatative_order_objects(self.cort_id)
+        repeatative_objects = db_query.get_repeatative_order_objects(self.db, self.cort_id)
         for object, starttime, endtime in repeatative_objects:
             for db_date in DataBaseFormatedWeekday.format_from_string(object.weekdays):
                 for new_date in self.days:

@@ -186,3 +186,8 @@ button {
 .login_info_wrapper > p {
     margin: 0;
 }
+
+
+.xdsoft_calendar > table {
+    max-width: 250px;
+}

@@ -23,7 +23,7 @@ def get_repeatative_order_objects(db: Session, cort_id=None):
 def get_order_object(db: Session, id: int):
     starttime_table = aliased(user_models.TimeIntervalObjects)
     endtime_table = aliased(user_models.TimeIntervalObjects)
-    return db.query(user_models.Order, starttime_table, endtime_table, user_models.Client).join(starttime_table, user_models.Order.starttime == starttime_table.id).join(endtime_table, user_models.Order.endtime == endtime_table.id).join(Client, user_models.Order.client == user_models.Client.id).filter(user_models.Order.id == id).first()
+    return db.query(user_models.Order, starttime_table, endtime_table, user_models.Client).join(starttime_table, user_models.Order.starttime == starttime_table.id).join(endtime_table, user_models.Order.endtime == endtime_table.id).join(user_models.Client, user_models.Order.client == user_models.Client.id).filter(user_models.Order.id == id).first()
 
 def get_repeatative_order_object(db: Session, id: int):
     starttime_table = aliased(user_models.TimeIntervalObjects)

@@ -14,21 +14,21 @@ class GetAddOrderTemplateHandler(BaseModel):
     start_time : str
     date: str
 
-    def get_validated_result(self):
+    def get_validated_result(self, db):
         start_time = datetime.datetime.fromisoformat(f"{self.date} {self.start_time}") 
         end_time = start_time + datetime.timedelta(hours=1)
         return schemas.AddOrderScheme(
-            start_time = start_time,
-            end_time = end_time,
-            clients = db_query.get_clients(get_db()),
-            corts = db_query.get_corts(get_db()),
+            start_time = datetime_picker_format(start_time),
+            end_time = datetime_picker_format(end_time),
+            clients = db_query.get_clients(db),
+            corts = db_query.get_corts(db),
         )
     
 class GetChangeModalTemplateHandler(BaseModel):
     block_id : str
 
-    def get_validated_result(self):
-        order_object = db_query.get_order_object(get_db(), int(self.block_id))
+    def get_validated_result(self, db):
+        order_object = db_query.get_order_object(db, int(self.block_id))
         order, start_time_db, end_time_db, client = order_object
         date = order.date
         start_timeinterval = start_time_db.time_object
@@ -39,25 +39,23 @@ class GetChangeModalTemplateHandler(BaseModel):
             start_time = datetime_picker_format(start_time),
             end_time = datetime_picker_format(end_time),
             order = order,
-            client = db_query.get_clients(get_db()),
-            clients = db_query.get_clients(get_db()),
-            corts = db_query.get_corts(get_db()),
+            client = client,
+            clients = db_query.get_clients(db),
+            corts = db_query.get_corts(db),
         )
 
-class GetAddRepeatativeBlockModalTemplate(BaseModel):
-    block_id : str
-
-    def get_validated_result(self):
+class GetAddRepeatativeBlockModalTemplate(BaseModel): 
+    def get_validated_result(self, db):
         return schemas.AddRepeatativeBlockScheme (
-            corts = db_query.get_corts(get_db()),
+            corts = db_query.get_corts(db),
             weekdays = [e for e in Weekday],
         )
 
 class GetChangeModalRepeatativeTemplateHandler(BaseModel):
     block_id : str
 
-    def get_validated_result(self):
-        repeatative_order_object = db_query.get_repeatative_order_object(get_db(), int(self.block_id))
+    def get_validated_result(self, db):
+        repeatative_order_object = db_query.get_repeatative_order_object(db, int(self.block_id))
         repeatative_order, start_time_db, end_time_db, weekdays = repeatative_order_object
         start_timeinterval = start_time_db.time_object
         end_timeinterval = end_time_db.time_object
@@ -67,7 +65,7 @@ class GetChangeModalRepeatativeTemplateHandler(BaseModel):
             start_time = time_picker_format(start_time),
             end_time = time_picker_format(end_time),
             repeatative_order = repeatative_order,
-            corts = db_query.get_corts(get_db()),
+            corts = db_query.get_corts(db),
             weekdays = [e for e in Weekday],
             curent_weekdays =  DataBaseFormatedWeekday.format_from_string(repeatative_order.weekdays),
         )
@@ -83,14 +81,14 @@ class CreateNewTimeBlock(BaseModel):
     client_site_id: str
     cort_id: str
 
-    def execute_query(self):
+    def execute_query(self, db):
         start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
         end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M')
         try:
-            validator = db_validators.OrderValidator(self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, None, self.cort_id)
+            validator = db_validators.OrderValidator(db, self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, None, self.cort_id)
             validator_result = validator.validate_and_get_object_or_raise()
             db_query.create_new_object(
-                get_db(),
+                db, 
                 validator_result.date, 
                 validator_result.starttime, 
                 validator_result.endtime, 
@@ -118,14 +116,14 @@ class ChangeTimeBlock(BaseModel):
     client_site_id: str
     cort_id: str
 
-    def execute_query(self):
-        start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M').time()
-        end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M').time()
+    def execute_query(self, db):
+        start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
+        end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M')
         try:
-            validator = db_validators.OrderValidator(self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, int(self.block_id), self.cort_id)
+            validator = db_validators.OrderValidator(db, self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, int(self.block_id), self.cort_id)
             validator_result = validator.validate_and_get_object_or_raise()
             db_query.update_object_db(
-                get_db(),
+                db, 
                 validator_result.date, 
                 validator_result.starttime, 
                 validator_result.endtime, 
@@ -149,14 +147,14 @@ class CreateRepeatativeTimeBlock(BaseModel):
     days: list
     cort_id: str
 
-    def execute_query(self):
+    def execute_query(self, db):
         start_time = datetime.datetime.strptime(self.time_start, '%H:%M')
         end_time = datetime.datetime.strptime(self.time_end, '%H:%M')
         try:
-            validator = db_validators.RepeatativeTaskValidator(start_time.time(), end_time.time(), self.description, self.days, self.cort_id)
+            validator = db_validators.RepeatativeTaskValidator(db, start_time.time(), end_time.time(), self.description, self.days, self.cort_id)
             validator_result = validator.validate_and_get_object_or_raise()
             db_query.create_new_repeatative_object(
-                get_db(),
+                db, 
                 validator_result.start_time, 
                 validator_result.end_time, 
                 validator_result.description, 
@@ -175,14 +173,14 @@ class ChangeRepeatativeTimeBlock(BaseModel):
     days: list
     cort_id: str
 
-    def execute_query(self):
+    def execute_query(self, db):
         start_time = datetime.datetime.strptime(self.time_start, '%H:%M')
         end_time = datetime.datetime.strptime(self.time_end, '%H:%M')
         try:
-            validator = db_validators.RepeatativeTaskValidator(start_time.time(), end_time.time(), self.description, self.days, self.cort_id, self.block_id)
+            validator = db_validators.RepeatativeTaskValidator(db, start_time.time(), end_time.time(), self.description, self.days, self.cort_id, self.block_id)
             validator_result = validator.validate_and_get_object_or_raise()
             db_query.update_repeatative_object_db(
-                get_db(),
+                db, 
                 validator_result.block_id, 
                 validator_result.start_time, 
                 validator_result.end_time, 
@@ -197,9 +195,9 @@ class ChangeRepeatativeTimeBlock(BaseModel):
 class DeleteTimeBlock(BaseModel):
     block_id: str
 
-    def execute_query(self):
+    def execute_query(self, db):
         try:
-            db_query.delete_order_object(get_db(), int(self.block_id))
+            db_query.delete_order_object(db, int(self.block_id))
         except Exception as ex:
             return ex
         return True
@@ -207,9 +205,9 @@ class DeleteTimeBlock(BaseModel):
 class DeleteRepeatativeTimeBlock(BaseModel):
     block_id: str
 
-    def execute_query(self):
+    def execute_query(self, db):
         try:
-            db_query.delete_repatative_order_object(get_db(), int(self.block_id))
+            db_query.delete_repatative_order_object(db, int(self.block_id))
         except Exception as ex:
             return ex
         return True
@@ -218,7 +216,7 @@ class GetFilteredTable(BaseModel):
     date_range: str
     cort_id: str
 
-    def get_validated_result(self):
+    def get_validated_result(self, db):
         if (self.date_range):
             start_date_str, end_date_str = self.date_range.replace(" ", "").split("-")
             start_date = datetime.datetime.strptime(start_date_str,'%d.%m.%Y').date()
@@ -228,9 +226,9 @@ class GetFilteredTable(BaseModel):
         cort_id = 1
         if (self.cort_id):
             cort_id = self.cort_id
-        data = DateLogic().create_date_data(start_date, end_date, cort_id)
+        data = DateLogic().create_date_data(db, start_date, end_date, cort_id)
 
         return schemas.TableScheme(
             data = data,
-            time_range = db_query.get_intervals(get_db()),
+            timerange = db_query.get_intervals(db),
         )

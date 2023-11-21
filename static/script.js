@@ -20,6 +20,7 @@ function renew_datetime_pickers_in_modals(){
         step: 30,
         minTime:'9:00',
         maxTime: '23:30',
+        datepicker:false,
         onShow:function( ct ){
             let temp_time = '';
             if (jQuery('#modal_start_time').val()){

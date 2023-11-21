@@ -6,17 +6,16 @@ import apps.timetable.models as db_models
 class BaseScheme(BaseModel):
     class Config:
         arbitrary_types_allowed = True
-        orm_mode = True
 
 class AddOrderScheme(BaseScheme):
-    start_time: datetime.datetime
-    end_time: datetime.datetime
+    start_time: str
+    end_time: str
     clients: list
     corts: list
 
 class GetChangeModalScheme(BaseScheme):
-    start_time: datetime.datetime
-    end_time: datetime.datetime
+    start_time: str
+    end_time: str
     order: db_models.Order
     clients: list
     corts: list
