@@ -1,8 +1,8 @@
 import enum
 import datetime
 
-import timetable.models as db_models
-import timetable.queries as db_query
+import apps.timetable.models as db_models
+import apps.timetable.queries as db_query
 
 import common_logic
 

@@ -1,15 +1,20 @@
 import datetime
 from pydantic import BaseModel
 
-import timetable.models as db_models
+import apps.timetable.models as db_models
 
-class AddOrderScheme(BaseModel):
+class BaseScheme(BaseModel):
+    class Config:
+        arbitrary_types_allowed = True
+        orm_mode = True
+
+class AddOrderScheme(BaseScheme):
     start_time: datetime.datetime
     end_time: datetime.datetime
     clients: list
     corts: list
 
-class GetChangeModalScheme(BaseModel):
+class GetChangeModalScheme(BaseScheme):
     start_time: datetime.datetime
     end_time: datetime.datetime
     order: db_models.Order
@@ -17,11 +22,11 @@ class GetChangeModalScheme(BaseModel):
     corts: list
     client: db_models.Client
 
-class AddRepeatativeBlockScheme(BaseModel):
+class AddRepeatativeBlockScheme(BaseScheme):
     corts: list
     weekdays: list
 
-class GetChangeModalRepeatativeScheme(BaseModel):
+class GetChangeModalRepeatativeScheme(BaseScheme):
     start_time: datetime.datetime
     end_time: datetime.datetime
     repeatative_order: db_models.TypicalRaspisanieObject
@@ -30,7 +35,7 @@ class GetChangeModalRepeatativeScheme(BaseModel):
     curent_weekdays: list
 
 
-class ValidatedOrderObject(BaseModel):
+class ValidatedOrderObject(BaseScheme):
     date: datetime.date
     starttime: datetime.time
     endtime: datetime.time
@@ -43,7 +48,7 @@ class ValidatedOrderObject(BaseModel):
     cort_id: int    
     block_id: int|None
 
-class ValidatedRepeatativeOrderObject(BaseModel):
+class ValidatedRepeatativeOrderObject(BaseScheme):
     starttime: datetime.time
     endtime: datetime.time
     description: str
@@ -51,6 +56,6 @@ class ValidatedRepeatativeOrderObject(BaseModel):
     cort_id: int
     block_id: int|None
 
-class TableScheme(BaseModel):
+class TableScheme(BaseScheme):
     data: list
     timerange: list

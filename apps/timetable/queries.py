@@ -2,7 +2,7 @@ import datetime
 from sqlalchemy.orm import aliased, Session
 from sqlalchemy import update
 
-import timetable.models as user_models
+import apps.timetable.models as user_models
 
 def get_order_objects(db: Session, cort_id=None):
     starttime_table = aliased(user_models.TimeIntervalObjects)

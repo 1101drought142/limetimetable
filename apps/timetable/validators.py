@@ -1,7 +1,7 @@
 import datetime
 
-import timetable.queries as db_query
-import timetable.schemas as schemas
+import apps.timetable.queries as db_query
+import apps.timetable.schemas as schemas
 
 from common_logic import DataBaseFormatedWeekday
 

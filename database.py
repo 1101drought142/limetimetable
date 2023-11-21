@@ -10,7 +10,8 @@ engine = create_engine(
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-class Base(DeclarativeBase): pass
+class Base(DeclarativeBase): 
+    pass
 
 # Dependency
 def get_db():

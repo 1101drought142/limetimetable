@@ -1,16 +1,16 @@
 from pydantic import BaseModel
 import datetime
 
-import timetable.schemas as schemas 
-import timetable.queries as db_query
-import timetable.validators as db_validators
-from timetable.logic import DateLogic
+import apps.timetable.schemas as schemas 
+import apps.timetable.queries as db_query
+import apps.timetable.validators as db_validators
+from apps.timetable.logic import DateLogic
 
 from database import get_db
 
 from common_logic import datetime_picker_format, Weekday, DataBaseFormatedWeekday, time_picker_format
 
-class AddOrderTemplateHandler(BaseModel):
+class GetAddOrderTemplateHandler(BaseModel):
     start_time : str
     date: str
 
@@ -39,6 +39,7 @@ class GetChangeModalTemplateHandler(BaseModel):
             start_time = datetime_picker_format(start_time),
             end_time = datetime_picker_format(end_time),
             order = order,
+            client = db_query.get_clients(get_db()),
             clients = db_query.get_clients(get_db()),
             corts = db_query.get_corts(get_db()),
         )
