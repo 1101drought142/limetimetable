@@ -1,3 +1,11 @@
+import random 
+
+from fastapi import Request, Depends, HTTPException, status
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+
+from main import sessions
+
+import apps.users.queries as user_queries
 def create_session(user_id: int):
     session_id = len(sessions) + random.randint(0, 1000000)
     sessions[session_id] = user_id
@@ -10,10 +18,9 @@ def get_session_id(request: Request):
     return int(session_id)
 
 def authenticate_user(credentials: HTTPBasicCredentials = Depends(security)):
-    if get_user_or_None(credentials.username, credentials.password):
+    if user_queries.get_user_or_None(credentials.username, credentials.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials",
             headers={"WWW-Authenticate": "Basic"},
         )
-    return user

@@ -10,7 +10,7 @@ from apps.timetable.logic import DateLogic
 from apps.timetable.websockets_connection import ConnectionManager
 from database import get_db
 
-router = APIRouter(prefix='', tags=['User'])
+router = APIRouter(prefix='', tags=['timetable'])
 templates = Jinja2Templates(directory="templates")
 manager = ConnectionManager()
 

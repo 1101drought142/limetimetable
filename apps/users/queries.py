@@ -1,3 +1,7 @@
-def get_user_or_None(db: Session, username, password) -> Users|None:
-    user = db.query(user_models.User).filter(user_models.User.login == username, user_models.User.password == password).first()
+from sqlalchemy.orm import Session
+
+from apps.users.models import User
+
+def get_user_or_None(db: Session, username, password) -> User|None:
+    user = db.query(User).filter(User.login == username, User.password == password).first()
     return user
