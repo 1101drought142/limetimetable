@@ -17,6 +17,11 @@ class User(Base):
     login = Column(String)
     password = Column(String)
 
+    def is_admin(self) -> bool:
+        if self.type == Users.superuser:
+            return True
+        return False
+
 class UserLog(Base):
     __tablename__ = "userlog"
     id = Column(Integer, primary_key=True, index=True)

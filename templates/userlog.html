@@ -1,0 +1,4 @@
+<a href="/">Вернуться на главную</a>
+{% for log, user in logs %}
+    <p>{{user.fullname}} - {{log.text}}</p>
+{% endfor %}

@@ -9,13 +9,9 @@ from database import get_db
 
 security = HTTPBasic()
 
-def authenticate_user(credentials: HTTPBasicCredentials = Depends(security), db = Depends(get_db), logout=False):
-    
-    if not(credentials.username and credentials.password) and logout:    
-        return RedirectResponse("/", status_code=status.HTTP_302_FOUND, headers={"WWW-Authenticate": "Basic"})
-    
+def authenticate_user(credentials: HTTPBasicCredentials = Depends(security), db = Depends(get_db)):
     user = user_queries.get_user_or_None(db, credentials.username, credentials.password)
-    if user is None or logout:
+    if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials",
@@ -23,3 +19,5 @@ def authenticate_user(credentials: HTTPBasicCredentials = Depends(security), db 
         )
     return user
 
+def isadmin(user = Depends(authenticate_user)):
+    return user.is_admin()
