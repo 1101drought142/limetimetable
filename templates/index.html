@@ -17,7 +17,9 @@
     <section class="login_info">
         <div class="login_info_wrapper">
             <p>Вы зарегистрированны как: {{user.fullname}}</p>
-            <!-- <a href="/?logout=True" class="delete_button">Выйти</a> -->
+            <form action="/user/logout" method="POST">
+                <input type="submit" class="delete_button" value="Выйти">
+            </form>
             {% if user.is_admin() %}
             <a href="/user/logs">Посмотреть логи</a>
             {% endif %}
