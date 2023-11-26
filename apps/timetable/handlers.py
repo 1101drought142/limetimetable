@@ -235,12 +235,12 @@ class GetFilteredTable(BaseModel):
     
 class GetRaspisanie(BaseModel):
     date: str
-
+    cort_id: str
     def execute_query(self, db):
         day, month, year =  self.date.split(".")
         try:
             format_date = datetime.date(day=int(day), month=int(month), year=int(year))
-            validator = GetApiOrderData(format_date)
+            validator = GetApiOrderData(format_date, self.cort_id)
             return validator.get_data(db)
         except Exception as ex:
             return ex

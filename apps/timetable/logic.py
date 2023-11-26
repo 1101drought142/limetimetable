@@ -1,5 +1,7 @@
 import enum
 import datetime
+import json
+from fastapi.encoders import jsonable_encoder
 
 import apps.timetable.models as db_models
 import apps.timetable.queries as db_query
@@ -173,20 +175,60 @@ class DateLogic():
             result.append(temp_column)
         self.insert_data_to_table_from_db(db, result, cort_id)
         return result
+
     
+
+class RestrictionInterval():
+    def __init__(self, startinterval : int, endinterval : int) -> None:
+        self.start = startinterval
+        self.end = endinterval
+
+    def is_inside(self, interval: int) -> bool:
+        if (self.start <= interval and self.end >= interval):
+            return True
+        return False
+
+class ListRestrictionInterval():
+    intervals_list = []
+    def check(self, check_interval) -> bool:
+        for interval in self.intervals_list:
+            if interval.is_inside(check_interval):
+                return True
+        return False
+
+    def add_new(self,  startinterval : int, endinterval : int) -> None:
+        self.intervals_list.append(RestrictionInterval(startinterval=startinterval, endinterval=endinterval))
+
 class GetApiOrderData():
-    def __init__(self, date: datetime.date) -> None:
+    def __init__(self, date: datetime.date, cort_id: str) -> None:
         self.date = date
+        self.cort_id = int(cort_id)
     
     def get_data(self, db):
-        data = {
+        data = {}
+        
+        intervals_restriction = ListRestrictionInterval()
 
-        }
-        intervals = db_query.get_intervals(db)
+        objects = db_query.get_order_objects(db, self.cort_id)
+        repeatative_objects = db_query.get_repeatative_order_objects(db, self.cort_id)
+        for obj, start, end in objects:
+            if (obj.date == self.date):
+                intervals_restriction.add_new(start.id, end.id)
+
+        for obj, start, end in repeatative_objects:
+            for day in common_logic.DataBaseFormatedWeekday.format_from_string(obj.weekdays):
+                if day.value == self.date.weekday():
+                    intervals_restriction.add_new(start.id, end.id)
+
+        intervals = db_query.get_intervals(db)        
         for interval in intervals:
-            data[interval.time_object] = []
-            for inside_interval in intervals:
-                if (inside_interval.id > interval.id + 1):
-                    data[interval.time_object].append(inside_interval.time_object)
+            if not(intervals_restriction.check(interval.id)):
+                data[interval.time_object] = []
+                for inside_interval in intervals:
+                    if (inside_interval.id > interval.id + 1):
+                        if not(intervals_restriction.check(inside_interval.id)):
+                            data[interval.time_object].append(inside_interval.time_object)
+                        else:
+                            break
         return data
         #db_query.get_object_by_date(db, format_date)
