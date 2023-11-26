@@ -4,7 +4,7 @@ import datetime
 import apps.timetable.schemas as schemas 
 import apps.timetable.queries as db_query
 import apps.timetable.validators as db_validators
-from apps.timetable.logic import DateLogic
+from apps.timetable.logic import DateLogic, GetApiOrderData
 
 from database import get_db
 
@@ -234,12 +234,13 @@ class GetFilteredTable(BaseModel):
         )
     
 class GetRaspisanie(BaseModel):
-    
+    date: str
 
     def execute_query(self, db):
-        date = "14.11.2023"
-        format_date = datetime.date(date)
+        day, month, year =  self.date.split(".")
         try:
-            return db_query.get_object_by_date(db, format_date)
+            format_date = datetime.date(day=int(day), month=int(month), year=int(year))
+            validator = GetApiOrderData(format_date)
+            return validator.get_data(db)
         except Exception as ex:
             return ex

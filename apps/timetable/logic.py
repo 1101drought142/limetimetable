@@ -179,4 +179,14 @@ class GetApiOrderData():
         self.date = date
     
     def get_data(self, db):
-        objects = db_query(db, self.date)
+        data = {
+
+        }
+        intervals = db_query.get_intervals(db)
+        for interval in intervals:
+            data[interval.time_object] = []
+            for inside_interval in intervals:
+                if (inside_interval.id > interval.id + 1):
+                    data[interval.time_object].append(inside_interval.time_object)
+        return data
+        #db_query.get_object_by_date(db, format_date)
