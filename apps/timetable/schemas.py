@@ -58,3 +58,8 @@ class ValidatedRepeatativeOrderObject(BaseScheme):
 class TableScheme(BaseScheme):
     data: list
     timerange: list
+
+
+class ApiOrder(BaseScheme):
+    date: datetime.date
+    timedata: dict

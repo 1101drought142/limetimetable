@@ -173,3 +173,10 @@ class DateLogic():
             result.append(temp_column)
         self.insert_data_to_table_from_db(db, result, cort_id)
         return result
+    
+class GetApiOrderData():
+    def __init__(self, date: datetime.date) -> None:
+        self.date = date
+    
+    def get_data(self, db):
+        objects = db_query(db, self.date)

@@ -232,3 +232,14 @@ class GetFilteredTable(BaseModel):
             data = data,
             timerange = db_query.get_intervals(db),
         )
+    
+class GetRaspisanie(BaseModel):
+    
+
+    def execute_query(self, db):
+        date = "14.11.2023"
+        format_date = datetime.date(date)
+        try:
+            return db_query.get_object_by_date(db, format_date)
+        except Exception as ex:
+            return ex
