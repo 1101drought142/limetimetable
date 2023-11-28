@@ -149,3 +149,8 @@ async def delete_modal(request: Request, user: Annotated[User, Depends(authentic
 async def get_raspisanie(request_data: handlers.GetRaspisanie, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     return JSONResponse(content=jsonable_encoder({"success": True, "data": creation_result}), status_code=200)
+
+@router.post("/api/v1/create_raspisanie", response_class=JSONResponse)
+async def get_raspisanie(request_data: handlers.CreateNewTimeBlockBeforePayemnt, db: Session = Depends(get_db)):
+    creation_result = request_data.execute_query(db)
+    return JSONResponse(content=jsonable_encoder({"success": True, "data": creation_result}), status_code=200)

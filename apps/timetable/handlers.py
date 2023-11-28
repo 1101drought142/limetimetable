@@ -244,3 +244,38 @@ class GetRaspisanie(BaseModel):
             return validator.get_data(db)
         except Exception as ex:
             return ex
+        
+
+
+class CreateNewTimeBlockBeforePayemnt(BaseModel):
+    date: str
+    timestart: str
+    timeend: str
+    client_name: str
+    client_phone: str
+    client_mail: str
+    client_bitrix_id: str
+    cort_id: str
+
+    def execute_query(self, db):
+        start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
+        end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M')
+        try:
+            validator = db_validators.OrderValidator(db, self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, None, self.cort_id)
+            validator_result = validator.validate_and_get_object_or_raise()
+            db_query.create_new_object(
+                db, 
+                validator_result.date, 
+                validator_result.starttime, 
+                validator_result.endtime, 
+                validator_result.payed, 
+                validator_result.name,
+                validator_result.phone,
+                validator_result.mail,
+                validator_result.bitrix_id,
+                validator_result.site_id,
+                validator_result.cort_id
+            )
+        except Exception as ex:
+            return ex
+        return True
