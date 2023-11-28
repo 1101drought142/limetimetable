@@ -43,7 +43,7 @@ class ValidatedOrderObject(BaseScheme):
     phone: str
     mail: str
     bitrix_id: str
-    site_id: str
+    site_id: str|None
     cort_id: int    
     block_id: int|None
 

@@ -258,10 +258,11 @@ class CreateNewTimeBlockBeforePayemnt(BaseModel):
     cort_id: str
 
     def execute_query(self, db):
-        start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
-        end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M')
+        start_time = datetime.time.fromisoformat(self.timestart)
+        end_time = datetime.time.fromisoformat(self.timeend)
+        date = datetime.date.fromisoformat(self.date)
         try:
-            validator = db_validators.OrderValidator(db, self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, None, self.cort_id)
+            validator = db_validators.OrderValidator(db, self.client_name, self.client_phone, self.client_mail, False, start_time, end_time, date, self.client_bitrix_id, None, None, self.cort_id)
             validator_result = validator.validate_and_get_object_or_raise()
             db_query.create_new_object(
                 db, 

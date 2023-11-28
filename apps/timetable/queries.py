@@ -54,9 +54,9 @@ def create_new_object(db: Session, date: datetime.date, starttime: datetime.time
     time_end = db.query(user_models.TimeIntervalObjects).filter(user_models.TimeIntervalObjects.time_object == endtime).first()
     if not(site_id):
         client = user_models.Client(client_bitrix_id=bitrix_id, client_name=client_name, client_phone=client_phone, client_mail=client_mail)
-        db.add(user_models.client)
+        db.add(client)
         db.commit()
-        client_id = user_models.client.id
+        client_id = client.id
     else:
         client_id = site_id
     db.add(user_models.Order( date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id), cort=cort_id))
