@@ -2,8 +2,10 @@
     <form class="dialog_containter">
         <input type="hidden" value="{{repeatative_order.id}}" id="order_id">
         <div class="dialog_top_row">
+            <div class="top_modal_close_row">
+                <img src="/static/close.svg" width="30" height="30" alt="clsoe button" class="dialog_close_button" onclick="close_modal(this)"/>
+            </div>
             <h3 class="dialog_title">Изменить элемент расписания</h3>
-            <div class="dialog_close_button" onclick="close_modal(this)">x</div>
         </div>
         <ul class="order_info">
             <li> <span>Время начала:</span> <input id="modal_start_time_only" value="{{start_time}}"> </li>
