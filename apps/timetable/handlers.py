@@ -283,7 +283,7 @@ class CreateNewTimeBlockBeforePayemnt(BaseModel):
     
 
     
-class GetRaspisanie(BaseModel):
+class SetPayed(BaseModel):
     id: str
     def execute_query(self, db):
         try:

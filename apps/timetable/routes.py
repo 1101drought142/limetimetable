@@ -161,7 +161,7 @@ async def get_raspisanie(request_data: handlers.CreateNewTimeBlockBeforePayemnt,
 
 
 @router.post("/api/v1/set_paid_raspisanie", response_class=JSONResponse)
-async def get_raspisanie(request_data: handlers.GetRaspisanie, db: Session = Depends(get_db)):
+async def get_raspisanie(request_data: handlers.SetPayed, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
         await manager.broadcast_html("renew")
