@@ -280,3 +280,14 @@ class CreateNewTimeBlockBeforePayemnt(BaseModel):
         except Exception as ex:
             return ex
         return True
+    
+
+    
+class GetRaspisanie(BaseModel):
+    id: str
+    def execute_query(self, db):
+        try:
+            return db_query.set_order_paid(db, int(self.id))
+        except Exception as ex:
+            return ex
+        

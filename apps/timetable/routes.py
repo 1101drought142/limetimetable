@@ -158,4 +158,13 @@ async def get_raspisanie(request_data: handlers.CreateNewTimeBlockBeforePayemnt,
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
-    
+
+
+@router.post("/api/v1/set_paid_raspisanie", response_class=JSONResponse)
+async def get_raspisanie(request_data: handlers.GetRaspisanie, db: Session = Depends(get_db)):
+    creation_result = request_data.execute_query(db)
+    if (creation_result == True):
+        await manager.broadcast_html("renew")
+        return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
+    else:    
+        return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
