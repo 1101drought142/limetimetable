@@ -167,7 +167,7 @@ class DateLogic():
         time_intervals =  db_query.get_intervals(db)
         result = []
         for date in self.weekdays:
-            temp_column = {"day": common_logic.Weekday(date.weekday()).get_rus_name(), "date": str(date.strftime("%d.%m.%Y")), "time": [] }
+            temp_column = {"day": common_logic.Weekday(date.weekday()).get_rus_name(), "date": str(date), "date_format": str(date.strftime("%d.%m.%Y")), "time": [] }
             for time in time_intervals:
                 temp_column["time"].append(
                     LogicOrder(None, time, None, date)

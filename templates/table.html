@@ -2,7 +2,7 @@
     <tr>
         <th></th>
         {% for day_name in data %}
-        <th class="table_head_row"> <span>{{day_name["day"]}}</span> <br> <span>{{day_name["date"]}}</span> </th>
+        <th class="table_head_row"> <span>{{day_name["day"]}}</span> <br> <span>{{day_name["date_format"]}}</span> </th>
         {% endfor %}
     </tr>
     {% for time in time_range %}
