@@ -116,6 +116,14 @@
     padding: 15px;
     font-size: 18px;
 }
+.logs_button {
+    background: var(--repatative_color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 15px;
+    font-size: 18px;
+}
 
 .button_row {
     display: flex;
