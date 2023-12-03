@@ -222,11 +222,11 @@ class GetApiOrderData():
 
         intervals = db_query.get_intervals(db)        
         for interval in intervals:
-            if not(intervals_restriction.check(interval.id)):
+            if not(intervals_restriction.check(interval.id + 1)):
                 data[interval.time_object] = []
                 for inside_interval in intervals:
                     if (inside_interval.id > interval.id + 1):
-                        if not(intervals_restriction.check(inside_interval.id)):
+                        if not(intervals_restriction.check(inside_interval.id - 1)):
                             data[interval.time_object].append(inside_interval.time_object)
                         else:
                             break
