@@ -94,10 +94,9 @@
     padding: 50px;
 }
 
-.dialog_top_row {
+.top_modal_close_row {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    justify-content: end;
 }
 
 .change_button {
