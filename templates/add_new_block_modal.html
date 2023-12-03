@@ -1,8 +1,10 @@
 <dialog open class="dialog">
     <form class="dialog_containter">
         <div class="dialog_top_row">
+            <div class="top_modal_close_row">
+                <img src="/static/close.svg" width="30" height="30" alt="clsoe button" class="dialog_close_button" onclick="close_modal(this)"/>
+            </div>
             <h3 class="dialog_title">Добавить элемент расписания</h3>
-            <div class="dialog_close_button" onclick="close_modal(this)">x</div>
         </div>
         <ul class="order_info">
             <li> <span>Дата и время начала брони:</span> <input id="modal_start_time" readonly value="{{start_time}}"> </li>
