@@ -264,7 +264,7 @@ class CreateNewTimeBlockBeforePayemnt(BaseModel):
         try:
             validator = db_validators.OrderValidator(db, self.client_name, self.client_phone, self.client_mail, False, start_time, end_time, date, self.client_bitrix_id, None, None, self.cort_id)
             validator_result = validator.validate_and_get_object_or_raise()
-            return db_query.create_new_object(
+            return int(db_query.create_new_object(
                 db, 
                 validator_result.date, 
                 validator_result.starttime, 
@@ -276,7 +276,7 @@ class CreateNewTimeBlockBeforePayemnt(BaseModel):
                 validator_result.bitrix_id,
                 validator_result.site_id,
                 validator_result.cort_id
-            )
+            ))
         except Exception as ex:
             return ex    
 
