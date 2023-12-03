@@ -383,7 +383,7 @@ function get_filter(){
 
 
 var client_id = Date.now()
-var ws = new WebSocket(`ws://timetable.limetennis.ru/ws/${client_id}`);
+var ws = new WebSocket(`wss://timetable.limetennis.ru/ws/${client_id}`);
 ws.onmessage = function(event) {
     //document.getElementById("timetable_table").innerHTML = event.data;
     renew_table();
