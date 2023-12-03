@@ -63,9 +63,12 @@ def create_new_object(db: Session, date: datetime.date, starttime: datetime.time
         client_id = client.id
     else:
         client_id = site_id
-    db.add(user_models.Order( date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id), cort=cort_id))
+    new_order = user_models.Order( date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id), cort=cort_id)
+    db.add(new_order)
     db.commit()
-    return True
+    if (new_order.id):
+        return new_order.id
+    return False
 
 def update_object_db(db: Session, date: datetime.date, starttime: datetime.time, endtime: datetime.time, payed: bool, client_name:str|None, client_phone: str|None, client_mail: str|None, bitrix_id: str|None, site_id: str|None, block_id:int, cort_id:int):
     order = db.query(user_models.Order).filter(user_models.Order.id == block_id).first()

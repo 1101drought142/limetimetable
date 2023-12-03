@@ -100,7 +100,7 @@ async def create_modal(request: Request , user: Annotated[User, Depends(authenti
 @router.post("/api/server/v1/delete_raspisanie_object/", response_class=JSONResponse)
 async def delete_modal(request: Request , user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.DeleteTimeBlock, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
-    if (creation_result == True):
+    if (creation_result != False):
         create_log(db, user.id, "Удален блок расписания с id" + str(request_data.block_id)) 
         await manager.broadcast_html("renew")
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
@@ -153,9 +153,9 @@ async def get_raspisanie(request_data: handlers.GetRaspisanie, db: Session = Dep
 @router.post("/api/v1/create_raspisanie", response_class=JSONResponse)
 async def get_raspisanie(request_data: handlers.CreateNewTimeBlockBeforePayemnt, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
-    if (creation_result == True):
+    if (creation_result != False):
         await manager.broadcast_html("renew")
-        return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
+        return JSONResponse(content=jsonable_encoder({"success": True, "object_id": creation_result}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
 
