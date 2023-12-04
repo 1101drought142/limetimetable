@@ -7,7 +7,7 @@ from typing import Annotated
 
 import apps.timetable.queries as db_query 
 import apps.timetable.handlers as handlers
-from apps.timetable.logic import DateLogic
+from apps.timetable.logic import DateLogic, tg_raspisanie_alert
 from apps.timetable.websockets_connection import ConnectionManager
 from apps.users.logic import authenticate_user
 from apps.users.models import User
@@ -150,11 +150,17 @@ async def get_raspisanie(request_data: handlers.GetRaspisanie, db: Session = Dep
     creation_result = request_data.execute_query(db)
     return JSONResponse(content=jsonable_encoder({"success": True, "data": creation_result}), status_code=200)
 
+@router.get("/api/v1/raspisanie/{cort_id}/{date}/", response_class=JSONResponse)
+async def get_raspisanie(cort_id, date, request_data: handlers.GetRaspisanie, db: Session = Depends(get_db)):
+    creation_result = request_data.execute_query(db)
+    return JSONResponse(content=jsonable_encoder({"success": True, "data": creation_result}), status_code=200)
+
 @router.post("/api/v1/create_raspisanie", response_class=JSONResponse)
 async def get_raspisanie(request_data: handlers.CreateNewTimeBlockBeforePayemnt, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (type(creation_result) == int):
         await manager.broadcast_html("renew")
+        tg_raspisanie_alert('Создан новый блок расписания, Дата: {creation_result.date}')
         return JSONResponse(content=jsonable_encoder({"success": True, "object_id": creation_result}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)

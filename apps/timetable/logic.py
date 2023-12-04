@@ -2,11 +2,19 @@ import enum
 import datetime
 import json
 from fastapi.encoders import jsonable_encoder
+import requests 
+import os
 
 import apps.timetable.models as db_models
 import apps.timetable.queries as db_query
 
 import common_logic
+
+def tg_raspisanie_alert(message):
+   bot_token = os.environ.get('BOT_TOKEN')
+   bot_chatID = os.environ.get('CHAT_ID')
+   send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + message
+   requests.get(send_text)
 
 class Users(enum.Enum):
     api = 0
