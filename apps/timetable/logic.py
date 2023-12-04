@@ -4,12 +4,17 @@ import json
 from fastapi.encoders import jsonable_encoder
 import requests 
 import os
+from dotenv import load_dotenv
 
 import apps.timetable.models as db_models
 import apps.timetable.queries as db_query
 
 import common_logic
 
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+    
 def tg_raspisanie_alert(message):
    bot_token = os.environ.get('BOT_TOKEN')
    bot_chatID = os.environ.get('CHAT_ID')
