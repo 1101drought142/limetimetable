@@ -229,11 +229,16 @@ class GetApiOrderData():
         data = {}
         
         intervals_restriction = ListRestrictionInterval()
-        lock = Lock()
-        lock.acquire()
+
+        from database import SessionLocal
+        db = SessionLocal()
+        
         objects = db_query.get_order_objects(db, self.cort_id)
         repeatative_objects = db_query.get_repeatative_order_objects(db, self.cort_id)
-        lock.release()
+        db.close()
+
+        print(len(objects))
+        print(len(repeatative_objects))
         for obj, start, end in objects:
             if (obj.date == self.date):
                 intervals_restriction.add_new(start.id, end.id)
