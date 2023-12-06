@@ -398,7 +398,7 @@ renew_cell_click_events();
 function test() {
     let request = { date: "2023-12-10", cort_id: "1" }
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', `http://127.0.0.1:8000/api/v1/raspisanie/${request.cort_id}/${request.date}/`);
+    xhr.open('GET', `https://timetable.limetennis.ru/api/v1/raspisanie/${request.cort_id}/${request.date}/`);
     xhr.setRequestHeader("Content-Type", "application/json;");
     xhr.setRequestHeader('Cache-Control', 'no-cache, no-store, max-age=0');
     xhr.setRequestHeader('Expires', 'Thu, 1 Jan 1970 00:00:00 GMT');
@@ -421,3 +421,8 @@ function test() {
     };
     xhr.send();
 }
+
+test()
+test()
+test()
+test()
