@@ -254,6 +254,8 @@ class GetApiOrderData():
                             inside_interval_count += 1
                         else:
                             break
+        data["objects"] = objects                
+        data["rep_objects"] = repeatative_objects                
         data["rests"] = intervals_restriction.intervals_list
         return data
         #db_query.get_object_by_date(db, format_date)
