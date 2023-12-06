@@ -5,6 +5,7 @@ from fastapi.encoders import jsonable_encoder
 import requests 
 import os
 from dotenv import load_dotenv
+from threading import Thread, Lock
 
 import apps.timetable.models as db_models
 import apps.timetable.queries as db_query
@@ -228,9 +229,11 @@ class GetApiOrderData():
         data = {}
         
         intervals_restriction = ListRestrictionInterval()
-
+        lock = Lock()
+        lock.acquire()
         objects = db_query.get_order_objects(db, self.cort_id)
         repeatative_objects = db_query.get_repeatative_order_objects(db, self.cort_id)
+        lock.release()
         for obj, start, end in objects:
             if (obj.date == self.date):
                 intervals_restriction.add_new(start.id, end.id)
