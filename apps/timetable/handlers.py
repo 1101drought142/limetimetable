@@ -233,9 +233,12 @@ class GetFilteredTable(BaseModel):
             timerange = db_query.get_intervals(db),
         )
     
-class GetRaspisanie(BaseModel):
+class GetRaspisanie():
     date: str
     cort_id: str
+    def __init__(self, date, cort_id) -> None:
+        self.date = date
+        self.cort_id = cort_id
     def execute_query(self, db):
         year, month, day =  self.date.split("-")
         try:

@@ -12,9 +12,11 @@ import apps.timetable.queries as db_query
 import common_logic
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
-    
+
+
 def tg_raspisanie_alert(message):
    bot_token = os.environ.get('BOT_TOKEN')
    bot_chatID = os.environ.get('CHAT_ID')
@@ -240,12 +242,16 @@ class GetApiOrderData():
 
         intervals = db_query.get_intervals(db)        
         for interval in intervals:
+            inside_interval_count = 0
             if not(intervals_restriction.check(interval.id + 1)):
                 data[interval.time_object] = []
                 for inside_interval in intervals:
+                    if inside_interval_count == 3:
+                        break
                     if (inside_interval.id > interval.id + 1):
                         if not(intervals_restriction.check(inside_interval.id - 1)):
                             data[interval.time_object].append(inside_interval.time_object)
+                            inside_interval_count += 1
                         else:
                             break
         return data
