@@ -140,8 +140,7 @@ def get_links(db: Session, bitrix_id: int):
         .join(user_models.Client, user_models.Client.id == user_models.Order.id) \
         .join(starttime_table, user_models.Order.starttime == starttime_table.id) \
         .join(endtime_table, user_models.Order.endtime == endtime_table.id) \
-        .filter(user_models.Client.client_bitrix_id == bitrix_id, user_models.Order.date == current_time.date(), \
-        user_models.Order.payed==True).all()
+        .filter(user_models.Client.client_bitrix_id == bitrix_id, user_models.Order.date == current_time.date()).all()
     res_user_order = None
     for user_order, client, starttime, endtime in user_orders:
         res_user_order = user_order
