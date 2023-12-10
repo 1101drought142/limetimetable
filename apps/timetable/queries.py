@@ -6,7 +6,7 @@ import apps.timetable.models as user_models
 
 
 def get_order_objects(db: Session, cort_id=None):
-    current_time = datetime.datetime.utcnow()
+    current_time = datetime.datetime.now()
     last_ten_minutes = current_time - datetime.timedelta(minutes=10)
     raise ValueError(last_ten_minutes)
     starttime_table = aliased(user_models.TimeIntervalObjects)
