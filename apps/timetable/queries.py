@@ -136,17 +136,14 @@ def get_links(db: Session, bitrix_id: int):
     }
 
 
-    user_orders = db.query(user_models.Order) \
+    user_order = db.query(user_models.Order) \
         .join(user_models.Client, user_models.Client.id == user_models.Order.id) \
         .join(starttime_table, user_models.Order.starttime == starttime_table.id) \
         .join(endtime_table, user_models.Order.endtime == endtime_table.id) \
-        .filter(user_models.Client.client_bitrix_id == bitrix_id, user_models.Order.date == current_time.date()).all()
-    res_user_order = None
-    for user_order, client, starttime, endtime in user_orders:
-        res_user_order = user_order
-
-
-    if (res_user_order):
-        return cort_links[res_user_order.cort] 
+        .filter(user_models.Client.client_bitrix_id == bitrix_id, user_models.Order.date == current_time.date(), \
+        starttime_table.time_object < current_time.time(), endtime_table.time_object > current_time.time(), user_models.Order.payed==True).first()
+    
+    if (user_order):
+        return cort_links[user_order.cort] 
     else:
         raise ValueError("Расписание не найдено")
