@@ -17,7 +17,7 @@ def get_repeatative_order_objects(db: Session, cort_id=None):
     starttime_table = aliased(user_models.TimeIntervalObjects)
     endtime_table = aliased(user_models.TimeIntervalObjects)
     result = db.query(user_models.TypicalRaspisanieObject, starttime_table, endtime_table).join(starttime_table, user_models.TypicalRaspisanieObject.starttime == starttime_table.id).join(endtime_table, user_models.TypicalRaspisanieObject.endtime == endtime_table.id)
-    if (cort_id):
+    if (cort_id != None):
         result = result.filter(user_models.TypicalRaspisanieObject.cort == cort_id)
     return result.all()
 
