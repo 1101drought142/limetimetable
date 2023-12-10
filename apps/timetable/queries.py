@@ -142,6 +142,6 @@ def get_links(db: Session, bitrix_id: int):
         .join(endtime_table, user_models.Order.endtime == endtime_table.id) \
         .filter(user_models.Client.client_bitrix_id == bitrix_id, user_models.Order.date == current_time.date()).first()
     if (user_order):
-        return cort_links[user_order.cort] 
+        return  ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"] 
     else:
         raise ValueError("Расписание не найдено")
