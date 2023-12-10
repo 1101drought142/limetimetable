@@ -141,7 +141,7 @@ def get_links(db: Session, bitrix_id: int):
         .join(starttime_table, user_models.Order.starttime == starttime_table.id) \
         .join(endtime_table, user_models.Order.endtime == endtime_table.id) \
         .filter(user_models.Client.client_bitrix_id == bitrix_id, user_models.Order.date == current_time.date(), \
-        user_models.Order.payed==True).first()
+        user_models.Order.payed==True).all()
     for user_order, client, starttime, endtime in user_orders:
         if (starttime.time_object < current_time.time() and endtime_table.time_object > current_time.time()):
             break
