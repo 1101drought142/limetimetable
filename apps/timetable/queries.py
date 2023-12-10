@@ -129,10 +129,10 @@ def get_links(db: Session, bitrix_id: int):
     endtime_table = aliased(user_models.TimeIntervalObjects)
 
     cort_links = {
-        "1" : ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"],
-        "2" : ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"],
-        "3" : ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"],
-        "4" : ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"],
+        1 : ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"],
+        2 : ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"],
+        3 : ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"],
+        4 : ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"],
     }
 
 
