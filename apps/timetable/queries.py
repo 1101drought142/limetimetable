@@ -144,8 +144,7 @@ def get_links(db: Session, bitrix_id: int):
         user_models.Order.payed==True).all()
     res_user_order = None
     for user_order, client, starttime, endtime in user_orders:
-        if (starttime.time_object > current_time.time()):
-            res_user_order = user_order
+        res_user_order = user_order
 
 
     if (res_user_order):
