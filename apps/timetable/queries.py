@@ -10,7 +10,7 @@ def get_order_objects(db: Session, cort_id=None):
     last_ten_minutes = current_time - datetime.timedelta(minutes=10)
     starttime_table = aliased(user_models.TimeIntervalObjects)
     endtime_table = aliased(user_models.TimeIntervalObjects)
-    result = db.query(user_models.Order, starttime_table, endtime_table).join(starttime_table, user_models.Order.starttime == starttime_table.id).join(endtime_table, user_models.Order.endtime == endtime_table.id) #.filter( (user_models.Order.payed==True) | (user_models.Order.time_created > last_ten_minutes) )
+    result = db.query(user_models.Order, starttime_table, endtime_table).join(starttime_table, user_models.Order.starttime == starttime_table.id).join(endtime_table, user_models.Order.endtime == endtime_table.id).filter( (user_models.Order.payed==True) | (user_models.Order.time_created > last_ten_minutes) )
     if (cort_id):
         result = result.filter(user_models.Order.cort == cort_id)
     return result.all()
