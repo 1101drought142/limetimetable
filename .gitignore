@@ -167,3 +167,4 @@ static/jquery-datetimepicker/
 *.db
 
 lost.txt
+*_log
