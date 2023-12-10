@@ -136,13 +136,17 @@ def get_links(db: Session, bitrix_id: int):
     }
 
 
-    user_order = db.query(user_models.Order) \
+    user_orders = db.query(user_models.Order) \
         .join(user_models.Client, user_models.Client.id == user_models.Order.id) \
         .join(starttime_table, user_models.Order.starttime == starttime_table.id) \
         .join(endtime_table, user_models.Order.endtime == endtime_table.id) \
         .filter(user_models.Client.client_bitrix_id == bitrix_id, user_models.Order.date == current_time.date(), \
-        starttime_table.time_object < current_time, endtime_table.time_object > current_time, user_models.Order.payed==True).first()
-    
+        user_models.Order.payed==True).first()
+    for user_order, client, starttime, endtime in user_orders:
+        if (starttime.time_object < current_time.time() and endtime_table.time_object > current_time.time()):
+            break
+    else:
+        user_order = None
     if (user_order):
         return cort_links[user_order.cort] 
     else:
