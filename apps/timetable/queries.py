@@ -143,12 +143,11 @@ def get_links(db: Session, bitrix_id: int):
         .filter(user_models.Client.client_bitrix_id == bitrix_id, user_models.Order.date == current_time.date(), \
         user_models.Order.payed==True).all()
     for user_order, client, starttime, endtime in user_orders:
-        if (starttime.time_object > current_time.time()):
-            break
-    else:
-        user_order = None
+        if (starttime.time_object < current_time.time() and endtime.time_object > current_time.time()):
+            res_user_order = user_order
 
-    if (user_order):
-        return cort_links[user_order.cort] 
+
+    if (res_user_order):
+        return cort_links[res_user_order.cort] 
     else:
         raise ValueError("Расписание не найдено")
