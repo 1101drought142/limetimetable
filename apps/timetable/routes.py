@@ -176,11 +176,10 @@ async def get_raspisanie(request_data: handlers.SetPayed, db: Session = Depends(
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
     
-@router.post("/api/v1/get_links/", response_class=JSONResponse)
+@router.post("/api/v1/get_links", response_class=JSONResponse)
 async def get_translation_links(request_data: handlers.GetTranslationLinks, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
-        await manager.broadcast_html("renew")
         return JSONResponse(content=jsonable_encoder({"success": True, "links": creation_result}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
