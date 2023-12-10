@@ -140,8 +140,9 @@ def get_links(db: Session, bitrix_id: int):
         .join(user_models.Client, user_models.Client.id == user_models.Order.id) \
         .join(starttime_table, user_models.Order.starttime == starttime_table.id) \
         .join(endtime_table, user_models.Order.endtime == endtime_table.id) \
-        .filter(user_models.Client.client_bitrix_id == bitrix_id, user_models.Order.date == current_time.date()).first()
+        .filter(user_models.Client.client_bitrix_id == bitrix_id, user_models.Order.date == current_time.date(), \
+        starttime_table.time_object < current_time.time(), endtime_table.time_object > current_time.time()).first()
     if (user_order):
-        return  ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"] 
+        return cort_links[user_order.cort] 
     else:
         raise ValueError("Расписание не найдено")
