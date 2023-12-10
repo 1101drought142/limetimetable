@@ -8,6 +8,7 @@ import apps.timetable.models as user_models
 def get_order_objects(db: Session, cort_id=None):
     current_time = datetime.datetime.utcnow()
     last_ten_minutes = current_time - datetime.timedelta(minutes=10)
+    raise ValueError(last_ten_minutes)
     starttime_table = aliased(user_models.TimeIntervalObjects)
     endtime_table = aliased(user_models.TimeIntervalObjects)
     result = db.query(user_models.Order, starttime_table, endtime_table).join(starttime_table, user_models.Order.starttime == starttime_table.id).join(endtime_table, user_models.Order.endtime == endtime_table.id).filter( (user_models.Order.payed==True) | (user_models.Order.time_created > last_ten_minutes) )
