@@ -24,9 +24,11 @@ def get_repeatative_order_objects(db: Session, cort_id=None):
     return result.all()
 
 def get_order_object(db: Session, id: int):
+    current_time = datetime.datetime.now()
+    last_ten_minutes = current_time - datetime.timedelta(minutes=10)
     starttime_table = aliased(user_models.TimeIntervalObjects)
     endtime_table = aliased(user_models.TimeIntervalObjects)
-    return db.query(user_models.Order, starttime_table, endtime_table, user_models.Client).join(starttime_table, user_models.Order.starttime == starttime_table.id).join(endtime_table, user_models.Order.endtime == endtime_table.id).join(user_models.Client, user_models.Order.client == user_models.Client.id).filter(user_models.Order.id == id).first()
+    return db.query(user_models.Order, starttime_table, endtime_table, user_models.Client).join(starttime_table, user_models.Order.starttime == starttime_table.id).join(endtime_table, user_models.Order.endtime == endtime_table.id).join(user_models.Client, user_models.Order.client == user_models.Client.id).filter(user_models.Order.id == id).filter( (user_models.Order.payed==True) | (user_models.Order.time_created > last_ten_minutes) ).first()
 
 def set_order_paid(db: Session, id: int):
     db.execute(update(user_models.Order).where(user_models.Order.id==id).values(payed=True))
@@ -118,3 +120,30 @@ def get_intervals(db: Session) -> list:
 
 def get_object_by_date(db: Session, date: datetime.date):
     return db.query(user_models.Order, user_models.TypicalRaspisanieObject).filter(user_models.Order.date==date).join(user_models.TypicalRaspisanieObject).all()
+
+
+def get_links(db: Session, bitrix_id: int):
+
+    current_time = datetime.datetime.now()
+    starttime_table = aliased(user_models.TimeIntervalObjects)
+    endtime_table = aliased(user_models.TimeIntervalObjects)
+
+    cort_links = {
+        "1" : ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"],
+        "2" : ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"],
+        "3" : ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"],
+        "4" : ["https://rtsp.me/embed/FSbsz932/", "https://rtsp.me/embed/FSbsz932/"],
+    }
+
+
+    user_order = db.query(user_models.Order) \
+        .join(user_models.Client, user_models.Client.id == user_models.Order.id) \
+        .join(starttime_table, user_models.Order.starttime == starttime_table.id) \
+        .join(endtime_table, user_models.Order.endtime == endtime_table.id) \
+        .filter(user_models.Client.client_bitrix_id == bitrix_id, user_models.Order.date == current_time.date(), \
+        starttime_table.time_object < current_time.time(), endtime_table.time_object > current_time.time()).first()
+    
+    if (user_order):
+        return cort_links[user_order.cort] 
+    else:
+        raise ValueError("Расписание не найдено")

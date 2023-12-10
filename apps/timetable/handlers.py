@@ -291,4 +291,12 @@ class SetPayed(BaseModel):
             return db_query.set_order_paid(db, int(self.id))
         except Exception as ex:
             return ex
+
+class GetTranslationLinks(BaseModel):
+    bitrix_id: str
+    def execute_query(self, db):
+        try:
+            return db_query.get_links(db, int(self.bitrix_id))
+        except Exception as ex:
+            return ex
         
