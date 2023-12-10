@@ -393,36 +393,3 @@ ws.onmessage = function(event) {
 };
 renew_datetime_pickers_in_modals();
 renew_cell_click_events();
-
-
-function test() {
-    let request = { date: "2023-12-10", cort_id: "1" }
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', `https://timetable.limetennis.ru/api/v1/raspisanie/${request.cort_id}/${request.date}/`);
-    xhr.setRequestHeader("Content-Type", "application/json;");
-    xhr.setRequestHeader('Cache-Control', 'no-cache, no-store, max-age=0');
-    xhr.setRequestHeader('Expires', 'Thu, 1 Jan 1970 00:00:00 GMT');
-    xhr.setRequestHeader('Pragma', 'no-cache');
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                let response = xhr.response;
-                raspisanie_obj = JSON.parse(response)["data"];
-                console.log(js_body)
-                removeOptions($(body).find("#starttime"));
-                removeOptions($(body).find("#endtime"));
-                
-                set_starttime(raspisanie_obj, $(body).find("#starttime").get(0));
-                
-            } else {
-                console.error('Ошибка запроса:', xhr.status);
-            }
-        }
-    };
-    xhr.send();
-}
-
-test()
-test()
-test()
-test()
