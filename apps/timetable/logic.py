@@ -56,10 +56,11 @@ class LogicOrder():
     end_time = None
     hide = False
     date = None
-    def __init__(self, order : db_models.Order|None, starttime: db_models.TimeIntervalObjects|None, endtime : db_models.TimeIntervalObjects|None, date = None, repeatative_order = None) -> None:
+    def __init__(self, order : db_models.Order|None, starttime: db_models.TimeIntervalObjects|None, endtime : db_models.TimeIntervalObjects|None, date = None, repeatative_order = None, client=None) -> None:
         self.order = order
         self.start_time = starttime
         self.end_time = endtime
+        self.client = client
         if (date):
             self.date = date
         self.repeatative_order = repeatative_order
@@ -91,7 +92,7 @@ class LogicOrder():
         
     def get_text(self) -> str:
         if (self.get_logic_status() == CellStatuses.payed):
-            return f"{CellStatuses.payed.get_rus_name()} \n {self.order.client}"
+            return f"{CellStatuses.payed.get_rus_name()} / {self.client.client_name}"
         elif (self.get_logic_status() == CellStatuses.ordered):
             return CellStatuses.ordered.get_rus_name()
         elif (self.get_logic_status() == CellStatuses.passed):
@@ -149,8 +150,8 @@ class DateLogic():
     def insert_data_to_table_from_db(self, db,  result, cort_id=None):
         objects = db_query.get_order_objects(db, cort_id)
         object_filter_data = {}
-        for object, starttime, endtime in objects:
-            temp_object = LogicOrder(object, starttime, endtime)
+        for object, starttime, endtime, client in objects:
+            temp_object = LogicOrder(object, starttime, endtime, client=client)
             object_filter_data[temp_object.get_unique_key()] = temp_object
 
         repeatative_objects = db_query.get_repeatative_order_objects(db, cort_id)
@@ -233,7 +234,7 @@ class GetApiOrderData():
         objects = db_query.get_order_objects(db, self.cort_id)
         repeatative_objects = db_query.get_repeatative_order_objects(db, self.cort_id)
 
-        for obj, start, end in objects:
+        for obj, start, end, client in objects:
             if (obj.date == self.date):
                 intervals_restriction.add_new(start.id, end.id)
 
