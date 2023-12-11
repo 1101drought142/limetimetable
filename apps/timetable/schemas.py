@@ -12,6 +12,7 @@ class AddOrderScheme(BaseScheme):
     end_time: str
     clients: list
     corts: list
+    cort: int
 
 class GetChangeModalScheme(BaseScheme):
     start_time: str

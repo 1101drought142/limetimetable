@@ -49,6 +49,7 @@ def create_modal(request: Request, user: Annotated[User, Depends(authenticate_us
         "end_time" : request_data_result.end_time,
         "clients": request_data_result.clients,
         "corts" : request_data_result.corts,
+        "cort" : request_data.cort,
     })
 
 @router.post("/api/server/v1/get_change_modal_template/", response_class=HTMLResponse)

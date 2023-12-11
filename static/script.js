@@ -100,7 +100,8 @@ document.querySelectorAll("#cort_type_id").forEach(function (block) {
 })
 function show_selection_modal(id){
     let request = {
-        "block_id" : id
+        "block_id" : id,
+        
     }
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/server/v1/get_change_modal_template/');
@@ -144,6 +145,7 @@ function show_modal(date, time){
     let request = {
         "start_time": time,
         "date" : date,
+        "cort_id" : document.getElementById("cort_type_id").value,
     }
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/server/v1/get_create_modal_template/');

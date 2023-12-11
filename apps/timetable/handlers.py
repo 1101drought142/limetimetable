@@ -13,7 +13,7 @@ from common_logic import datetime_picker_format, Weekday, DataBaseFormatedWeekda
 class GetAddOrderTemplateHandler(BaseModel):
     start_time : str
     date: str
-
+    cort_id: str
     def get_validated_result(self, db):
         start_time = datetime.datetime.fromisoformat(f"{self.date} {self.start_time}") 
         end_time = start_time + datetime.timedelta(hours=1)
@@ -22,6 +22,7 @@ class GetAddOrderTemplateHandler(BaseModel):
             end_time = datetime_picker_format(end_time),
             clients = db_query.get_clients(db),
             corts = db_query.get_corts(db),
+            cort = int(self.cort_id)
         )
     
 class GetChangeModalTemplateHandler(BaseModel):
