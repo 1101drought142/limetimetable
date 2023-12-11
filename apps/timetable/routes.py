@@ -73,6 +73,7 @@ def create_repeatative_modal(request: Request , user: Annotated[User, Depends(au
         "request": request, 
         "corts" : request_data_result.corts,
         "weekdays": request_data_result.weekdays,
+        "cort": request_data_result.cort,
     })
 
 @router.post("/api/server/v1/get_change_repeatative_modal_template/", response_class=HTMLResponse)

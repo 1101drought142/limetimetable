@@ -25,6 +25,7 @@ class GetChangeModalScheme(BaseScheme):
 class AddRepeatativeBlockScheme(BaseScheme):
     corts: list
     weekdays: list
+    cort: int
 
 class GetChangeModalRepeatativeScheme(BaseScheme):
     start_time: str

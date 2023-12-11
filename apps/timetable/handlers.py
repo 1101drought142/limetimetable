@@ -27,7 +27,7 @@ class GetAddOrderTemplateHandler(BaseModel):
     
 class GetChangeModalTemplateHandler(BaseModel):
     block_id : str
-
+    
     def get_validated_result(self, db):
         order_object = db_query.get_order_object(db, int(self.block_id))
         order, start_time_db, end_time_db, client = order_object
@@ -46,10 +46,13 @@ class GetChangeModalTemplateHandler(BaseModel):
         )
 
 class GetAddRepeatativeBlockModalTemplate(BaseModel): 
+    cort_id: str
+
     def get_validated_result(self, db):
         return schemas.AddRepeatativeBlockScheme (
             corts = db_query.get_corts(db),
             weekdays = [e for e in Weekday],
+            cort = int(self.cort_id)
         )
 
 class GetChangeModalRepeatativeTemplateHandler(BaseModel):

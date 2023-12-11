@@ -167,6 +167,7 @@ function show_modal(date, time){
 
 function show_repeatative_modal(){
     let request = {
+        "cort_id" : document.getElementById("cort_type_id").value,
     }
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/server/v1/get_create_repeatative_modal_template/');
