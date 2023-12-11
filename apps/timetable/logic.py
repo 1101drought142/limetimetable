@@ -94,7 +94,7 @@ class LogicOrder():
         if (self.get_logic_status() == CellStatuses.payed):
             return f"{CellStatuses.payed.get_rus_name()} / {self.client.client_name}"
         elif (self.get_logic_status() == CellStatuses.ordered):
-            return CellStatuses.ordered.get_rus_name()
+            return  f"{CellStatuses.ordered.get_rus_name()} / {self.client.client_name}"
         elif (self.get_logic_status() == CellStatuses.passed):
             return CellStatuses.passed.get_rus_name()
         elif (self.get_logic_status() == CellStatuses.empty):
