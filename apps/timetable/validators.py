@@ -99,7 +99,7 @@ class OrderValidator(BaseTimeBlockValidator):
         if (not(flag_object_exist)):
             raise ValueError("Заказа с таким ID нет")
 
-        if (not(self.site_id) and not(self.name and self.phone and self.mail)):
+        if (not(self.site_id) and not(self.name)):
             raise ValueError("Нет данных о клиенте")
 
         if (self.site_id):
