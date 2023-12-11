@@ -94,7 +94,6 @@ async def create_modal(request: Request , user: Annotated[User, Depends(authenti
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
         create_log(db, user.id, "Создан новый блок расписания на " + " с " + str(request_data.date_start) + " по " + str(request_data.date_end) + " на корте " + str(request_data.cort_id) + " с оплатой " + str(request_data.status))
-        await manager.broadcast_html( "renew" )
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
@@ -104,7 +103,6 @@ async def delete_modal(request: Request , user: Annotated[User, Depends(authenti
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
         create_log(db, user.id, "Удален блок расписания с id" + str(request_data.block_id)) 
-        await manager.broadcast_html("renew")
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)    
@@ -114,7 +112,6 @@ async def update_modal(request: Request , user: Annotated[User, Depends(authenti
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
         create_log(db, user.id, "Обновлен блок расписания на " + " с " + str(request_data.date_start) + " по " + str(request_data.date_end) + " на корте " + str(request_data.cort_id) + " с оплатой " + str(request_data.status))
-        await manager.broadcast_html("renew")
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
@@ -124,7 +121,6 @@ async def update_modal(request: Request , user: Annotated[User, Depends(authenti
 async def create_repeatative(request: Request , user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.CreateRepeatativeTimeBlock, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
-        await manager.broadcast_html( "renew" )
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
@@ -133,7 +129,6 @@ async def create_repeatative(request: Request , user: Annotated[User, Depends(au
 async def update_repeatative(request: Request, user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.ChangeRepeatativeTimeBlock, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
-        await manager.broadcast_html("renew")
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
@@ -142,7 +137,6 @@ async def update_repeatative(request: Request, user: Annotated[User, Depends(aut
 async def delete_modal(request: Request, user: Annotated[User, Depends(authenticate_user)] , request_data: handlers.DeleteRepeatativeTimeBlock, db: Session = Depends(get_db)):
     creation_result = request_data.execute_query(db)
     if (creation_result == True):
-        await manager.broadcast_html("renew")
         return JSONResponse(content=jsonable_encoder({"success": True}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)    
