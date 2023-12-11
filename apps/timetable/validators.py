@@ -75,7 +75,7 @@ class OrderValidator(BaseTimeBlockValidator):
             flag_object_exist = True
                 
         objects = db_query.get_order_objects(self.db, self.cort_id)
-        for object, starttime, endtime in objects:
+        for object, starttime, endtime, client in objects:
             if (object.id == self.block_id):
                 flag_object_exist = True
                 continue
@@ -150,7 +150,7 @@ class RepeatativeTaskValidator(BaseTimeBlockValidator):
             raise ValueError("Дни недели не выбраны")
         
         objects = db_query.get_order_objects(self.db, self.cort_id)
-        for object, starttime, endtime in objects:
+        for object, starttime, endtime, client in objects:
             for db_date in self.days:
                 if int(object.date.weekday()) == int(db_date):
                     if not((self.start_time < starttime.time_object and self.end_time <= starttime.time_object) or (self.start_time >= endtime.time_object and self.end_time > endtime.time_object)):
