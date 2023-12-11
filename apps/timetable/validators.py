@@ -59,6 +59,9 @@ class OrderValidator(BaseTimeBlockValidator):
         self.cort_id = int(cort_id)
 
     def validate_and_get_object_or_raise(self) -> schemas.ValidatedOrderObject:
+        
+        if not(self.bitrix_id):
+            self.bitrix_id = 0
 
         self.timevalidation(self.starttime, self.endtime)
         self.cortvalidation(self.cort_id)
