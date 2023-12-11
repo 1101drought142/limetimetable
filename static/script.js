@@ -202,7 +202,8 @@ function delete_event(orderid){
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 201) {
-                document.querySelector(".dialog").close()
+                document.querySelector(".dialog").close();
+                renew_table();
             } else {
                 console.error('Ошибка запроса:', xhr.status);
                 let response = xhr.response;
@@ -223,7 +224,8 @@ function delete_repeatative_event(orderid){
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 201) {
-                document.querySelector(".dialog").close()
+                document.querySelector(".dialog").close();
+                renew_table();
             } else {
                 console.error('Ошибка запроса:', xhr.status);
                 let response = xhr.response;
@@ -253,7 +255,8 @@ function edit_event(orderid){
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 201) {
-                document.querySelector(".dialog").close()
+                document.querySelector(".dialog").close();
+                renew_table();
             } else {
                 console.error('Ошибка запроса:', xhr.status);
                 let response = xhr.response;
@@ -283,7 +286,8 @@ function create_new_event(){
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 201) {
-                document.querySelector(".dialog").close()
+                document.querySelector(".dialog").close();
+                renew_table();
             } else {
                 console.error('Ошибка запроса:', xhr.status);
                 let response = xhr.response;
@@ -309,7 +313,8 @@ function create_new_repeatative_event(){
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 201) {
-                document.querySelector(".dialog").close()
+                document.querySelector(".dialog").close();
+                renew_table();
             } else {
                 console.error('Ошибка запроса:', xhr.status);
                 let response = xhr.response;
@@ -343,6 +348,7 @@ function change_repeatative_event(orderid) {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 201) {
                 document.querySelector(".dialog").close()
+                renew_table();
             } else {
                 console.error('Ошибка запроса:', xhr.status);
                 let response = xhr.response;
