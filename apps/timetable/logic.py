@@ -91,7 +91,7 @@ class LogicOrder():
         
     def get_text(self) -> str:
         if (self.get_logic_status() == CellStatuses.payed):
-            return CellStatuses.payed.get_rus_name()
+            return f"{CellStatuses.payed.get_rus_name()} \n {self.order.client}"
         elif (self.get_logic_status() == CellStatuses.ordered):
             return CellStatuses.ordered.get_rus_name()
         elif (self.get_logic_status() == CellStatuses.passed):
