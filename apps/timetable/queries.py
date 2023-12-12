@@ -14,7 +14,7 @@ def get_order_objects(db: Session, cort_id=None):
         .join(starttime_table, user_models.Order.starttime == starttime_table.id) \
         .join(endtime_table, user_models.Order.endtime == endtime_table.id) \
         .join(user_models.Client, user_models.Order.client == user_models.Client.id) \
-        .filter( (user_models.Order.payed==True) | (user_models.Order.time_created > last_ten_minutes) )
+        .filter( (user_models.Order.payed==True) | (user_models.Order.time_created > last_ten_minutes) | (user_models.Order.created_by_admin==True) )
     if (cort_id):
         result = result.filter(user_models.Order.cort == cort_id)
     return result.all()
