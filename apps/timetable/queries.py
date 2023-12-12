@@ -71,7 +71,7 @@ def create_new_object(db: Session, date: datetime.date, starttime: datetime.time
         client_id = client.id
     else:
         client_id = site_id
-    new_order = user_models.Order( date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id), cort=cort_id, created_by_admin=True)
+    new_order = user_models.Order( date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id), cort=cort_id, created_by_admin=created_by_admin)
     db.add(new_order)
     db.commit()
     if (new_order.id):
