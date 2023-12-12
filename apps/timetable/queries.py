@@ -32,7 +32,7 @@ def get_order_object(db: Session, id: int):
     last_ten_minutes = current_time - datetime.timedelta(minutes=10)
     starttime_table = aliased(user_models.TimeIntervalObjects)
     endtime_table = aliased(user_models.TimeIntervalObjects)
-    return db.query(user_models.Order, starttime_table, endtime_table, user_models.Client).join(starttime_table, user_models.Order.starttime == starttime_table.id).join(endtime_table, user_models.Order.endtime == endtime_table.id).join(user_models.Client, user_models.Order.client == user_models.Client.id).filter(user_models.Order.id == id).filter( (user_models.Order.payed==True) | (user_models.Order.time_created > last_ten_minutes) ).first()
+    return db.query(user_models.Order, starttime_table, endtime_table, user_models.Client).join(starttime_table, user_models.Order.starttime == starttime_table.id).join(endtime_table, user_models.Order.endtime == endtime_table.id).join(user_models.Client, user_models.Order.client == user_models.Client.id).filter(user_models.Order.id == id).filter( (user_models.Order.payed==True) | (user_models.Order.time_created > last_ten_minutes)  | (user_models.Order.created_by_admin==True) ).first()
 
 def set_order_paid(db: Session, id: int):
     db.execute(update(user_models.Order).where(user_models.Order.id==id).values(payed=True))
