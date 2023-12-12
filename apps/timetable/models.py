@@ -40,3 +40,4 @@ class Order(Base):
     endtime = Column(Integer, ForeignKey('time_interval_objects.id'))
     cort = Column(Integer, ForeignKey('cort.id'))
     time_created = Column(DateTime(timezone=True), server_default=func.now())
+    created_by_admin = Column(Boolean)
