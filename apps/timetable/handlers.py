@@ -102,7 +102,8 @@ class CreateNewTimeBlock(BaseModel):
                 validator_result.mail,
                 validator_result.bitrix_id,
                 validator_result.site_id,
-                validator_result.cort_id
+                validator_result.cort_id,
+                True
             )
         except Exception as ex:
             return ex

@@ -61,7 +61,7 @@ def delete_repatative_order_object(db: Session, id: int) -> bool:
     else:
         raise ValueError("Нет объекта с таким id")
 
-def create_new_object(db: Session, date: datetime.date, starttime: datetime.time, endtime: datetime.time, payed: bool, client_name:str|None, client_phone: str|None, client_mail: str|None, bitrix_id: str|None, site_id: str|None, cort_id:int):
+def create_new_object(db: Session, date: datetime.date, starttime: datetime.time, endtime: datetime.time, payed: bool, client_name:str|None, client_phone: str|None, client_mail: str|None, bitrix_id: str|None, site_id: str|None, cort_id:int, created_by_admin = False):
     time_start = db.query(user_models.TimeIntervalObjects).filter(user_models.TimeIntervalObjects.time_object == starttime).first()
     time_end = db.query(user_models.TimeIntervalObjects).filter(user_models.TimeIntervalObjects.time_object == endtime).first()
     if not(site_id):
@@ -71,7 +71,7 @@ def create_new_object(db: Session, date: datetime.date, starttime: datetime.time
         client_id = client.id
     else:
         client_id = site_id
-    new_order = user_models.Order( date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id), cort=cort_id)
+    new_order = user_models.Order( date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id), cort=cort_id, created_by_admin=created_by_admin)
     db.add(new_order)
     db.commit()
     if (new_order.id):
