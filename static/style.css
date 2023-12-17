@@ -47,39 +47,24 @@
     text-align: center;
 }
 
-.raspisanie_block_ordered {
-    background: #ffe087;
-}
 
-.raspisanie_block_payed {
-    background: var(--success);
-}
 
 .raspisanie_block_passed_time {
-    background: var(--passed);
     cursor: default;
 }
 
-.raspisanie_block_weekly {
-    background: var(--repatative_color);
-}
-
 .raspisanie_block_empty:hover {
-    background: var(--success-light);
     color: white;
 }
 
 .raspisanie_block_payed:hover {
-    background: var(--success-dark);
     color: white;
 }
 
 .raspisanie_block_ordered:hover {
-    background: var(--problem);
     color: white;
 }
 .raspisanie_block_weekly:hover {
-    background: var(--repatative_color_hoover);
     color: white;
 }
 
