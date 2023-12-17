@@ -122,7 +122,7 @@ class LogicOrder():
         elif (self.get_logic_status() == CellStatuses.passed):
             return "#cdcdcd"
         elif (self.get_logic_status() == CellStatuses.empty):
-            return "#000"
+            return "#fff"
     
     def get_unique_key(self):  
         if (self.date):
