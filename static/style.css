@@ -54,15 +54,15 @@
     cursor: default;
 }
 
-.raspisanie_block_empty:hover {
-    color: white;
-}
 
 .raspisanie_block_payed:hover {
     color: white;
 }
 
 .raspisanie_block_ordered:hover {
+    color: white;
+}
+.raspisanie_block_weekly {
     color: white;
 }
 .raspisanie_block_weekly:hover {
