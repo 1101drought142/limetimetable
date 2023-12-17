@@ -28,6 +28,7 @@ class BaseTimeBlockValidator():
         res_start_time = datetime.datetime(year=base_date.year, month=base_date.month, day=base_date.day, hour=starttime.hour, minute=starttime.minute)
         res_end_time = datetime.datetime(year=base_date.year, month=base_date.month, day=base_date.day, hour=endtime.hour, minute=endtime.minute) 
         res_end_time += datetime.timedelta(minutes=30)
+        res_start_time -= datetime.timedelta(minutes=30)
         return res_start_time.time(), res_end_time.time()
 
 class OrderValidator(BaseTimeBlockValidator):
