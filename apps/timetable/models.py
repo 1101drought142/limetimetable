@@ -1,7 +1,16 @@
-from sqlalchemy import  Column, Integer, String, Date, Boolean, Time, ForeignKey, DateTime
+import enum
+
+from sqlalchemy import  Column, Integer, String, Date, Boolean, Time, ForeignKey, DateTime, Enum
 from sqlalchemy.sql import func
 
 from database import Base
+
+class Colors(enum.Enum):
+    orange = { "color" : "DE6600", "color_name" : "Оранжевый"}
+    blue = { "color" : "00405A", "color_name" : "Синий"}
+    green = { "color" : "436C33", "color_name" : "Зеленый"}
+    red = { "color" : "94001C", "color_name" : "Красный"}
+    yellow = { "color" : "DFC54E", "color_name" : "Желтый"}
 
 class Cort(Base):
     __tablename__ = "cort"
@@ -29,6 +38,7 @@ class TypicalRaspisanieObject(Base):
     endtime = Column(Integer, ForeignKey('time_interval_objects.id'))
     description = Column(String(255))
     cort = Column(Integer, ForeignKey('cort.id'))
+    color = Column(Enum(Colors), nullable=True)
 
 class Order(Base):
     __tablename__ = "orders"
@@ -41,3 +51,4 @@ class Order(Base):
     cort = Column(Integer, ForeignKey('cort.id'))
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     created_by_admin = Column(Boolean)
+    color = Column(Enum(Colors), nullable=True)

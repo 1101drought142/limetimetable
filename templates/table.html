@@ -14,7 +14,7 @@
             {% for cell in data %}
                 
                 {% if not(cell["time"][outer_loop.index0]["hide"]) %}
-                <td class="raspisanie_block {{cell['time'][outer_loop.index0].get_class()}} "
+                <td class="raspisanie_block" style="background-color: {{cell['time'][outer_loop.index0].get_class()}};"
                 {% if cell["time"][outer_loop.index0].get_interval() %} rowspan='{{cell["time"][outer_loop.index0].get_interval()}}' {% endif %} 
                 data-starttime="{{time.time_object.strftime('%H')}}:{{cell['time'][outer_loop.index0].start_time.time_object.strftime('%M')}}" 
                 data-date="{{cell['date']}}" 

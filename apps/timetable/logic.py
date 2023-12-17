@@ -114,6 +114,12 @@ class LogicOrder():
         elif (self.get_logic_status() == CellStatuses.weekly):
             return "raspisanie_block_weekly"
     
+    def get_background_color(self):
+        if (self.get_logic_status() == CellStatuses.weekly):
+            return db_models.Colors.blue["color"]
+        else:
+            return db_models.Colors.orange["color"]
+    
     def get_unique_key(self):  
         if (self.date):
             return f'{str(self.date)}_{str(self.start_time.time_object.hour)}_{str(self.start_time.time_object.minute)}'
