@@ -117,8 +117,11 @@ class LogicOrder():
     def get_background_color(self):
         if (self.get_logic_status() == CellStatuses.weekly):
             return db_models.Colors.blue.value["color"]
-        else:
+        elif (self.get_logic_status() == CellStatuses.ordered or self.get_logic_status() == CellStatuses.passed):
             return db_models.Colors.orange.value["color"]
+        elif (self.get_logic_status() == CellStatuses.passed):
+            return "#cdcdcd"
+        
     
     def get_unique_key(self):  
         if (self.date):

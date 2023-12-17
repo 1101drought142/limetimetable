@@ -2,7 +2,7 @@
     --success : rgb(118, 255, 94);
     --success-dark : rgb(24, 153, 2);
     --success-light : rgb(106, 175, 3);
-    --passed: rgb(205, 205, 205);
+    --passed: #cdcdcd;
     --problem: #d2a937;
     --error: red;
     --repatative_color: skyblue;
