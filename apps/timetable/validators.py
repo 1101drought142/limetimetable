@@ -45,6 +45,7 @@ class OrderValidator(BaseTimeBlockValidator):
         site_id: int|None, 
         block_id: str|None,
         cort_id: int,
+        created_by_admin = False
     ):
         self.db = db
         self.name = name
@@ -58,6 +59,7 @@ class OrderValidator(BaseTimeBlockValidator):
         self.site_id = site_id
         self.block_id = block_id
         self.cort_id = int(cort_id)
+        self.created_by_admin = created_by_admin
 
     def validate_and_get_object_or_raise(self) -> schemas.ValidatedOrderObject:
         
@@ -84,11 +86,12 @@ class OrderValidator(BaseTimeBlockValidator):
                 if not((self.starttime < starttime.time_object and self.endtime  <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
                     raise ValueError("Время совпадает с занятым временем")
                 
-                if (check_end_time == starttime.time_object):
-                    raise ValueError("Время между двумя блоками - 30 минут")
-                
-                if (check_start_time == endtime.time_object):
-                    raise ValueError("Время между двумя блоками - 30 минут")
+                if not(self.created_by_admin):
+                    if (check_end_time == starttime.time_object):
+                        raise ValueError("Время между двумя блоками - 30 минут")
+                    
+                    if (check_start_time == endtime.time_object):
+                        raise ValueError("Время между двумя блоками - 30 минут")
                 
         repeatative_objects = db_query.get_repeatative_order_objects(self.db, self.cort_id)
         for object, starttime, endtime in repeatative_objects:
@@ -97,11 +100,12 @@ class OrderValidator(BaseTimeBlockValidator):
                     if not((self.starttime < starttime.time_object and self.endtime <= starttime.time_object) or (self.starttime >= endtime.time_object and self.endtime > endtime.time_object)):
                         raise ValueError("Время совпадает с занятым временем")
                     
-                    if (check_end_time == starttime.time_object):
-                        raise ValueError("Время между двумя блоками - 30 минут")
-                    
-                    if (check_start_time == endtime.time_object):
-                        raise ValueError("Время между двумя блоками - 30 минут")
+                    if not(self.created_by_admin):
+                        if (check_end_time == starttime.time_object):
+                            raise ValueError("Время между двумя блоками - 30 минут")
+                        
+                        if (check_start_time == endtime.time_object):
+                            raise ValueError("Время между двумя блоками - 30 минут")
                 
         if (not(flag_object_exist)):
             raise ValueError("Заказа с таким ID нет")

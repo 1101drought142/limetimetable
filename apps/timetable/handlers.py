@@ -89,7 +89,7 @@ class CreateNewTimeBlock(BaseModel):
         start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
         end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M')
         try:
-            validator = db_validators.OrderValidator(db, self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, None, self.cort_id)
+            validator = db_validators.OrderValidator(db, self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, None, self.cort_id, True)
             validator_result = validator.validate_and_get_object_or_raise()
             db_query.create_new_object(
                 db, 
@@ -125,7 +125,7 @@ class ChangeTimeBlock(BaseModel):
         start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
         end_time = datetime.datetime.strptime(self.date_end, '%d-%m-%Y %H:%M')
         try:
-            validator = db_validators.OrderValidator(db, self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, int(self.block_id), self.cort_id)
+            validator = db_validators.OrderValidator(db, self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, int(self.block_id), self.cort_id,  True)
             validator_result = validator.validate_and_get_object_or_raise()
             db_query.update_object_db(
                 db, 
@@ -156,7 +156,7 @@ class CreateRepeatativeTimeBlock(BaseModel):
         start_time = datetime.datetime.strptime(self.time_start, '%H:%M')
         end_time = datetime.datetime.strptime(self.time_end, '%H:%M')
         try:
-            validator = db_validators.RepeatativeTaskValidator(db, start_time.time(), end_time.time(), self.description, self.days, self.cort_id)
+            validator = db_validators.RepeatativeTaskValidator(db, start_time.time(), end_time.time(), self.description, self.days, self.cort_id,  True)
             validator_result = validator.validate_and_get_object_or_raise()
             db_query.create_new_repeatative_object(
                 db, 
@@ -182,7 +182,7 @@ class ChangeRepeatativeTimeBlock(BaseModel):
         start_time = datetime.datetime.strptime(self.time_start, '%H:%M')
         end_time = datetime.datetime.strptime(self.time_end, '%H:%M')
         try:
-            validator = db_validators.RepeatativeTaskValidator(db, start_time.time(), end_time.time(), self.description, self.days, self.cort_id, self.block_id)
+            validator = db_validators.RepeatativeTaskValidator(db, start_time.time(), end_time.time(), self.description, self.days, self.cort_id, self.block_id,  True)
             validator_result = validator.validate_and_get_object_or_raise()
             db_query.update_repeatative_object_db(
                 db, 
