@@ -115,7 +115,12 @@ class LogicOrder():
             return "raspisanie_block_weekly"
     
     def get_background_color(self):
-        if (self.get_logic_status() == CellStatuses.weekly):
+        if (self.order.color):
+            return self.order.color.value["color"]
+        elif (self.repeatative_order.color):
+            return self.repeatative_order.color.value["color"]
+        
+        elif (self.get_logic_status() == CellStatuses.weekly):
             return db_models.Colors.blue.value["color"]
         elif (self.get_logic_status() == CellStatuses.ordered or self.get_logic_status() == CellStatuses.payed):
             return db_models.Colors.orange.value["color"]
