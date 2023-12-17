@@ -86,6 +86,9 @@ class OrderValidator(BaseTimeBlockValidator):
                 if (check_end_time == starttime.time_object):
                     raise ValueError("Время между двумя блоками - 30 минут")
                 
+                if (check_start_time == endtime.time_object):
+                    raise ValueError("Время между двумя блоками - 30 минут")
+                
         repeatative_objects = db_query.get_repeatative_order_objects(self.db, self.cort_id)
         for object, starttime, endtime in repeatative_objects:
             for db_date in DataBaseFormatedWeekday.format_from_string(object.weekdays):
@@ -94,6 +97,9 @@ class OrderValidator(BaseTimeBlockValidator):
                         raise ValueError("Время совпадает с занятым временем")
                     
                     if (check_end_time == starttime.time_object):
+                        raise ValueError("Время между двумя блоками - 30 минут")
+                    
+                    if (check_start_time == endtime.time_object):
                         raise ValueError("Время между двумя блоками - 30 минут")
                 
         if (not(flag_object_exist)):
