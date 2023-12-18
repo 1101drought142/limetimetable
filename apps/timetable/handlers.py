@@ -98,7 +98,7 @@ class CreateNewTimeBlock(BaseModel):
             validator = db_validators.OrderValidator(db, self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, None, self.cort_id, True)
             validator_result = validator.validate_and_get_object_or_raise()
             if (self.color_name):
-                color = Colors(self.color_name)
+                color = Colors[self.color_name]
             else:
                 color = None
             db_query.create_new_object(
