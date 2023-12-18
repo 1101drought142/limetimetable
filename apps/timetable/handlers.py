@@ -139,6 +139,10 @@ class ChangeTimeBlock(BaseModel):
         try:
             validator = db_validators.OrderValidator(db, self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, int(self.block_id), self.cort_id,  True)
             validator_result = validator.validate_and_get_object_or_raise()
+            if (self.color_name):
+                color = Colors[self.color_name]
+            else:
+                color = None
             db_query.update_object_db(
                 db, 
                 validator_result.date, 
@@ -151,7 +155,8 @@ class ChangeTimeBlock(BaseModel):
                 validator_result.bitrix_id,
                 validator_result.site_id,
                 validator_result.block_id,
-                validator_result.cort_id
+                validator_result.cort_id,
+                color = color,
             )
         except Exception as ex:
             return ex
