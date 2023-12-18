@@ -174,7 +174,7 @@ class CreateRepeatativeTimeBlock(BaseModel):
         start_time = datetime.datetime.strptime(self.time_start, '%H:%M')
         end_time = datetime.datetime.strptime(self.time_end, '%H:%M')
         try:
-            validator = db_validators.RepeatativeTaskValidator(db, start_time.time(), end_time.time(), self.description, self.days, self.cort_id,  True)
+            validator = db_validators.RepeatativeTaskValidator(db, start_time.time(), end_time.time(), self.description, self.days, self.cort_id)
             validator_result = validator.validate_and_get_object_or_raise()
             if (self.color_name):
                 color = Colors[self.color_name]
@@ -206,7 +206,7 @@ class ChangeRepeatativeTimeBlock(BaseModel):
         start_time = datetime.datetime.strptime(self.time_start, '%H:%M')
         end_time = datetime.datetime.strptime(self.time_end, '%H:%M')
         try:
-            validator = db_validators.RepeatativeTaskValidator(db, start_time.time(), end_time.time(), self.description, self.days, self.cort_id, self.block_id,  True)
+            validator = db_validators.RepeatativeTaskValidator(db, start_time.time(), end_time.time(), self.description, self.days, self.cort_id, self.block_id)
             validator_result = validator.validate_and_get_object_or_raise()
             if (self.color_name):
                 color = Colors[self.color_name]
