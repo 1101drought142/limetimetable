@@ -23,7 +23,7 @@
             <li> 
                 <span>Цвет:</span>  
                 <select id="color_modal_id">
-                    <option>Стандартный</option>
+                    <option value="">Стандартный</option>
                     {% for color in colors %}
                         <option value="{{color.name}}">{{color.value["color_name"]}}</option>
                     {% endfor %}

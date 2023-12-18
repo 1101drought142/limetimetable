@@ -18,7 +18,7 @@
             <li> 
                 <span>ID клиента на сайте:</span>  
                 <select id="client_site_id">
-                    <option value="">Добавить клиента</option>
+                    <option >Добавить клиента</option>
                     {% for client_ in clients %}
                         <option value="{{client_.id}}" {% if client.id == client_.id %} selected {% endif %}>{{client_.client_name}} {{client_.client_phone}}</option>
                     {% endfor %}
@@ -35,7 +35,7 @@
             <li> 
                 <span>Цвет:</span>  
                 <select id="color_modal_id">
-                    <option>Стандартный</option>
+                    <option value="">Стандартный</option>
                     {% for color in colors %}
                         <option value="{{color.name}}" {% if color.name == order.color.name %} selected {% endif %}>{{color.value["color_name"]}}</option>
                     {% endfor %}

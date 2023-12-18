@@ -92,18 +92,18 @@ def update_object_db(db: Session, date: datetime.date, starttime: datetime.time,
     db.execute(update(user_models.Order).where(user_models.Order.id==order.id).values(date=date, starttime=time_start.id, endtime=time_end.id, payed=payed, client=int(client_id), cort=cort_id, color=color))
     db.commit()
 
-def create_new_repeatative_object(db: Session, starttime: datetime.time, endtime: datetime.time, description: str, weekdays: str, cort_id:int):
+def create_new_repeatative_object(db: Session, starttime: datetime.time, endtime: datetime.time, description: str, weekdays: str, cort_id:int, color=None):
     time_start = db.query(user_models.TimeIntervalObjects).filter(user_models.TimeIntervalObjects.time_object == starttime).first()
     time_end = db.query(user_models.TimeIntervalObjects).filter(user_models.TimeIntervalObjects.time_object == endtime).first()
-    db.add(user_models.TypicalRaspisanieObject( weekdays=weekdays, starttime=time_start.id, endtime=time_end.id, description=description, cort=cort_id))
+    db.add(user_models.TypicalRaspisanieObject( weekdays=weekdays, starttime=time_start.id, endtime=time_end.id, description=description, cort=cort_id, color=color))
     db.commit()
     return True
 
-def update_repeatative_object_db(db: Session, block_id: int, starttime: datetime.time, endtime: datetime.time, description: str, weekdays: str, cort_id:int):
+def update_repeatative_object_db(db: Session, block_id: int, starttime: datetime.time, endtime: datetime.time, description: str, weekdays: str, cort_id:int, color=None):
     order = db.query(user_models.TypicalRaspisanieObject).filter(user_models.TypicalRaspisanieObject.id == block_id).first()
     time_start = db.query(user_models.TimeIntervalObjects).filter(user_models.TimeIntervalObjects.time_object == starttime).first()
     time_end = db.query(user_models.TimeIntervalObjects).filter(user_models.TimeIntervalObjects.time_object == endtime).first()
-    db.execute(update(user_models.TypicalRaspisanieObject).where(user_models.TypicalRaspisanieObject.id==order.id).values(weekdays=weekdays, starttime=time_start.id, endtime=time_end.id, description=description, cort=cort_id))
+    db.execute(update(user_models.TypicalRaspisanieObject).where(user_models.TypicalRaspisanieObject.id==order.id).values(weekdays=weekdays, starttime=time_start.id, endtime=time_end.id, description=description, cort=cort_id, color=color))
     db.commit()
 
 def get_client_or_raise(db: Session, id: int) -> bool:
