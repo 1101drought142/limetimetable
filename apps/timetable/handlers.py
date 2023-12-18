@@ -5,6 +5,7 @@ import apps.timetable.schemas as schemas
 import apps.timetable.queries as db_query
 import apps.timetable.validators as db_validators
 from apps.timetable.logic import DateLogic, GetApiOrderData
+from apps.timetable.models import Colors
 
 from database import get_db
 
@@ -22,7 +23,8 @@ class GetAddOrderTemplateHandler(BaseModel):
             end_time = datetime_picker_format(end_time),
             clients = db_query.get_clients(db),
             corts = db_query.get_corts(db),
-            cort = int(self.cort_id)
+            cort = int(self.cort_id),
+            colors = [e for e in Colors],
         )
     
 class GetChangeModalTemplateHandler(BaseModel):
@@ -43,6 +45,7 @@ class GetChangeModalTemplateHandler(BaseModel):
             client = client,
             clients = db_query.get_clients(db),
             corts = db_query.get_corts(db),
+            colors = [e for e in Colors],
         )
 
 class GetAddRepeatativeBlockModalTemplate(BaseModel): 
@@ -52,7 +55,8 @@ class GetAddRepeatativeBlockModalTemplate(BaseModel):
         return schemas.AddRepeatativeBlockScheme (
             corts = db_query.get_corts(db),
             weekdays = [e for e in Weekday],
-            cort = int(self.cort_id)
+            cort = int(self.cort_id),
+            colors = [e for e in Colors],
         )
 
 class GetChangeModalRepeatativeTemplateHandler(BaseModel):
@@ -72,6 +76,7 @@ class GetChangeModalRepeatativeTemplateHandler(BaseModel):
             corts = db_query.get_corts(db),
             weekdays = [e for e in Weekday],
             curent_weekdays =  DataBaseFormatedWeekday.format_from_string(repeatative_order.weekdays),
+            colors = [e for e in Colors],
         )
 
 class CreateNewTimeBlock(BaseModel):

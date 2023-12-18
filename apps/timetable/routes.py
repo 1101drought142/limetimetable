@@ -50,6 +50,7 @@ def create_modal(request: Request, user: Annotated[User, Depends(authenticate_us
         "clients": request_data_result.clients,
         "corts" : request_data_result.corts,
         "cort" : request_data_result.cort,
+        "colors": request_data_result.colors,
     })
 
 @router.post("/api/server/v1/get_change_modal_template/", response_class=HTMLResponse)
@@ -63,6 +64,7 @@ def change_modal(request: Request , user: Annotated[User, Depends(authenticate_u
         "clients": request_data_result.clients,
         "client" : request_data_result.client,
         "corts" : request_data_result.corts,
+        "colors": request_data_result.colors,
     })
 
 
@@ -74,6 +76,7 @@ def create_repeatative_modal(request: Request , user: Annotated[User, Depends(au
         "corts" : request_data_result.corts,
         "weekdays": request_data_result.weekdays,
         "cort": request_data_result.cort,
+        "colors": request_data_result.colors,
     })
 
 @router.post("/api/server/v1/get_change_repeatative_modal_template/", response_class=HTMLResponse)
@@ -87,6 +90,7 @@ def change_repeatative_modal(request: Request , user: Annotated[User, Depends(au
         "corts" : request_data_result.corts,
         "weekdays": request_data_result.weekdays,
         "curent_weekdays": request_data_result.curent_weekdays,
+        "colors": request_data_result.colors,
     })
 
 @router.post("/api/server/v1/create_raspisanie_object/", response_class=JSONResponse)

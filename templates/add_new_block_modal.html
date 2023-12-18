@@ -32,6 +32,14 @@
                     {% endfor %}
                 </select>
             </li>
+            <li> 
+                <span>Цвет:</span>  
+                <select id="cort_modal_id">
+                    {% for color in colors %}
+                        <option value="{{color.value}}">{{color.value}}</option>
+                    {% endfor %}
+                </select>
+            </li>
         </ul>
         <p class="error_text">
 

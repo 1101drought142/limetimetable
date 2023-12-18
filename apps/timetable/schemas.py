@@ -13,6 +13,7 @@ class AddOrderScheme(BaseScheme):
     clients: list
     corts: list
     cort: int
+    colors: list
 
 class GetChangeModalScheme(BaseScheme):
     start_time: str
@@ -21,11 +22,13 @@ class GetChangeModalScheme(BaseScheme):
     clients: list
     corts: list
     client: db_models.Client
+    colors: list
 
 class AddRepeatativeBlockScheme(BaseScheme):
     corts: list
     weekdays: list
     cort: int
+    colors: list
 
 class GetChangeModalRepeatativeScheme(BaseScheme):
     start_time: str
@@ -34,6 +37,7 @@ class GetChangeModalRepeatativeScheme(BaseScheme):
     corts: list
     weekdays: list
     curent_weekdays: list
+    colors: list
 
 
 class ValidatedOrderObject(BaseScheme):
