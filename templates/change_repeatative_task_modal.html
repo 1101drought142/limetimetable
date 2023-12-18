@@ -21,6 +21,14 @@
                 </select>
             </li>
             <li> 
+                <span>Корт:</span>  
+                <select id="cort_modal_id">
+                    {% for t_cort in corts %}
+                        <option value="{{t_cort.id}}" {% if t_cort.id == cort %} selected {% endif %}>{{t_cort.name}}</option>
+                    {% endfor %}
+                </select>
+            </li>
+            <li> 
                 <span>Цвет:</span>  
                 <select id="color_modal_id">
                     <option value="">Стандартный</option>
