@@ -175,8 +175,14 @@ button {
 .login_info {
     width: 100%;
     text-align: end;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
+.login_info_logo {
+    margin-left: 20px;
+}
 .login_info_wrapper {
     display: flex;
     justify-content: end;
