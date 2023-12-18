@@ -17,8 +17,11 @@
 
     {% if user %}
     <section class="login_info">
+        <div class="login_info_logo">
+            <img src="/static/logo.png">
+        </div>
         <div class="login_info_wrapper">
-            <p>Вы зарегистрированны как: {{user.fullname}}</p>
+            <button type="button" class="name_button">{{user.fullname}}</button>
             <form action="/user/logout" method="POST">
                 <input type="submit" class="delete_button" value="Выйти">
             </form>

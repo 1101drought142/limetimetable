@@ -111,7 +111,15 @@
     font-size: 18px;
     margin-block-end: 1em;
 }
-
+.name_button {
+    background: var(--success-dark);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 15px;
+    font-size: 18px;
+    margin-block-end: 1em;
+}
 .button_row {
     display: flex;
     justify-content: center;
