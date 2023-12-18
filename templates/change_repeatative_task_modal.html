@@ -21,10 +21,11 @@
                 </select>
             </li>
             <li> 
-                <span>Корт:</span>  
-                <select id="cort_modal_id">
-                    {% for cort in corts %}
-                        <option value="{{cort.id}}" {% if cort.id == repeatative_order.cort %} selected {% endif %}>{{cort.name}}</option>
+                <span>Цвет:</span>  
+                <select id="color_modal_id">
+                    <option>Стандартный</option>
+                    {% for color in colors %}
+                        <option value="{{color.name}}">{{color.value["color_name"]}}</option>
                     {% endfor %}
                 </select>
             </li>
