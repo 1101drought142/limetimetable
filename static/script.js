@@ -247,6 +247,7 @@ function edit_event(orderid){
         "client_bitrix_id" : document.getElementById("client_bitrix_id").value,
         "client_site_id" : document.getElementById("client_site_id").value,
         "cort_id" : document.getElementById("cort_modal_id").value,
+        "color_name" : document.getElementById("color_modal_id").value,
     }
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/server/v1/change_raspisanie_object/');
@@ -278,6 +279,7 @@ function create_new_event(){
         "client_bitrix_id" : document.getElementById("client_bitrix_id").value,
         "client_site_id" : document.getElementById("client_site_id").value,
         "cort_id" : document.getElementById("cort_modal_id").value,
+        "color_name" : document.getElementById("color_modal_id").value,
     }
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/server/v1/create_raspisanie_object/');
@@ -305,6 +307,7 @@ function create_new_repeatative_event(){
         "description" : document.getElementById("description").value,
         "days" :  $('#weekdays').val(),
         "cort_id" : document.getElementById("cort_modal_id").value,
+        "color_name" : document.getElementById("color_modal_id").value,
     }
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/server/v1/create_repeatative_raspisanie_object/');
@@ -339,6 +342,7 @@ function change_repeatative_event(orderid) {
         "description" : document.getElementById("description").value,
         "days" :  $('#weekdays').val(),
         "cort_id" : document.getElementById("cort_modal_id").value,
+        "color_name" : document.getElementById("color_modal_id").value,
     }
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/server/v1/change_repeatative_raspisanie_object/');

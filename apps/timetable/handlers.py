@@ -89,6 +89,7 @@ class CreateNewTimeBlock(BaseModel):
     client_bitrix_id: str
     client_site_id: str
     cort_id: str
+    color_name: str|None
 
     def execute_query(self, db):
         start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
@@ -96,6 +97,10 @@ class CreateNewTimeBlock(BaseModel):
         try:
             validator = db_validators.OrderValidator(db, self.client_name, self.client_phone, self.client_mail, self.status, start_time.time(), end_time.time(), start_time.date(), self.client_bitrix_id, self.client_site_id, None, self.cort_id, True)
             validator_result = validator.validate_and_get_object_or_raise()
+            if (self.color_name):
+                color = Colors(self.color_name)
+            else:
+                color = None
             db_query.create_new_object(
                 db, 
                 validator_result.date, 
@@ -108,7 +113,8 @@ class CreateNewTimeBlock(BaseModel):
                 validator_result.bitrix_id,
                 validator_result.site_id,
                 validator_result.cort_id,
-                True
+                True,
+                color
             )
         except Exception as ex:
             return ex
@@ -125,6 +131,7 @@ class ChangeTimeBlock(BaseModel):
     client_bitrix_id: str
     client_site_id: str
     cort_id: str
+    color_name: str|None
 
     def execute_query(self, db):
         start_time = datetime.datetime.strptime(self.date_start, '%d-%m-%Y %H:%M')
@@ -156,6 +163,7 @@ class CreateRepeatativeTimeBlock(BaseModel):
     description: str
     days: list
     cort_id: str
+    color_name: str|None
 
     def execute_query(self, db):
         start_time = datetime.datetime.strptime(self.time_start, '%H:%M')
@@ -182,6 +190,7 @@ class ChangeRepeatativeTimeBlock(BaseModel):
     description: str
     days: list
     cort_id: str
+    color_name: str|None
 
     def execute_query(self, db):
         start_time = datetime.datetime.strptime(self.time_start, '%H:%M')
