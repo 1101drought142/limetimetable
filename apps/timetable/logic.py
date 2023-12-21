@@ -21,10 +21,6 @@ def tg_raspisanie_alert(message: str):
    bot_chatID = str(os.environ.get('CHAT_ID'))
    send_text = f'https://api.telegram.org/bot{bot_token}/sendMessage?chat_id={bot_chatID}&parse_mode=Markdown&text={message}'
    res = requests.get(send_text)
-   #test
-   bot_chatID = 625210745
-   send_text = f'https://api.telegram.org/bot{bot_token}/sendMessage?chat_id={bot_chatID}&parse_mode=Markdown&text={message}'
-   requests.get(send_text)
 
 class Users(enum.Enum):
     api = 0
