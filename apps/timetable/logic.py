@@ -16,9 +16,9 @@ import common_logic
 load_dotenv(find_dotenv())
 
 
-def tg_raspisanie_alert(message):
-   bot_token = os.environ.get('BOT_TOKEN')
-   bot_chatID = os.environ.get('CHAT_ID')
+def tg_raspisanie_alert(message: str):
+   bot_token = str(os.environ.get('BOT_TOKEN'))
+   bot_chatID = str(os.environ.get('CHAT_ID'))
    send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + message
    requests.get(send_text)
 
