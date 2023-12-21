@@ -164,12 +164,12 @@ async def get_raspisanie(request_data: handlers.CreateNewTimeBlockBeforePayemnt,
         order_object = db_query.get_order_object(db, int(creation_result))
         order, start_time_db, end_time_db, client = order_object
         tg_raspisanie_alert(f'Создан новый блок расписания, \n\
-                            Дата: {order.date}\n\
-                            Время начала: {start_time_db.time_object}\n\
-                            Время оконачания: {end_time_db.time_object}\n\
-                            Корт: {order.cort}\n\
-                            Имя: {client.client_name}\n\
-                            Номер телефона: {client.client_phone}\n')
+            Дата: {order.date}\n\
+            Время начала: {start_time_db.time_object}\n\
+            Время оконачания: {end_time_db.time_object}\n\
+            Корт: {order.cort}\n\
+            Имя: {client.client_name}\n\
+            Номер телефона: {client.client_phone}\n')
         return JSONResponse(content=jsonable_encoder({"success": True, "object_id": creation_result}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
