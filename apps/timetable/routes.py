@@ -161,7 +161,14 @@ async def get_raspisanie(request_data: handlers.CreateNewTimeBlockBeforePayemnt,
     creation_result = request_data.execute_query(db)
     if (type(creation_result) == int):
         await manager.broadcast_html("renew")
-        #tg_raspisanie_alert('Создан новый блок расписания, Дата: {creation_result.date}')
+        tg_raspisanie_alert('Создан новый блок расписания, \n\
+                            Дата: {creation_result.date}\n\
+                            Время начала: {creation_result.starttime}\n\
+                            Время оконачания: {creation_result.endtime}\n\
+                            Корт: {creation_result.cort_id}\n\
+                            Имя: {creation_result.name}\n\
+                            Номер телефона: {creation_result.phone}\n\
+                            ')
         return JSONResponse(content=jsonable_encoder({"success": True, "object_id": creation_result}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)

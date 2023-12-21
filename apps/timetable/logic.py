@@ -1,21 +1,19 @@
 import enum
 import datetime
 import json
-from fastapi.encoders import jsonable_encoder
 import requests 
 import os
-from dotenv import load_dotenv
-from threading import Thread, Lock
+from dotenv import load_dotenv, find_dotenv
+
+from fastapi.encoders import jsonable_encoder
 
 import apps.timetable.models as db_models
 import apps.timetable.queries as db_query
 
 import common_logic
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 
-if os.path.exists(dotenv_path):
-    load_dotenv(dotenv_path)
+load_dotenv(find_dotenv())
 
 
 def tg_raspisanie_alert(message):
