@@ -122,6 +122,7 @@ def get_corts(db: Session) -> list:
 def get_intervals(db: Session) -> list:
     return db.query(user_models.TimeIntervalObjects).all()
 
+
 def get_object_by_date(db: Session, date: datetime.date):
     return db.query(user_models.Order, user_models.TypicalRaspisanieObject).filter(user_models.Order.date==date).join(user_models.TypicalRaspisanieObject).all()
 
