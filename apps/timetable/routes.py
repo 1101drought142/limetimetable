@@ -167,8 +167,7 @@ async def get_raspisanie(request_data: handlers.CreateNewTimeBlockBeforePayemnt,
                             Время оконачания: {creation_result.endtime}\n\
                             Корт: {creation_result.cort_id}\n\
                             Имя: {creation_result.name}\n\
-                            Номер телефона: {creation_result.phone}\n\
-                            ')
+                            Номер телефона: {creation_result.phone}\n')
         return JSONResponse(content=jsonable_encoder({"success": True, "object_id": creation_result}), status_code=201)
     else:    
         return JSONResponse(content=jsonable_encoder({"success": False, "error": str(creation_result), }), status_code=422)
