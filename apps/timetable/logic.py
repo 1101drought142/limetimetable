@@ -250,8 +250,10 @@ class GetApiOrderData():
             for day in common_logic.DataBaseFormatedWeekday.format_from_string(obj.weekdays):
                 if day.value == self.date.weekday():
                     intervals_restriction.add_new(start.id, end.id)
-
-        intervals = db_query.get_intervals(db)        
+        if (self.date == datetime.datetime.now().date()):
+            intervals = db_query.get_today_intervals(db)       
+        else:
+            intervals = db_query.get_intervals(db)
         for interval in intervals:
             inside_interval_count = 0
             if not(intervals_restriction.check(interval.id + 1)):
